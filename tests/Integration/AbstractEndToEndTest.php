@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration;
 
+use App\Event\JobReadyEvent;
 use App\Services\ApplicationState;
 use App\Services\CompilationState;
 use App\Services\ExecutionState;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Services\BasilFixtureHandler;
-use App\Tests\Services\ClientRequestSender;
 use App\Tests\Services\EntityRefresher;
 use App\Tests\Services\Integration\HttpLogReader;
 use App\Tests\Services\InvokableFactory\ApplicationStateGetterFactory;
@@ -20,13 +20,14 @@ use App\Tests\Services\InvokableFactory\SourceGetterFactory;
 use App\Tests\Services\InvokableHandler;
 use App\Tests\Services\SourceFileStoreInitializer;
 use App\Tests\Services\UploadedFileFactory;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use SebastianBergmann\Timer\Timer;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Job;
+use webignition\BasilWorker\PersistenceBundle\Entity\Source;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Factory\JobFactory;
+use webignition\BasilWorker\PersistenceBundle\Services\Factory\SourceFactory;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
@@ -37,7 +38,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     private const MAX_DURATION_IN_SECONDS = 30;
     private const MICROSECONDS_PER_SECOND = 1000000;
 
-    protected ClientRequestSender $clientRequestSender;
     protected JobStore $jobStore;
     protected UploadedFileFactory $uploadedFileFactory;
     protected BasilFixtureHandler $basilFixtureHandler;
@@ -46,6 +46,8 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     protected InvokableHandler $invokableHandler;
     protected ApplicationState $applicationState;
     protected JobFactory $jobFactory;
+    protected SourceFactory $sourceFactory;
+    protected EventDispatcherInterface $eventDispatcher;
 
     protected function setUp(): void
     {
@@ -91,7 +93,8 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         $timer = new Timer();
         $timer->start();
 
-        $this->addJobSources($jobSetup->getManifestPath());
+        $this->createJobSources($jobSetup->getManifestPath());
+        $this->eventDispatcher->dispatch(new JobReadyEvent());
 
         self::assertSame(
             $expectedSourcePaths,
@@ -122,20 +125,28 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         self::assertLessThanOrEqual(self::MAX_DURATION_IN_SECONDS, $duration->asSeconds());
     }
 
-    protected function addJobSources(string $manifestPath): Response
+    /**
+     * @param string $manifestPath
+     *
+     * @return array<string, Source>
+     */
+    protected function createJobSources(string $manifestPath): array
     {
         $manifestContent = (string) file_get_contents($manifestPath);
         $sourcePaths = array_filter(explode("\n", $manifestContent));
 
-        $response = $this->clientRequestSender->addJobSources(
-            $this->uploadedFileFactory->createForManifest($manifestPath),
-            $this->basilFixtureHandler->createUploadFileCollection($sourcePaths)
-        );
+        $this->basilFixtureHandler->createUploadFileCollection($sourcePaths);
 
-        self::assertInstanceOf(JsonResponse::class, $response);
-        self::assertSame(200, $response->getStatusCode());
+        $sources = [];
+        foreach ($sourcePaths as $sourcePath) {
+            $sourceType = substr_count($sourcePath, 'Test/') === 0
+                ? Source::TYPE_RESOURCE
+                : Source::TYPE_TEST;
 
-        return $response;
+            $sources[$sourcePath] = $this->sourceFactory->create($sourceType, $sourcePath);
+        }
+
+        return $sources;
     }
 
     private function initializeSourceFileStore(): void
