@@ -12,11 +12,6 @@ services:
     App\Tests\Services\SourceFileStoreInitializer:
         public: true
 
-    App\Tests\Services\ClientRequestSender:
-        public: true
-        arguments:
-            $client: '@test.client'
-
     App\Tests\Services\UploadedFileFactory:
         public: true
 
