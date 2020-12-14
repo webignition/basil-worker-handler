@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use App\Exception\MissingTestSourceException;
 use App\Model\Manifest;
 use App\Request\AddSourcesRequest;
@@ -98,7 +98,7 @@ class JobController extends AbstractController
             return BadAddSourcesRequestResponse::createSourceMissingResponse($testSourceException->getPath());
         }
 
-        $eventDispatcher->dispatch(new SourcesAddedEvent());
+        $eventDispatcher->dispatch(new JobReadyEvent());
 
         return new JsonResponse();
     }

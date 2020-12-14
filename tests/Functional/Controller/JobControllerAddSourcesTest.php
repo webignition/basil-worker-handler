@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Controller;
 
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use App\Services\SourceFileStore;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\Invokable;
 use App\Tests\Model\EndToEndJob\ServiceReference;
 use App\Tests\Services\BasilFixtureHandler;
 use App\Tests\Services\ClientRequestSender;
+use App\Tests\Services\InvokableFactory\JobReadyEventGetter;
 use App\Tests\Services\InvokableFactory\SourceGetterFactory;
-use App\Tests\Services\InvokableFactory\SourcesAddedEventGetter;
 use App\Tests\Services\InvokableHandler;
 use App\Tests\Services\SourceFileStoreInitializer;
 use App\Tests\Services\UploadedFileFactory;
@@ -45,7 +45,7 @@ class JobControllerAddSourcesTest extends AbstractBaseFunctionalTest
         $jobFactory->create(md5('label content'), 'http://example.com/callback', 10);
 
         self::assertSame([], $this->invokableHandler->invoke(SourceGetterFactory::getAll()));
-        self::assertNull($this->invokableHandler->invoke(SourcesAddedEventGetter::get()));
+        self::assertNull($this->invokableHandler->invoke(JobReadyEventGetter::get()));
 
         $this->response = $this->invokableHandler->invoke(new Invokable(
             function (
@@ -98,11 +98,11 @@ class JobControllerAddSourcesTest extends AbstractBaseFunctionalTest
         }
     }
 
-    public function testSourcesAddedEventIsDispatched()
+    public function testJobReadyEventIsDispatched()
     {
         self::assertEquals(
-            new SourcesAddedEvent(),
-            $this->invokableHandler->invoke(SourcesAddedEventGetter::get())
+            new JobReadyEvent(),
+            $this->invokableHandler->invoke(JobReadyEventGetter::get())
         );
     }
 
