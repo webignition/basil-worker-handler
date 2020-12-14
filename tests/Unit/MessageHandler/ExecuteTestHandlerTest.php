@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\MessageHandler;
 
-use App\Message\ExecuteTest;
+use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
 use App\Services\ExecutionState;
 use App\Services\TestStateMutator;
@@ -32,7 +32,7 @@ class ExecuteTestHandlerTest extends TestCase
     public function testInvokeNoExecution(
         JobStore $jobStore,
         ExecutionState $executionState,
-        ExecuteTest $message,
+        ExecuteTestMessage $message,
         TestRepository $testRepository
     ) {
         $testExecutor = (new MockTestExecutor())
@@ -65,7 +65,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
                     ->getMock(),
-                'message' => new ExecuteTest(1),
+                'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
                     ->withoutFindCall()
                     ->getMock(),
@@ -78,7 +78,7 @@ class ExecuteTestHandlerTest extends TestCase
                 'executionState' => (new MockExecutionState())
                     ->withIsCall(ExecutionState::FINISHED_STATES, true)
                     ->getMock(),
-                'message' => new ExecuteTest(1),
+                'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
                     ->withoutFindCall()
                     ->getMock(),
@@ -91,7 +91,7 @@ class ExecuteTestHandlerTest extends TestCase
                 'executionState' => (new MockExecutionState())
                     ->withIsCall(ExecutionState::FINISHED_STATES, false)
                     ->getMock(),
-                'message' => new ExecuteTest(1),
+                'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
                     ->withFindCall(1, null)
                     ->getMock(),
@@ -104,7 +104,7 @@ class ExecuteTestHandlerTest extends TestCase
                 'executionState' => (new MockExecutionState())
                     ->withIsCall(ExecutionState::FINISHED_STATES, false)
                     ->getMock(),
-                'message' => new ExecuteTest(1),
+                'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
                     ->withFindCall(1, $testInWrongState)
                     ->getMock(),

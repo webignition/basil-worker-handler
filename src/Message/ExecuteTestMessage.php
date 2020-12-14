@@ -6,7 +6,7 @@ namespace App\Message;
 
 use webignition\JsonMessageSerializerBundle\Message\AbstractSerializableMessage;
 
-class ExecuteTest extends AbstractSerializableMessage
+class ExecuteTestMessage extends AbstractSerializableMessage
 {
     public const TYPE = 'execute-test';
     public const PAYLOAD_KEY_TEST_ID = 'test_id';
@@ -25,7 +25,7 @@ class ExecuteTest extends AbstractSerializableMessage
      */
     public static function createFromArray(array $data): self
     {
-        return new ExecuteTest((int) ($data[self::PAYLOAD_KEY_TEST_ID] ?? 0));
+        return new ExecuteTestMessage((int) ($data[self::PAYLOAD_KEY_TEST_ID] ?? 0));
     }
 
     public function getTestId(): int
