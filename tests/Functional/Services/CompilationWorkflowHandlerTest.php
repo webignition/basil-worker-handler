@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\JobReadyEvent;
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
-use App\Message\CompileSource;
+use App\Message\CompileSourceMessage;
 use App\Message\TimeoutCheck;
 use App\Services\CompilationWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -75,7 +75,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
      */
     public function testDispatchNextCompileSourceMessageMessageDispatched(
         InvokableInterface $setup,
-        CompileSource $expectedQueuedMessage
+        CompileSourceMessage $expectedQueuedMessage
     ) {
         $this->invokableHandler->invoke($setup);
 
@@ -98,7 +98,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                             ->withPath('Test/test2.yml'),
                     ]),
                 ]),
-                'expectedQueuedMessage' => new CompileSource('Test/test1.yml'),
+                'expectedQueuedMessage' => new CompileSourceMessage('Test/test1.yml'),
             ],
             'all but one sources compiled' => [
                 'setup' => new InvokableCollection([
@@ -113,7 +113,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                         (new TestSetup())->withSource('/app/source/Test/test1.yml')
                     ]),
                 ]),
-                'expectedQueuedMessage' => new CompileSource('Test/test2.yml'),
+                'expectedQueuedMessage' => new CompileSourceMessage('Test/test2.yml'),
             ],
         ];
     }
@@ -156,13 +156,13 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                         ->getMock()
                 ),
                 'expectedQueuedMessages' => [
-                    new CompileSource('Test/test1.yml'),
+                    new CompileSourceMessage('Test/test1.yml'),
                 ],
             ],
             JobReadyEvent::class => [
                 'event' => new JobReadyEvent(),
                 'expectedQueuedMessages' => [
-                    new CompileSource('Test/test1.yml'),
+                    new CompileSourceMessage('Test/test1.yml'),
                     new TimeoutCheck(),
                 ],
             ],

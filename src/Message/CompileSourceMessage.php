@@ -6,7 +6,7 @@ namespace App\Message;
 
 use webignition\JsonMessageSerializerBundle\Message\AbstractSerializableMessage;
 
-class CompileSource extends AbstractSerializableMessage
+class CompileSourceMessage extends AbstractSerializableMessage
 {
     public const TYPE = 'compile-source';
     public const PAYLOAD_KEY_PATH = 'path';
@@ -25,7 +25,7 @@ class CompileSource extends AbstractSerializableMessage
      */
     public static function createFromArray(array $data): self
     {
-        return new CompileSource((string) ($data[self::PAYLOAD_KEY_PATH] ?? ''));
+        return new CompileSourceMessage((string) ($data[self::PAYLOAD_KEY_PATH] ?? ''));
     }
 
     public function getPath(): string

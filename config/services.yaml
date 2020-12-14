@@ -81,7 +81,7 @@ services:
     webignition\JsonMessageSerializerBundle\Services\MessageFactory:
         arguments:
             $typeToMessageClassMap:
-                'compile-source': 'App\Message\CompileSource'
+                'compile-source': 'App\Message\CompileSourceMessage'
                 'execute-test': 'App\Message\ExecuteTest'
                 'send-callback': 'App\Message\SendCallback'
                 'timeout-check': 'App\Message\TimeoutCheck'

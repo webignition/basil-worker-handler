@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Message;
 
-use App\Message\CompileSource;
+use App\Message\CompileSourceMessage;
 use PHPUnit\Framework\TestCase;
 
-class CompileSourceTest extends TestCase
+class CompileSourceMessageTest extends TestCase
 {
     private const PATH = 'Test/test.yml';
 
-    private CompileSource $message;
+    private CompileSourceMessage $message;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->message = new CompileSource(self::PATH);
+        $this->message = new CompileSourceMessage(self::PATH);
     }
 
     public function testGetPath()
@@ -27,7 +27,7 @@ class CompileSourceTest extends TestCase
 
     public function testGetType()
     {
-        self::assertSame(CompileSource::TYPE, $this->message->getType());
+        self::assertSame(CompileSourceMessage::TYPE, $this->message->getType());
     }
 
     public function testGetPayload()
@@ -44,7 +44,7 @@ class CompileSourceTest extends TestCase
     {
         self::assertSame(
             [
-                'type' => CompileSource::TYPE,
+                'type' => CompileSourceMessage::TYPE,
                 'payload' => [
                     'path' => $this->message->getPath(),
                 ],

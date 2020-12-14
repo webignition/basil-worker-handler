@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Message\CompileSource;
+use App\Message\CompileSourceMessage;
 use App\Services\CompilationState;
 use App\Services\Compiler;
 use App\Services\SourceCompileEventDispatcher;
@@ -30,7 +30,7 @@ class CompileSourceHandler implements MessageHandlerInterface
         $this->compilationState = $compilationState;
     }
 
-    public function __invoke(CompileSource $message): void
+    public function __invoke(CompileSourceMessage $message): void
     {
         if (false === $this->jobStore->has()) {
             return;

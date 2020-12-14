@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
-use App\Message\CompileSource;
+use App\Message\CompileSourceMessage;
 use App\MessageHandler\CompileSourceHandler;
 use App\Services\SourceCompileEventDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -45,7 +45,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         ObjectReflector::setProperty($this->handler, CompileSourceHandler::class, 'eventDispatcher', $eventDispatcher);
 
         $handler = $this->handler;
-        $handler(\Mockery::mock(CompileSource::class));
+        $handler(\Mockery::mock(CompileSourceMessage::class));
     }
 
     public function testInvokeJobInWrongState()
@@ -59,7 +59,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         ObjectReflector::setProperty($this->handler, CompileSourceHandler::class, 'eventDispatcher', $eventDispatcher);
 
         $handler = $this->handler;
-        $handler(\Mockery::mock(CompileSource::class));
+        $handler(\Mockery::mock(CompileSourceMessage::class));
     }
 
     public function testInvokeCompileSuccess()
@@ -74,7 +74,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
             ]),
         ]));
 
-        $compileSourceMessage = new CompileSource($sourcePath);
+        $compileSourceMessage = new CompileSourceMessage($sourcePath);
 
         $testManifests = [
             \Mockery::mock(TestManifest::class),
@@ -121,7 +121,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
             ]),
         ]));
 
-        $compileSourceMessage = new CompileSource($sourcePath);
+        $compileSourceMessage = new CompileSourceMessage($sourcePath);
         $errorOutput = \Mockery::mock(ErrorOutputInterface::class);
 
         $compiler = (new MockCompiler())

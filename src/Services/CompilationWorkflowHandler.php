@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Event\JobReadyEvent;
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
-use App\Message\CompileSource;
+use App\Message\CompileSourceMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -41,7 +41,7 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
         $nextNonCompiledSource = $this->sourcePathFinder->findNextNonCompiledPath();
 
         if (is_string($nextNonCompiledSource)) {
-            $message = new CompileSource($nextNonCompiledSource);
+            $message = new CompileSourceMessage($nextNonCompiledSource);
             $this->messageBus->dispatch($message);
         }
     }
