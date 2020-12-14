@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Event\JobReadyEvent;
+use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Message\CompileSource;
 use App\Message\TimeoutCheck;
 use App\Services\CompilationWorkflowHandler;

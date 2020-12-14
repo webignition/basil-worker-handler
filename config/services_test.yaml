@@ -103,7 +103,7 @@ services:
         arguments:
             $recheckPeriodInSeconds: '%job_timeout_check_period%'
 
-    App\Tests\Services\SourcesAddedEventSubscriber:
+    App\Tests\Services\JobReadyEventSubscriber:
         public: true
 
     App\Tests\Services\CallbackHttpErrorEventSubscriber:

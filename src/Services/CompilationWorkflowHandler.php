@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Event\JobReadyEvent;
+use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Message\CompileSource;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
