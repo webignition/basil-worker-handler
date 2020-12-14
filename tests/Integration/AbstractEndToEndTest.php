@@ -18,7 +18,6 @@ use App\Tests\Services\InvokableFactory\ExecutionStateGetterFactory;
 use App\Tests\Services\InvokableFactory\JobSetup;
 use App\Tests\Services\InvokableFactory\SourceGetterFactory;
 use App\Tests\Services\InvokableHandler;
-use App\Tests\Services\SourceFileStoreInitializer;
 use App\Tests\Services\UploadedFileFactory;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SebastianBergmann\Timer\Timer;
@@ -53,7 +52,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
-        $this->initializeSourceFileStore();
     }
 
     protected function tearDown(): void
@@ -147,15 +145,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         }
 
         return $sources;
-    }
-
-    private function initializeSourceFileStore(): void
-    {
-        $sourceFileStoreInitializer = self::$container->get(SourceFileStoreInitializer::class);
-        self::assertInstanceOf(SourceFileStoreInitializer::class, $sourceFileStoreInitializer);
-        if ($sourceFileStoreInitializer instanceof SourceFileStoreInitializer) {
-            $sourceFileStoreInitializer->initialize();
-        }
     }
 
     private function waitUntilApplicationWorkflowIsComplete(): bool
