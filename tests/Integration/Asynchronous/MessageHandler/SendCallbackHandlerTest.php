@@ -59,10 +59,18 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
         $callback->setState(CallbackInterface::STATE_SENDING);
         $this->entityPersister->persist($callback->getEntity());
 
-        $this->invokableHandler->invoke($setup);
-
-        $messenger = self::$container->get(MessageBusInterface::class);
-        $messenger->dispatch(new SendCallback($callback->getId()));
+        $this->invokableHandler->invoke(new InvokableCollection([
+            $setup,
+            new Invokable(
+                function (MessageBusInterface $messageBus, CallbackInterface $callback) {
+                    $messageBus->dispatch(new SendCallback((int) $callback->getId()));
+                },
+                [
+                    new ServiceReference(MessageBusInterface::class),
+                    $callback
+                ]
+            )
+        ]));
 
         $intervalInMicroseconds = 100000;
         while (false === $this->invokableHandler->invoke($waitUntil)) {
@@ -89,9 +97,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                         $callbacks = $callbackRepository->findAll();
                         self::assertCount(1, $callbacks);
 
-                        /**
-                         * @var CallbackInterface $callback
-                         */
+                        /** @var CallbackInterface $callback */
                         $callback = $callbacks[0];
                         self::assertInstanceOf(CallbackInterface::class, $callback);
 
@@ -116,9 +122,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                         function (CallbackRepository $callbackRepository) {
                             $callbacks = $callbackRepository->findAll();
 
-                            /**
-                             * @var CallbackInterface $callback
-                             */
+                            /** @var CallbackInterface $callback */
                             $callback = $callbacks[0];
                             self::assertInstanceOf(CallbackInterface::class, $callback);
 
@@ -168,9 +172,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
 
                 $callbacks = $callbackRepository->findAll();
 
-                /**
-                 * @var CallbackInterface $callback
-                 */
+                /** @var CallbackInterface $callback */
                 $callback = $callbacks[0];
 
                 return CallbackInterface::STATE_COMPLETE === $callback->getState();
