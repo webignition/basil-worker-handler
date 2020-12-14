@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace App\Tests\Services;
 
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SourcesAddedEventSubscriber implements EventSubscriberInterface
 {
-    private ?SourcesAddedEvent $event = null;
+    private ?JobReadyEvent $event = null;
 
     public static function getSubscribedEvents()
     {
         return [
-            SourcesAddedEvent::class => 'onSourcesAdded',
+            JobReadyEvent::class => 'onSourcesAdded',
         ];
     }
 
-    public function onSourcesAdded(SourcesAddedEvent $event): void
+    public function onSourcesAdded(JobReadyEvent $event): void
     {
         $this->event = $event;
     }
 
-    public function getEvent(): ?SourcesAddedEvent
+    public function getEvent(): ?JobReadyEvent
     {
         return $this->event;
     }

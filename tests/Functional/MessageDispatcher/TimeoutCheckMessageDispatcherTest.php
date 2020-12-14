@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageDispatcher;
 
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use App\Message\TimeoutCheck;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -59,8 +59,8 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
     public function subscribesToEventDataProvider(): array
     {
         return [
-            SourcesAddedEvent::class => [
-                'event' => new SourcesAddedEvent(),
+            JobReadyEvent::class => [
+                'event' => new JobReadyEvent(),
                 'expectedQueuedMessage' => new TimeoutCheck(),
             ],
         ];

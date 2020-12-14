@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Controller;
 
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use App\Services\SourceFileStore;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\Invokable;
@@ -101,7 +101,7 @@ class JobControllerAddSourcesTest extends AbstractBaseFunctionalTest
     public function testSourcesAddedEventIsDispatched()
     {
         self::assertEquals(
-            new SourcesAddedEvent(),
+            new JobReadyEvent(),
             $this->invokableHandler->invoke(SourcesAddedEventGetter::get())
         );
     }

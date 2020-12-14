@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Services;
 
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
-use App\Event\SourcesAddedEvent;
+use App\Event\JobReadyEvent;
 use App\Message\CompileSource;
 use App\Message\TimeoutCheck;
 use App\Services\CompilationWorkflowHandler;
@@ -159,8 +159,8 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     new CompileSource('Test/test1.yml'),
                 ],
             ],
-            SourcesAddedEvent::class => [
-                'event' => new SourcesAddedEvent(),
+            JobReadyEvent::class => [
+                'event' => new JobReadyEvent(),
                 'expectedQueuedMessages' => [
                     new CompileSource('Test/test1.yml'),
                     new TimeoutCheck(),
