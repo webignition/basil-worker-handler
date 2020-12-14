@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Message;
 
-use App\Message\CompileSource;
+use App\Message\ExecuteTestMessage;
 use PHPUnit\Framework\TestCase;
 
-class CompileSourceTest extends TestCase
+class ExecuteTestMessageTest extends TestCase
 {
-    private const PATH = 'Test/test.yml';
+    private const TEST_ID = 7;
 
-    private CompileSource $message;
+    private ExecuteTestMessage $message;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->message = new CompileSource(self::PATH);
+        $this->message = new ExecuteTestMessage(self::TEST_ID);
     }
 
-    public function testGetPath()
+    public function testGetTestId()
     {
-        self::assertSame(self::PATH, $this->message->getPath());
+        self::assertSame(self::TEST_ID, $this->message->getTestId());
     }
 
     public function testGetType()
     {
-        self::assertSame(CompileSource::TYPE, $this->message->getType());
+        self::assertSame(ExecuteTestMessage::TYPE, $this->message->getType());
     }
 
     public function testGetPayload()
     {
         self::assertSame(
             [
-                'path' => $this->message->getPath(),
+                'test_id' => $this->message->getTestId(),
             ],
             $this->message->getPayload()
         );
@@ -44,9 +44,9 @@ class CompileSourceTest extends TestCase
     {
         self::assertSame(
             [
-                'type' => CompileSource::TYPE,
+                'type' => ExecuteTestMessage::TYPE,
                 'payload' => [
-                    'path' => $this->message->getPath(),
+                    'test_id' => $this->message->getTestId(),
                 ],
             ],
             $this->message->jsonSerialize()

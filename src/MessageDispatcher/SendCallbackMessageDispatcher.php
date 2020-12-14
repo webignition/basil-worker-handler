@@ -9,7 +9,7 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use App\Model\Callback\StampedCallbackInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -61,7 +61,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
      */
     private function createCallbackEnvelope(CallbackInterface $callback): Envelope
     {
-        $sendCallbackMessage = new SendCallback((int) $callback->getId());
+        $sendCallbackMessage = new SendCallbackMessage((int) $callback->getId());
         $stamps = [];
 
         if ($callback instanceof StampedCallbackInterface) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use App\Services\CallbackSender;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
@@ -27,7 +27,7 @@ class SendCallbackHandler implements MessageHandlerInterface
         $this->stateMutator = $stateMutator;
     }
 
-    public function __invoke(SendCallback $message): void
+    public function __invoke(SendCallbackMessage $message): void
     {
         $callback = $this->repository->find($message->getCallbackId());
 

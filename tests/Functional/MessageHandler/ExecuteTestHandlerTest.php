@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
-use App\Message\ExecuteTest;
+use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
 use App\Services\ExecutionState;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -57,7 +57,7 @@ class ExecuteTestHandlerTest extends AbstractBaseFunctionalTest
             ->withExecuteCall($test)
             ->getMock();
 
-        $executeTestMessage = new ExecuteTest((int) $test->getId());
+        $executeTestMessage = new ExecuteTestMessage((int) $test->getId());
 
         ObjectReflector::setProperty($this->handler, ExecuteTestHandler::class, 'testExecutor', $testExecutor);
 

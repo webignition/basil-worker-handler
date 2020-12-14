@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Event\JobTimeoutEvent;
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
@@ -27,7 +27,7 @@ class TimeoutCheckHandler implements MessageHandlerInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function __invoke(TimeoutCheck $timeoutCheck): void
+    public function __invoke(TimeoutCheckMessage $timeoutCheck): void
     {
         if (false === $this->jobStore->has()) {
             return;

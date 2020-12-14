@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Event\TestExecuteCompleteEvent;
-use App\Message\ExecuteTest;
+use App\Message\ExecuteTestMessage;
 use App\Services\ExecutionState;
 use App\Services\TestExecutor;
 use App\Services\TestStateMutator;
@@ -44,7 +44,7 @@ class ExecuteTestHandler implements MessageHandlerInterface
         $this->executionState = $executionState;
     }
 
-    public function __invoke(ExecuteTest $message): void
+    public function __invoke(ExecuteTestMessage $message): void
     {
         if (false === $this->jobStore->has()) {
             return;

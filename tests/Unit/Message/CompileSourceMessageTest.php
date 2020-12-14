@@ -4,37 +4,37 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Message;
 
-use App\Message\SendCallback;
+use App\Message\CompileSourceMessage;
 use PHPUnit\Framework\TestCase;
 
-class SendCallbackTest extends TestCase
+class CompileSourceMessageTest extends TestCase
 {
-    private const CALLBACK_ID = 9;
+    private const PATH = 'Test/test.yml';
 
-    private SendCallback $message;
+    private CompileSourceMessage $message;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->message = new SendCallback(self::CALLBACK_ID);
+        $this->message = new CompileSourceMessage(self::PATH);
     }
 
-    public function testGetCallbackId()
+    public function testGetPath()
     {
-        self::assertSame(self::CALLBACK_ID, $this->message->getCallbackId());
+        self::assertSame(self::PATH, $this->message->getPath());
     }
 
     public function testGetType()
     {
-        self::assertSame(SendCallback::TYPE, $this->message->getType());
+        self::assertSame(CompileSourceMessage::TYPE, $this->message->getType());
     }
 
     public function testGetPayload()
     {
         self::assertSame(
             [
-                'callback_id' => $this->message->getCallbackId(),
+                'path' => $this->message->getPath(),
             ],
             $this->message->getPayload()
         );
@@ -44,9 +44,9 @@ class SendCallbackTest extends TestCase
     {
         self::assertSame(
             [
-                'type' => SendCallback::TYPE,
+                'type' => CompileSourceMessage::TYPE,
                 'payload' => [
-                    'callback_id' => $this->message->getCallbackId(),
+                    'path' => $this->message->getPath(),
                 ],
             ],
             $this->message->jsonSerialize()

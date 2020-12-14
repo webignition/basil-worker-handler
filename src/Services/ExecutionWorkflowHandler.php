@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Event\TestExecuteCompleteEvent;
-use App\Message\ExecuteTest;
+use App\Message\ExecuteTestMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
@@ -68,7 +68,7 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
             $testId = $nextAwaitingTest->getId();
 
             if (is_int($testId)) {
-                $message = new ExecuteTest($testId);
+                $message = new ExecuteTestMessage($testId);
                 $this->messageBus->dispatch($message);
             }
         }

@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Event\TestExecuteCompleteEvent;
-use App\Message\ExecuteTest;
+use App\Message\ExecuteTestMessage;
 use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
@@ -149,7 +149,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $this->messengerAsserter->assertMessageAtPositionEquals(
             0,
-            new ExecuteTest((int) $expectedNextTest->getId())
+            new ExecuteTestMessage((int) $expectedNextTest->getId())
         );
     }
 
@@ -278,7 +278,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
             $this->messengerAsserter->assertMessageAtPositionEquals(
                 0,
-                new ExecuteTest((int) $expectedNextTest->getId())
+                new ExecuteTestMessage((int) $expectedNextTest->getId())
             );
         }
     }

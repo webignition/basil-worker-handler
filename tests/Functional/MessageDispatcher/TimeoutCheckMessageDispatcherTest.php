@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageDispatcher;
 
 use App\Event\JobReadyEvent;
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\Asserter\MessengerAsserter;
@@ -37,13 +37,13 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         $this->messageDispatcher->dispatch();
 
         $this->messengerAsserter->assertQueueCount(1);
-        $this->messengerAsserter->assertMessageAtPositionEquals(0, new TimeoutCheck());
+        $this->messengerAsserter->assertMessageAtPositionEquals(0, new TimeoutCheckMessage());
     }
 
     /**
      * @dataProvider subscribesToEventDataProvider
      */
-    public function testSubscribesToEvent(Event $event, TimeoutCheck $expectedQueuedMessage)
+    public function testSubscribesToEvent(Event $event, TimeoutCheckMessage $expectedQueuedMessage)
     {
         $this->messengerAsserter->assertQueueIsEmpty();
 
@@ -61,7 +61,7 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         return [
             JobReadyEvent::class => [
                 'event' => new JobReadyEvent(),
-                'expectedQueuedMessage' => new TimeoutCheck(),
+                'expectedQueuedMessage' => new TimeoutCheckMessage(),
             ],
         ];
     }
