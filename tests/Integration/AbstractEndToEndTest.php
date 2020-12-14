@@ -26,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Job;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
+use webignition\BasilWorker\PersistenceBundle\Services\Factory\JobFactory;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
@@ -44,6 +45,7 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     protected HttpLogReader $httpLogReader;
     protected InvokableHandler $invokableHandler;
     protected ApplicationState $applicationState;
+    protected JobFactory $jobFactory;
 
     protected function setUp(): void
     {
@@ -75,7 +77,11 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         string $expectedApplicationEndState,
         InvokableInterface $postAssertions
     ): void {
-        $this->createJob($jobSetup);
+        $this->jobFactory->create(
+            $jobSetup->getLabel(),
+            $jobSetup->getCallbackUrl(),
+            $jobSetup->getMaximumDurationInSeconds()
+        );
 
         self::assertSame(
             CompilationState::STATE_AWAITING,
@@ -114,21 +120,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         $this->invokableHandler->invoke($postAssertions);
 
         self::assertLessThanOrEqual(self::MAX_DURATION_IN_SECONDS, $duration->asSeconds());
-    }
-
-    protected function createJob(JobSetup $jobSetup): Response
-    {
-        $response = $this->clientRequestSender->createJob(
-            $jobSetup->getLabel(),
-            $jobSetup->getCallbackUrl(),
-            $jobSetup->getMaximumDurationInSeconds()
-        );
-
-        self::assertInstanceOf(JsonResponse::class, $response);
-        self::assertSame(200, $response->getStatusCode());
-        self::assertTrue($this->jobStore->has());
-
-        return $response;
     }
 
     protected function addJobSources(string $manifestPath): Response
