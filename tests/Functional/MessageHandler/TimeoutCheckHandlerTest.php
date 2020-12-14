@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageHandler;
 
 use App\Event\JobTimeoutEvent;
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use App\MessageHandler\TimeoutCheckHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockJob;
@@ -42,7 +42,7 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
 
         ObjectReflector::setProperty($this->handler, TimeoutCheckHandler::class, 'eventDispatcher', $eventDispatcher);
 
-        $message = new TimeoutCheck();
+        $message = new TimeoutCheckMessage();
 
         ($this->handler)($message);
 
@@ -67,12 +67,12 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
         ObjectReflector::setProperty($this->handler, TimeoutCheckHandler::class, 'eventDispatcher', $eventDispatcher);
         ObjectReflector::setProperty($this->handler, TimeoutCheckHandler::class, 'jobStore', $jobStore);
 
-        $message = new TimeoutCheck();
+        $message = new TimeoutCheckMessage();
 
         ($this->handler)($message);
 
         $this->messengerAsserter->assertQueueCount(1);
-        $this->messengerAsserter->assertMessageAtPositionEquals(0, new TimeoutCheck());
+        $this->messengerAsserter->assertMessageAtPositionEquals(0, new TimeoutCheckMessage());
         $this->messengerAsserter->assertEnvelopeContainsStamp(
             $this->messengerAsserter->getEnvelopeAtPosition(0),
             new DelayStamp(30000),
@@ -113,7 +113,7 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
         ObjectReflector::setProperty($this->handler, TimeoutCheckHandler::class, 'eventDispatcher', $eventDispatcher);
         ObjectReflector::setProperty($this->handler, TimeoutCheckHandler::class, 'jobStore', $jobStore);
 
-        $message = new TimeoutCheck();
+        $message = new TimeoutCheckMessage();
 
         ($this->handler)($message);
 

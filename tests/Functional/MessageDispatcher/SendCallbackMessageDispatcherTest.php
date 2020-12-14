@@ -9,7 +9,7 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 use App\Model\Callback\CompileFailureCallback;
@@ -76,7 +76,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         self::assertInstanceOf(CallbackInterface::class, $callback);
 
         $this->messengerAsserter->assertQueueCount(1);
-        $this->messengerAsserter->assertMessageAtPositionEquals(0, new SendCallback((int) $callback->getId()));
+        $this->messengerAsserter->assertMessageAtPositionEquals(0, new SendCallbackMessage((int) $callback->getId()));
 
         $envelope = $this->messengerAsserter->getEnvelopeAtPosition(0);
 
@@ -138,7 +138,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueCount(1);
         $this->messengerAsserter->assertMessageAtPositionEquals(
             0,
-            new SendCallback((int) $expectedQueuedMessageCallback->getId())
+            new SendCallbackMessage((int) $expectedQueuedMessageCallback->getId())
         );
     }
 

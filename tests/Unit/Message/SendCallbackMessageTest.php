@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Message;
 
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use PHPUnit\Framework\TestCase;
 
-class SendCallbackTest extends TestCase
+class SendCallbackMessageTest extends TestCase
 {
     private const CALLBACK_ID = 9;
 
-    private SendCallback $message;
+    private SendCallbackMessage $message;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->message = new SendCallback(self::CALLBACK_ID);
+        $this->message = new SendCallbackMessage(self::CALLBACK_ID);
     }
 
     public function testGetCallbackId()
@@ -27,7 +27,7 @@ class SendCallbackTest extends TestCase
 
     public function testGetType()
     {
-        self::assertSame(SendCallback::TYPE, $this->message->getType());
+        self::assertSame(SendCallbackMessage::TYPE, $this->message->getType());
     }
 
     public function testGetPayload()
@@ -44,7 +44,7 @@ class SendCallbackTest extends TestCase
     {
         self::assertSame(
             [
-                'type' => SendCallback::TYPE,
+                'type' => SendCallbackMessage::TYPE,
                 'payload' => [
                     'callback_id' => $this->message->getCallbackId(),
                 ],

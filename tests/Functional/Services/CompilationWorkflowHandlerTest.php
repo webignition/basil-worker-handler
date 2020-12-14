@@ -7,7 +7,7 @@ namespace App\Tests\Functional\Services;
 use App\Event\JobReadyEvent;
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Message\CompileSourceMessage;
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use App\Services\CompilationWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
@@ -163,7 +163,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 'event' => new JobReadyEvent(),
                 'expectedQueuedMessages' => [
                     new CompileSourceMessage('Test/test1.yml'),
-                    new TimeoutCheck(),
+                    new TimeoutCheckMessage(),
                 ],
             ],
         ];

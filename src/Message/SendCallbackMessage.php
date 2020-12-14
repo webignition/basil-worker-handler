@@ -6,7 +6,7 @@ namespace App\Message;
 
 use webignition\JsonMessageSerializerBundle\Message\AbstractSerializableMessage;
 
-class SendCallback extends AbstractSerializableMessage
+class SendCallbackMessage extends AbstractSerializableMessage
 {
     public const TYPE = 'send-callback';
     public const PAYLOAD_KEY_CALLBACK_ID = 'callback_id';
@@ -25,7 +25,7 @@ class SendCallback extends AbstractSerializableMessage
      */
     public static function createFromArray(array $data): self
     {
-        return new SendCallback((int) ($data[self::PAYLOAD_KEY_CALLBACK_ID] ?? 0));
+        return new SendCallbackMessage((int) ($data[self::PAYLOAD_KEY_CALLBACK_ID] ?? 0));
     }
 
     public function getCallbackId(): int

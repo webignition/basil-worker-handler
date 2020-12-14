@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Message;
 
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use PHPUnit\Framework\TestCase;
 
-class TimeoutCheckTest extends TestCase
+class TimeoutCheckMessageTest extends TestCase
 {
-    private TimeoutCheck $message;
+    private TimeoutCheckMessage $message;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->message = new TimeoutCheck();
+        $this->message = new TimeoutCheckMessage();
     }
 
     public function testGetType()
     {
-        self::assertSame(TimeoutCheck::TYPE, $this->message->getType());
+        self::assertSame(TimeoutCheckMessage::TYPE, $this->message->getType());
     }
 
     public function testGetPayload()
@@ -35,7 +35,7 @@ class TimeoutCheckTest extends TestCase
     {
         self::assertSame(
             [
-                'type' => TimeoutCheck::TYPE,
+                'type' => TimeoutCheckMessage::TYPE,
                 'payload' => [],
             ],
             $this->message->jsonSerialize()

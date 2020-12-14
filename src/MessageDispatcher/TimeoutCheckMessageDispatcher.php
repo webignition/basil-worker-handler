@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\MessageDispatcher;
 
 use App\Event\JobReadyEvent;
-use App\Message\TimeoutCheck;
+use App\Message\TimeoutCheckMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -40,7 +40,7 @@ class TimeoutCheckMessageDispatcher implements EventSubscriberInterface
 
     public function dispatch(): void
     {
-        $message = new TimeoutCheck();
+        $message = new TimeoutCheckMessage();
         $envelope = new Envelope($message, [
             new DelayStamp($this->recheckPeriodInSeconds * self::MILLISECONDS_PER_SECOND)
         ]);

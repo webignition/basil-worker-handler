@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Asynchronous\MessageHandler;
 
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 use App\Model\Callback\JobTimeoutCallback;
 use App\Tests\Integration\AbstractBaseIntegrationTest;
@@ -63,7 +63,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
             $setup,
             new Invokable(
                 function (MessageBusInterface $messageBus, CallbackInterface $callback) {
-                    $messageBus->dispatch(new SendCallback((int) $callback->getId()));
+                    $messageBus->dispatch(new SendCallbackMessage((int) $callback->getId()));
                 },
                 [
                     new ServiceReference(MessageBusInterface::class),

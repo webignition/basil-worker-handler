@@ -83,5 +83,5 @@ services:
             $typeToMessageClassMap:
                 'compile-source': 'App\Message\CompileSourceMessage'
                 'execute-test': 'App\Message\ExecuteTestMessage'
-                'send-callback': 'App\Message\SendCallback'
-                'timeout-check': 'App\Message\TimeoutCheck'
+                'send-callback': 'App\Message\SendCallbackMessage'
+                'timeout-check': 'App\Message\TimeoutCheckMessage'

@@ -6,13 +6,13 @@ namespace App\Message;
 
 use webignition\JsonMessageSerializerBundle\Message\AbstractSerializableMessage;
 
-class TimeoutCheck extends AbstractSerializableMessage
+class TimeoutCheckMessage extends AbstractSerializableMessage
 {
     public const TYPE = 'timeout-check';
 
     public static function createFromArray(array $data): self
     {
-        return new TimeoutCheck();
+        return new TimeoutCheckMessage();
     }
 
     public function getType(): string

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
-use App\Message\SendCallback;
+use App\Message\SendCallbackMessage;
 use App\MessageHandler\SendCallbackHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Services\MockCallbackSender;
@@ -50,7 +50,7 @@ class SendCallbackHandlerTest extends AbstractBaseFunctionalTest
         ObjectReflector::setProperty($this->handler, SendCallbackHandler::class, 'stateMutator', $stateMutator);
         ObjectReflector::setProperty($this->handler, SendCallbackHandler::class, 'sender', $sender);
 
-        $message = new SendCallback((int) $callback->getId());
+        $message = new SendCallbackMessage((int) $callback->getId());
 
         ($this->handler)($message);
     }
@@ -70,7 +70,7 @@ class SendCallbackHandlerTest extends AbstractBaseFunctionalTest
 
         ObjectReflector::setProperty($this->handler, SendCallbackHandler::class, 'sender', $mockSender->getMock());
 
-        $message = new SendCallback((int) $callback->getId());
+        $message = new SendCallbackMessage((int) $callback->getId());
 
         ($this->handler)($message);
     }
