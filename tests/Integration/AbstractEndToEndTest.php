@@ -9,25 +9,21 @@ use App\Services\ApplicationState;
 use App\Services\CompilationState;
 use App\Services\ExecutionState;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
-use App\Tests\Services\BasilFixtureHandler;
 use App\Tests\Services\EntityRefresher;
-use App\Tests\Services\Integration\HttpLogReader;
 use App\Tests\Services\InvokableFactory\ApplicationStateGetterFactory;
 use App\Tests\Services\InvokableFactory\CompilationStateGetterFactory;
 use App\Tests\Services\InvokableFactory\ExecutionStateGetterFactory;
+use App\Tests\Services\InvokableFactory\HttpLogResetter;
 use App\Tests\Services\InvokableFactory\JobSetup;
+use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
+use App\Tests\Services\InvokableFactory\SourceCreationFactory;
 use App\Tests\Services\InvokableFactory\SourceGetterFactory;
 use App\Tests\Services\InvokableHandler;
-use App\Tests\Services\UploadedFileFactory;
 use SebastianBergmann\Timer\Timer;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Job;
-use webignition\BasilWorker\PersistenceBundle\Entity\Source;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
-use webignition\BasilWorker\PersistenceBundle\Services\Factory\JobFactory;
-use webignition\BasilWorker\PersistenceBundle\Services\Factory\SourceFactory;
-use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
 abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
@@ -37,15 +33,9 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     private const MAX_DURATION_IN_SECONDS = 30;
     private const MICROSECONDS_PER_SECOND = 1000000;
 
-    protected JobStore $jobStore;
-    protected UploadedFileFactory $uploadedFileFactory;
-    protected BasilFixtureHandler $basilFixtureHandler;
     protected EntityRefresher $entityRefresher;
-    protected HttpLogReader $httpLogReader;
     protected InvokableHandler $invokableHandler;
     protected ApplicationState $applicationState;
-    protected JobFactory $jobFactory;
-    protected SourceFactory $sourceFactory;
     protected MessageBusInterface $messageBus;
 
     protected function setUp(): void
@@ -56,9 +46,9 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
 
     protected function tearDown(): void
     {
-        parent::tearDown();
+        $this->invokableHandler->invoke(HttpLogResetter::reset());
 
-        $this->httpLogReader->reset();
+        parent::tearDown();
     }
 
     /**
@@ -77,21 +67,22 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         string $expectedApplicationEndState,
         InvokableInterface $postAssertions
     ): void {
-        $this->jobFactory->create(
-            $jobSetup->getLabel(),
-            $jobSetup->getCallbackUrl(),
-            $jobSetup->getMaximumDurationInSeconds()
-        );
+        $this->invokableHandler->invoke(JobSetupInvokableFactory::setup($jobSetup));
 
         self::assertSame(
             CompilationState::STATE_AWAITING,
             $this->invokableHandler->invoke(CompilationStateGetterFactory::get())
         );
 
+        self::assertSame(
+            ExecutionState::STATE_AWAITING,
+            $this->invokableHandler->invoke(ExecutionStateGetterFactory::get())
+        );
+
+        $this->invokableHandler->invoke(SourceCreationFactory::createFromManifestPath($jobSetup->getManifestPath()));
+
         $timer = new Timer();
         $timer->start();
-
-        $this->createJobSources($jobSetup->getManifestPath());
 
         $this->messageBus->dispatch(new JobReadyMessage());
 
@@ -122,30 +113,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         $this->invokableHandler->invoke($postAssertions);
 
         self::assertLessThanOrEqual(self::MAX_DURATION_IN_SECONDS, $duration->asSeconds());
-    }
-
-    /**
-     * @param string $manifestPath
-     *
-     * @return array<string, Source>
-     */
-    protected function createJobSources(string $manifestPath): array
-    {
-        $manifestContent = (string) file_get_contents($manifestPath);
-        $sourcePaths = array_filter(explode("\n", $manifestContent));
-
-        $this->basilFixtureHandler->createUploadFileCollection($sourcePaths);
-
-        $sources = [];
-        foreach ($sourcePaths as $sourcePath) {
-            $sourceType = substr_count($sourcePath, 'Test/') === 0
-                ? Source::TYPE_RESOURCE
-                : Source::TYPE_TEST;
-
-            $sources[$sourcePath] = $this->sourceFactory->create($sourceType, $sourcePath);
-        }
-
-        return $sources;
     }
 
     private function waitUntilApplicationWorkflowIsComplete(): bool
