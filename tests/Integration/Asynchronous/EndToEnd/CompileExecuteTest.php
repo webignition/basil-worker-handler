@@ -22,7 +22,7 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
-class CreateAddSourcesCompileExecuteTest extends AbstractEndToEndTest
+class CompileExecuteTest extends AbstractEndToEndTest
 {
     use TestClassServicePropertyInjectorTrait;
 
