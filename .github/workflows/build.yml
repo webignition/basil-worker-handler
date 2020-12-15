@@ -1,0 +1,61 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  release:
+    types:
+      - published
+
+jobs:
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          extensions: amqp, pgsql
+
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install composer dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Setup integration environment
+        run: composer integration-setup
+
+      - name: Set image tag name
+        id: image_tag_name
+        env:
+          RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          [[ ! -z "$RELEASE_TAG_NAME" ]] && echo "::set-output name=value::$RELEASE_TAG_NAME" || echo "::set-output name=value::master"
+
+      - name: Set deploy image conditional
+        id: deploy_image
+        if: ${{ (github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'push' && github.event.ref == 'refs/heads/master') }}
+        run: |
+          echo "::set-output name=deploy::true"
+
+      - name: Build test image
+        if: ${{ steps.deploy_image.outputs.deploy == '' }}
+        env:
+          TAG_NAME: ${{ steps.image_tag_name.outputs.value }}
+        run: ./build/build.sh
