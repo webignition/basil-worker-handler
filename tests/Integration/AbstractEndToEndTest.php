@@ -69,15 +69,11 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     ): void {
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup($jobSetup));
 
-        self::assertSame(
-            CompilationState::STATE_AWAITING,
-            $this->invokableHandler->invoke(CompilationStateGetterFactory::get())
-        );
+        $compilationState = $this->invokableHandler->invoke(CompilationStateGetterFactory::get());
+        self::assertSame(CompilationState::STATE_AWAITING, $compilationState);
 
-        self::assertSame(
-            ExecutionState::STATE_AWAITING,
-            $this->invokableHandler->invoke(ExecutionStateGetterFactory::get())
-        );
+        $executionState = $this->invokableHandler->invoke(ExecutionStateGetterFactory::get());
+        self::assertSame(ExecutionState::STATE_AWAITING, $executionState);
 
         $this->invokableHandler->invoke(SourceCreationFactory::createFromManifestPath($jobSetup->getManifestPath()));
 
@@ -86,10 +82,8 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
 
         $this->messageBus->dispatch(new JobReadyMessage());
 
-        self::assertSame(
-            $expectedSourcePaths,
-            $this->invokableHandler->invoke(SourceGetterFactory::getAllRelativePaths())
-        );
+        $sourcePaths = $this->invokableHandler->invoke(SourceGetterFactory::getAllRelativePaths());
+        self::assertSame($expectedSourcePaths, $sourcePaths);
 
         $this->waitUntilApplicationWorkflowIsComplete();
 
