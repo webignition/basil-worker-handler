@@ -6,7 +6,10 @@ services:
       context: ../..
       args:
         DATABASE_URL: postgresql://postgres:${WORKER_POSTGRES_PASSWORD}@postgres:${WORKER_POSTGRES_EXPOSED_PORT}/basil-worker-db?serverVersion=12&charset=utf8
+        MESSENGER_TRANSPORT_DSN: amqp://guest:guest@rabbitmq:5672/%2f/messages
     container_name: test-basil-worker-handler-app
     depends_on:
       - postgres
       - rabbitmq
+    volumes:
+      - ../../var/log/supervisor:/var/log/supervisor:rw
