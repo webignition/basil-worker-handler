@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class CompilationStateAsserter
 {
     /**
-     * @param CompilationState::STATE_* $state
+     * @param CompilationState::STATE_* $expectedState
      */
     public static function is(string $expectedState): InvokableInterface
     {

@@ -28,7 +28,6 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     use TestClassServicePropertyInjectorTrait;
 
     private const MAX_DURATION_IN_SECONDS = 30;
-    private const MICROSECONDS_PER_SECOND = 1000000;
 
     protected InvokableHandler $invokableHandler;
     protected MessageBusInterface $messageBus;
