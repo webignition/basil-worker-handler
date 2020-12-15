@@ -24,7 +24,7 @@ use webignition\HttpHistoryContainer\Collection\HttpTransactionCollection;
 use webignition\HttpHistoryContainer\Transaction\HttpTransaction;
 use webignition\HttpHistoryContainer\Transaction\HttpTransactionInterface;
 
-class CreateAddSourcesCompileExecuteTest extends AbstractEndToEndTest
+class CompileExecuteTest extends AbstractEndToEndTest
 {
     /**
      * @dataProvider createAddSourcesCompileExecuteDataProvider
