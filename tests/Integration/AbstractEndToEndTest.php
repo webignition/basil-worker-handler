@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration;
 
-use App\Event\JobReadyEvent;
+use App\Message\JobReadyMessage;
 use App\Services\ApplicationState;
 use App\Services\CompilationState;
 use App\Services\ExecutionState;
@@ -19,8 +19,8 @@ use App\Tests\Services\InvokableFactory\JobSetup;
 use App\Tests\Services\InvokableFactory\SourceGetterFactory;
 use App\Tests\Services\InvokableHandler;
 use App\Tests\Services\UploadedFileFactory;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use SebastianBergmann\Timer\Timer;
+use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Job;
 use webignition\BasilWorker\PersistenceBundle\Entity\Source;
@@ -46,7 +46,7 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
     protected ApplicationState $applicationState;
     protected JobFactory $jobFactory;
     protected SourceFactory $sourceFactory;
-    protected EventDispatcherInterface $eventDispatcher;
+    protected MessageBusInterface $messageBus;
 
     protected function setUp(): void
     {
@@ -92,7 +92,8 @@ abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest
         $timer->start();
 
         $this->createJobSources($jobSetup->getManifestPath());
-        $this->eventDispatcher->dispatch(new JobReadyEvent());
+
+        $this->messageBus->dispatch(new JobReadyMessage());
 
         self::assertSame(
             $expectedSourcePaths,

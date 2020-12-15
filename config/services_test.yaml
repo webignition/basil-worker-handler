@@ -103,6 +103,9 @@ services:
         arguments:
             $recheckPeriodInSeconds: '%job_timeout_check_period%'
 
+    App\MessageHandler\JobReadyHandler:
+        public: true
+
     App\Tests\Services\JobReadyEventSubscriber:
         public: true
 
