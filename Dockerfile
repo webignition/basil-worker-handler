@@ -6,6 +6,7 @@ RUN apt-get -qq update && apt-get -qq -y install  \
   librabbitmq-dev \
   libpq-dev \
   libzip-dev \
+  supervisor \
   zip \
   && docker-php-ext-install \
   pdo_pgsql \
@@ -39,6 +40,11 @@ COPY config/packages/*.yaml /app/config/packages/
 COPY config/packages/prod /app/config/packages/prod
 COPY config/routes/annotations.yaml /app/config/routes/
 RUN touch /app/.env
+
+RUN echo "Copy supervisor configuration"
+COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
+RUN mkdir -p var/log/supervisor
 
 ARG APP_ENV=prod
 ARG DATABASE_URL=postgresql://database_user:database_password@0.0.0.0:5432/database_name?serverVersion=12&charset=utf8
