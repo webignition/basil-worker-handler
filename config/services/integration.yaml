@@ -39,6 +39,11 @@ services:
 
     App\Tests\Services\Guzzle\Middleware\Factory\HistoryMiddlewareFactory:
 
+    app.tests.services.guzzle.handler.curl:
+        public: true
+        class: GuzzleHttp\Handler\MockHandler
+        factory: [ '@App\Tests\Services\Guzzle\HandlerFactory', 'createCurlHandler' ]
+
     GuzzleHttp\HandlerStack:
         factory: [ '@App\Tests\Services\Guzzle\HandlerStackFactory', 'create' ]
         arguments:
