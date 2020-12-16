@@ -55,11 +55,11 @@ RUN curl -L --output dockerize.tar.gz \
 ARG APP_ENV=prod
 ARG DATABASE_URL=postgresql://database_user:database_password@0.0.0.0:5432/database_name?serverVersion=12&charset=utf8
 ARG COMPILER_HOST=compiler
-ARG COMPILER_PORT=9500
+ARG COMPILER_PORT=8000
 ARG COMPILER_SOURCE_DIRECTORY=/app/source
 ARG COMPILER_TARGET_DIRECTORY=/app/tests
 ARG DELEGATOR_HOST=delegator
-ARG DELEGATOR_PORT=9501
+ARG DELEGATOR_PORT=8000
 ARG MESSENGER_TRANSPORT_DSN=amqp://rabbitmq_user:rabbitmq_password@rabbitmq_host:5672/%2f/messages
 ARG CALLBACK_RETRY_LIMIT=3
 ARG JOB_TIMEOUT_CHECK_PERIOD=30
