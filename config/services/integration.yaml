@@ -12,6 +12,11 @@ services:
     App\Services\ApplicationState:
         public: true
 
+    App\Services\BackoffStrategyFactory:
+        class: App\Tests\Services\Integration\BackoffStrategyFactory
+        arguments:
+            $maximumNumberOfDelays: '%callback_retry_limit%'
+
     App\Tests\Services\EntityRefresher:
         public: true
 
