@@ -82,12 +82,14 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
 
     public function sendDataProvider(): array
     {
+        $callbackBaseUrl = $_ENV['CALLBACK_BASE_URL'] ?? '';
+
         return [
             'success' => [
                 'setup' => new InvokableCollection([
                     'create job' => JobSetupInvokableFactory::setup(
                         (new JobSetup())
-                            ->withCallbackUrl('http://200.example.com/callback/1')
+                            ->withCallbackUrl($callbackBaseUrl . '/status/200')
                     ),
                 ]),
                 'callback' => new JobTimeoutCallback(600),
@@ -112,7 +114,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                 'setup' => new InvokableCollection([
                     'create job' => JobSetupInvokableFactory::setup(
                         (new JobSetup())
-                            ->withCallbackUrl('http://500.example.com/callback/2')
+                            ->withCallbackUrl($callbackBaseUrl . '/status/500')
                     ),
                 ]),
                 'callback' => new JobTimeoutCallback(600),

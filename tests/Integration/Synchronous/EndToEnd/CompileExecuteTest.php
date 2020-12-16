@@ -57,7 +57,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
     public function createAddSourcesCompileExecuteDataProvider(): array
     {
         $label = md5('label content');
-        $callbackUrl = 'http://200.example.com/callback/1';
+        $callbackUrl = ($_ENV['CALLBACK_BASE_URL'] ?? '') . '/status/200';
 
         return [
             'default' => [
