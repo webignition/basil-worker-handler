@@ -1,4 +1,4 @@
-name: Container Integration Tests
+name: Tests Foo
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
   pull_request:
 
 jobs:
-  integration-image:
-    name: Integration tests (image)
+  integration:
+    name: Integration tests
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://postgres:password!@127.0.0.1:5432/basil-worker-db?charset=UTF-8
@@ -38,7 +38,9 @@ jobs:
         run: composer install --no-progress --prefer-dist
 
       - name: Setup integration environment
-        run: composer image-integration-setup
+        run: composer integration-setup
 
-      - name: Run asynchronous tests in image
-        run: composer test-integration-image
+      - name: Run asynchronous tests
+        run: |
+          php bin/console --env=integration_async messenger:consume async > /dev/null &
+          composer test-integration-async
