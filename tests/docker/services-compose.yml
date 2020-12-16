@@ -62,3 +62,9 @@ services:
       POSTGRES_PASSWORD: ${WORKER_POSTGRES_PASSWORD}
     ports:
       - ${WORKER_POSTGRES_EXPOSED_PORT}:5432
+
+  httpbin:
+    image: kennethreitz/httpbin
+    container_name: httpbin
+    ports:
+      - ${WORKER_HTTPBIN_EXPOSED_PORT}:80
