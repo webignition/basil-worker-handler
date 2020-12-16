@@ -60,10 +60,12 @@ class CompileExecuteTest extends AbstractEndToEndTest
 
     public function createAddSourcesCompileExecuteDataProvider(): array
     {
+        $callbackUrl = ($_ENV['CALLBACK_BASE_URL'] ?? '') . '/status/200';
+
         return [
             'default' => [
                 'jobSetup' => (new JobSetup())
-                    ->withCallbackUrl('http://200.example.com/callback/1')
+                    ->withCallbackUrl($callbackUrl)
                     ->withManifestPath(getcwd() . '/tests/Fixtures/Manifest/manifest.txt'),
                 'expectedSourcePaths' => [
                     'Test/chrome-open-index.yml',
@@ -82,7 +84,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
             ],
             'verify job is timed out' => [
                 'jobSetup' => (new JobSetup())
-                    ->withCallbackUrl('http://200.example.com/callback/1')
+                    ->withCallbackUrl($callbackUrl)
                     ->withManifestPath(getcwd() . '/tests/Fixtures/Manifest/manifest.txt')
                     ->withMaximumDurationInSeconds(1),
                 'expectedSourcePaths' => [

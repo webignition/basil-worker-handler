@@ -112,6 +112,11 @@ services:
     App\Tests\Services\CallbackHttpErrorEventSubscriber:
         public: true
 
+    app.tests.services.guzzle.handler.queuing:
+        public: true
+        class: GuzzleHttp\Handler\MockHandler
+        factory: [ '@App\Tests\Services\Guzzle\HandlerFactory', 'createQueuingMockHandler' ]
+
     GuzzleHttp\HandlerStack:
         factory: [ '@App\Tests\Services\Guzzle\HandlerStackFactory', 'create' ]
         arguments:
