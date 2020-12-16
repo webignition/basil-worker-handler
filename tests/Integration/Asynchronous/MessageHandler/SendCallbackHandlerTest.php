@@ -91,7 +91,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                     ),
                 ]),
                 'callback' => new JobTimeoutCallback(600),
-                'waitUntil' => $this->createWaitUntilCallbackIsComplete(),
+                'waitUntil' => $this->createWaitUntilCallbackIsFinished(),
                 'assertions' => new Invokable(
                     function (CallbackRepository $callbackRepository) {
                         $callbacks = $callbackRepository->findAll();
@@ -112,26 +112,12 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                 'setup' => new InvokableCollection([
                     'create job' => JobSetupInvokableFactory::setup(
                         (new JobSetup())
-                            ->withCallbackUrl('http://500.500.200.example.com/callback/2')
+                            ->withCallbackUrl('http://500.example.com/callback/2')
                     ),
                 ]),
                 'callback' => new JobTimeoutCallback(600),
-                'waitUntil' => $this->createWaitUntilCallbackIsComplete(),
+                'waitUntil' => $this->createWaitUntilCallbackIsFinished(),
                 'assertions' => new InvokableCollection([
-                    'verify callback is complete' => new Invokable(
-                        function (CallbackRepository $callbackRepository) {
-                            $callbacks = $callbackRepository->findAll();
-
-                            /** @var CallbackInterface $callback */
-                            $callback = $callbacks[0];
-                            self::assertInstanceOf(CallbackInterface::class, $callback);
-
-                            self::assertSame(CallbackInterface::STATE_COMPLETE, $callback->getState());
-                        },
-                        [
-                            new ServiceReference(CallbackRepository::class)
-                        ]
-                    ),
                     'verify http transactions' => new Invokable(
                         function (HttpLogReader $httpLogReader) {
                             $httpTransactions = $httpLogReader->getTransactions();
@@ -162,7 +148,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
         ];
     }
 
-    private function createWaitUntilCallbackIsComplete(): InvokableInterface
+    private function createWaitUntilCallbackIsFinished(): InvokableInterface
     {
         return new Invokable(
             function (EntityRefresher $entityRefresher, CallbackRepository $callbackRepository) {
@@ -175,7 +161,10 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                 /** @var CallbackInterface $callback */
                 $callback = $callbacks[0];
 
-                return CallbackInterface::STATE_COMPLETE === $callback->getState();
+                return in_array($callback->getState(), [
+                    CallbackInterface::STATE_COMPLETE,
+                    CallbackInterface::STATE_FAILED,
+                ]);
             },
             [
                 new ServiceReference(EntityRefresher::class),
