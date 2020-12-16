@@ -17,9 +17,6 @@ services:
         class: GuzzleHttp\Handler\MockHandler
         factory: [ '@App\Tests\Services\Guzzle\HandlerFactory', 'createQueuingMockHandler' ]
 
-    app.tests.services.guzzle.handler.status_code_from_hostname:
-        class: App\Tests\Services\Guzzle\Handler\StatusCodeFromHostnameHandler
-
     app.tests.services.guzzle.handler.curl:
         public: true
         class: GuzzleHttp\Handler\MockHandler
