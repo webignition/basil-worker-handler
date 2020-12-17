@@ -119,6 +119,9 @@ jobs:
       - name: Setup container integration environment
         run: composer image-integration-setup
 
+      - name: Run container asychronous tests
+        run: composer test-integration-image
+
 #  integration-again:
 #    name: Integration tests again
 #    runs-on: ubuntu-latest
