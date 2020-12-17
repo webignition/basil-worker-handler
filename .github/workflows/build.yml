@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
   release:
     types:
       - published
@@ -18,29 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup php
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-          extensions: amqp, pgsql
-
-      - name: Get composer cache directory
-        id: composercache
-        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ steps.composercache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-composer-
-
-      - name: Install composer dependencies
-        run: composer install --no-progress --prefer-dist
-
-      - name: Setup integration environment
-        run: composer integration-setup
-
       - name: Set image tag name
         id: image_tag_name
         env:
@@ -48,14 +24,17 @@ jobs:
         run: |
           [[ ! -z "$RELEASE_TAG_NAME" ]] && echo "::set-output name=value::$RELEASE_TAG_NAME" || echo "::set-output name=value::master"
 
-      - name: Set deploy image conditional
-        id: deploy_image
-        if: ${{ (github.event_name == 'release' && github.event.action == 'published') || (github.event_name == 'push' && github.event.ref == 'refs/heads/master') }}
-        run: |
-          echo "::set-output name=deploy::true"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      - name: Build test image
-        if: ${{ steps.deploy_image.outputs.deploy == '' }}
-        env:
-          TAG_NAME: ${{ steps.image_tag_name.outputs.value }}
-        run: ./build/build.sh
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: smartassert/basil-worker-handler:${{ steps.image_tag_name.outputs.value }}
