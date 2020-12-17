@@ -107,6 +107,7 @@
         "test-functional": "./vendor/bin/phpunit --colors=always tests/Functional",
         "test-integration-sync": "./vendor/bin/phpunit -c phpunit.integration_sync.xml",
         "test-integration-async": "./vendor/bin/phpunit -c phpunit.integration_async.xml",
+        "test-integration-image": "./vendor/bin/phpunit -c phpunit.integration_image.xml",
         "test-integration-listen": "php bin/console --env=integration_async messenger:consume async -vv",
         "test": [
             "@test-unit",
@@ -118,6 +119,16 @@
         "integration-destroy": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml down",
         "integration-setup": [
             "@integration-start",
+            "sleep 2",
+            "@db-setup"
+        ],
+        "image-integration-build": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml build",
+        "image-integration-start": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml up -d",
+        "image-integration-status": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml ps",
+        "image-integration-stop": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml stop",
+        "image-integration-destroy": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml down",
+        "image-integration-setup": [
+            "@image-integration-start",
             "sleep 2",
             "@db-setup"
         ],

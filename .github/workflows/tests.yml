@@ -114,3 +114,10 @@ jobs:
         run: |
           php bin/console --env=integration_async messenger:consume async > /dev/null &
           composer test-integration-async
+          php bin/console --env=integration_async messenger:stop
+
+      - name: Setup container integration environment
+        run: composer image-integration-setup
+
+      - name: Run container asychronous tests
+        run: composer test-integration-image

@@ -6,6 +6,7 @@ RUN apt-get -qq update && apt-get -qq -y install  \
   librabbitmq-dev \
   libpq-dev \
   libzip-dev \
+  supervisor \
   zip \
   && docker-php-ext-install \
   pdo_pgsql \
@@ -40,14 +41,25 @@ COPY config/packages/prod /app/config/packages/prod
 COPY config/routes/annotations.yaml /app/config/routes/
 RUN touch /app/.env
 
+RUN echo "Copy supervisor configuration"
+COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
+RUN mkdir -p var/log/supervisor
+
+ENV DOCKERIZE_VERSION v1.2.0
+RUN curl -L --output dockerize.tar.gz \
+        https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
+    && rm dockerize.tar.gz
+
 ARG APP_ENV=prod
 ARG DATABASE_URL=postgresql://database_user:database_password@0.0.0.0:5432/database_name?serverVersion=12&charset=utf8
 ARG COMPILER_HOST=compiler
-ARG COMPILER_PORT=9500
+ARG COMPILER_PORT=8000
 ARG COMPILER_SOURCE_DIRECTORY=/app/source
 ARG COMPILER_TARGET_DIRECTORY=/app/tests
 ARG DELEGATOR_HOST=delegator
-ARG DELEGATOR_PORT=9501
+ARG DELEGATOR_PORT=8000
 ARG MESSENGER_TRANSPORT_DSN=amqp://rabbitmq_user:rabbitmq_password@rabbitmq_host:5672/%2f/messages
 ARG CALLBACK_RETRY_LIMIT=3
 ARG JOB_TIMEOUT_CHECK_PERIOD=30
@@ -66,3 +78,5 @@ ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
 
 RUN echo "Clearing app cache"
 RUN php bin/console cache:clear --env=prod
+
+CMD dockerize -wait tcp://rabbitmq:5672 -timeout 30s -wait tcp://postgres:5432 -timeout 30s supervisord -c /etc/supervisor/supervisord.conf

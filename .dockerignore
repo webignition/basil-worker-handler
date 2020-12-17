@@ -1,0 +1,5 @@
+.github
+build/build.sh
+tests
+var
+vendor
