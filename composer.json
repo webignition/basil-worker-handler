@@ -131,8 +131,8 @@
         "image-integration-stop": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml stop",
         "image-integration-destroy": "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml down",
         "image-integration-db-setup": [
-            "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml exec app php bin/console doctrine:database:create",
-            "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml exec app php bin/console doctrine:migrations:migrate --no-interaction"
+            "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml exec -T app php bin/console doctrine:database:create",
+            "docker-compose --env-file tests/docker/.env -f tests/docker/services-compose.yml -f tests/docker/self-compose.yml exec -T app php bin/console doctrine:migrations:migrate --no-interaction"
         ],
         "image-integration-setup": [
             "@image-integration-start",
