@@ -39,6 +39,7 @@ COPY config/services.yaml /app/config/
 COPY config/packages/*.yaml /app/config/packages/
 COPY config/packages/prod /app/config/packages/prod
 COPY config/routes/annotations.yaml /app/config/routes/
+COPY migrations /app/migrations
 RUN touch /app/.env
 
 RUN echo "Copy supervisor configuration"
