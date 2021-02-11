@@ -19,11 +19,6 @@ class SourcePathTranslator
         $this->compilerTargetDirectoryLength = strlen($compilerTargetDirectory);
     }
 
-    public function translateJobSourceToTestSource(string $jobSource): string
-    {
-        return $this->compilerSourceDirectory . '/' . $jobSource;
-    }
-
     /**
      * @param string[] $paths
      *
