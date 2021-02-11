@@ -6,17 +6,18 @@ namespace App\Services;
 
 use App\Model\Document\Test;
 use Symfony\Component\Yaml\Dumper;
+use webignition\StringPrefixRemover\DefinedStringPrefixRemover;
 use webignition\YamlDocument\Document;
 
 class TestDocumentMutator
 {
-    private SourcePathTranslator $sourcePathTranslator;
     private Dumper $yamlDumper;
+    private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover;
 
-    public function __construct(SourcePathTranslator $sourcePathTranslator, Dumper $yamlDumper)
+    public function __construct(Dumper $yamlDumper, DefinedStringPrefixRemover $compilerSourcePathPrefixRemover)
     {
-        $this->sourcePathTranslator = $sourcePathTranslator;
         $this->yamlDumper = $yamlDumper;
+        $this->compilerSourcePathPrefixRemover = $compilerSourcePathPrefixRemover;
     }
 
     public function removeCompilerSourceDirectoryFromSource(Document $document): Document
@@ -25,7 +26,11 @@ class TestDocumentMutator
         if ($test->isTest()) {
             $path = $test->getPath();
 
-            $mutatedPath = $this->sourcePathTranslator->stripCompilerSourceDirectory($path);
+            $mutatedPath = $this->compilerSourcePathPrefixRemover->remove($path);
+            if ($mutatedPath !== $path) {
+                $mutatedPath = ltrim($mutatedPath, '/');
+            }
+
             $mutatedTestSource = $this->yamlDumper->dump($test->getMutatedData([
                 Test::KEY_PATH => $mutatedPath,
             ]));

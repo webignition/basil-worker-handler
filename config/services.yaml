@@ -63,11 +63,6 @@ services:
     webignition\YamlDocumentGenerator\YamlGenerator:
         class: webignition\YamlDocumentGenerator\YamlGenerator
 
-    App\Services\SourcePathTranslator:
-        arguments:
-            $compilerSourceDirectory: '%compiler_source_directory%'
-            $compilerTargetDirectory: '%compiler_target_directory%'
-
     Symfony\Component\Yaml\Dumper: ~
 
     App\Services\CallbackSender:
@@ -86,3 +81,16 @@ services:
                 'execute-test': 'App\Message\ExecuteTestMessage'
                 'send-callback': 'App\Message\SendCallbackMessage'
                 'timeout-check': 'App\Message\TimeoutCheckMessage'
+
+    app.services.path-prefix-remover.compiler-source:
+        class: webignition\StringPrefixRemover\DefinedStringPrefixRemover
+        arguments:
+            $prefix: '%compiler_source_directory%/'
+
+    App\Services\SourcePathFinder:
+        arguments:
+            $compilerSourcePathPrefixRemover: '@app.services.path-prefix-remover.compiler-source'
+
+    App\Services\TestDocumentMutator:
+        arguments:
+            $compilerSourcePathPrefixRemover: '@app.services.path-prefix-remover.compiler-source'

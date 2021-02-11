@@ -560,6 +560,9 @@
     "webignition/object-reflector": {
         "version": "0.2"
     },
+    "webignition/string-prefix-remover": {
+        "version": "0.1"
+    },
     "webignition/symfony-messenger-json-message-serializer-bundle": {
         "version": "dev-main"
     },
