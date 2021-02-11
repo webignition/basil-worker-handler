@@ -24,6 +24,7 @@
         "webignition/basil-compiler-models": "^0.14.0",
         "webignition/basil-runner-documents": "^0.2.0",
         "webignition/basil-worker-persistence-bundle": "^0.7.0",
+        "webignition/string-prefix-remover": ">=0.1,<1",
         "webignition/symfony-messenger-json-message-serializer-bundle": "^0.1.0",
         "webignition/tcp-cli-proxy-client": "^0.11.0",
         "webignition/yaml-document": "^0.1.0",
