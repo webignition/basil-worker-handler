@@ -86,3 +86,12 @@ services:
                 'execute-test': 'App\Message\ExecuteTestMessage'
                 'send-callback': 'App\Message\SendCallbackMessage'
                 'timeout-check': 'App\Message\TimeoutCheckMessage'
+
+    app.services.path-prefix-remover.compiler-source:
+        class: webignition\StringPrefixRemover\DefinedStringPrefixRemover
+        arguments:
+            $prefix: '%compiler_source_directory%/'
+
+    App\Services\SourcePathFinder:
+        arguments:
+            $compilerSourcePathPrefixRemover: '@app.services.path-prefix-remover.compiler-source'

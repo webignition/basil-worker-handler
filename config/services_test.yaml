@@ -29,6 +29,8 @@ services:
 
     App\Services\SourcePathFinder:
         public: true
+        arguments:
+            $compilerSourcePathPrefixRemover: '@app.services.path-prefix-remover.compiler-source'
 
     App\Services\CompilationWorkflowHandler:
         public: true

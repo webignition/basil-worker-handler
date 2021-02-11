@@ -6,21 +6,22 @@ namespace App\Services;
 
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\SourceStore;
+use webignition\StringPrefixRemover\DefinedStringPrefixRemover;
 
 class SourcePathFinder
 {
     private TestRepository $testRepository;
     private SourceStore $sourceStore;
-    private SourcePathTranslator $sourcePathTranslator;
+    private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover;
 
     public function __construct(
         TestRepository $testRepository,
         SourceStore $sourceStore,
-        SourcePathTranslator $sourcePathTranslator
+        DefinedStringPrefixRemover $compilerSourcePathPrefixRemover
     ) {
         $this->testRepository = $testRepository;
         $this->sourceStore = $sourceStore;
-        $this->sourcePathTranslator = $sourcePathTranslator;
+        $this->compilerSourcePathPrefixRemover = $compilerSourcePathPrefixRemover;
     }
 
     /**
@@ -29,14 +30,15 @@ class SourcePathFinder
     public function findCompiledPaths(): array
     {
         $sources = $this->testRepository->findAllSources();
-        return $this->sourcePathTranslator->stripCompilerSourceDirectoryFromPaths($sources);
+
+        return $this->removeCompilerSourceDirectoryPrefixFromPaths($sources);
     }
 
     public function findNextNonCompiledPath(): ?string
     {
         $sourcePaths = $this->sourceStore->findAllPaths();
         $testPaths = $this->testRepository->findAllSources();
-        $testPaths = $this->sourcePathTranslator->stripCompilerSourceDirectoryFromPaths($testPaths);
+        $testPaths = $this->removeCompilerSourceDirectoryPrefixFromPaths($testPaths);
 
         foreach ($sourcePaths as $sourcePath) {
             if (!in_array($sourcePath, $testPaths)) {
@@ -45,5 +47,23 @@ class SourcePathFinder
         }
 
         return null;
+    }
+
+    /**
+     * @param string[] $paths
+     *
+     * @return string[]
+     */
+    private function removeCompilerSourceDirectoryPrefixFromPaths(array $paths): array
+    {
+        $strippedPaths = [];
+
+        foreach ($paths as $path) {
+            if (is_string($path)) {
+                $strippedPaths[] = $this->compilerSourcePathPrefixRemover->remove($path);
+            }
+        }
+
+        return $strippedPaths;
     }
 }
