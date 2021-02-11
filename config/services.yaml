@@ -63,11 +63,6 @@ services:
     webignition\YamlDocumentGenerator\YamlGenerator:
         class: webignition\YamlDocumentGenerator\YamlGenerator
 
-    App\Services\SourcePathTranslator:
-        arguments:
-            $compilerSourceDirectory: '%compiler_source_directory%'
-            $compilerTargetDirectory: '%compiler_target_directory%'
-
     Symfony\Component\Yaml\Dumper: ~
 
     App\Services\CallbackSender:
