@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Synchronous\EndToEnd;
 
-use App\Services\ApplicationState;
-use App\Services\CompilationState;
-use App\Services\ExecutionState;
 use App\Tests\Integration\AbstractEndToEndTest;
 use App\Tests\Model\EndToEndJob\Invokable;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -20,6 +17,9 @@ use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
+use webignition\BasilWorker\StateBundle\Services\ApplicationState;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 use webignition\HttpHistoryContainer\Collection\HttpTransactionCollection;
 use webignition\HttpHistoryContainer\Transaction\HttpTransaction;
 use webignition\HttpHistoryContainer\Transaction\HttpTransactionInterface;

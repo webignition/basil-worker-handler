@@ -6,7 +6,6 @@ namespace App\MessageHandler;
 
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
-use App\Services\ExecutionState;
 use App\Services\TestExecutor;
 use App\Services\TestStateMutator;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -15,6 +14,7 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\EntityPersister;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ExecuteTestHandler implements MessageHandlerInterface
 {
@@ -50,7 +50,7 @@ class ExecuteTestHandler implements MessageHandlerInterface
             return;
         }
 
-        if ($this->executionState->is(...ExecutionState::FINISHED_STATES)) {
+        if (in_array($this->executionState->get(), ExecutionState::FINISHED_STATES)) {
             return;
         }
 

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Asynchronous\EndToEnd;
 
-use App\Services\ApplicationState;
-use App\Services\CompilationState;
-use App\Services\ExecutionState;
 use App\Tests\Integration\AbstractEndToEndTest;
 use App\Tests\Model\EndToEndJob\Invokable;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -19,6 +16,9 @@ use Psr\Http\Message\RequestInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
+use webignition\BasilWorker\StateBundle\Services\ApplicationState;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
 class CompileExecuteTest extends AbstractEndToEndTest

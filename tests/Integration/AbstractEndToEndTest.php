@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\Integration;
 
 use App\Message\JobReadyMessage;
-use App\Services\ApplicationState;
-use App\Services\CompilationState;
-use App\Services\ExecutionState;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Services\InvokableFactory\ApplicationStateAsserter;
 use App\Tests\Services\InvokableFactory\CompilationStateAsserter;
@@ -21,6 +18,9 @@ use App\Tests\Services\InvokableFactory\WaitUntilApplicationStateIs;
 use App\Tests\Services\InvokableHandler;
 use SebastianBergmann\Timer\Timer;
 use Symfony\Component\Messenger\MessageBusInterface;
+use webignition\BasilWorker\StateBundle\Services\ApplicationState;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
 abstract class AbstractEndToEndTest extends AbstractBaseIntegrationTest

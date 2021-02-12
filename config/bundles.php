@@ -9,4 +9,5 @@ return [
     DAMA\DoctrineTestBundle\DAMADoctrineTestBundle::class => ['test' => true],
     webignition\BasilWorker\PersistenceBundle\PersistenceBundle::class => ['all' => true],
     webignition\JsonMessageSerializerBundle\JsonMessageSerializerBundle::class => ['all' => true],
+    webignition\BasilWorker\StateBundle\StateBundle::class => ['all' => true],
 ];
