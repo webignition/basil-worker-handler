@@ -6,7 +6,6 @@ namespace App\Tests\Unit\MessageHandler;
 
 use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
-use App\Services\ExecutionState;
 use App\Services\TestStateMutator;
 use App\Tests\Mock\Entity\MockJob;
 use App\Tests\Mock\Entity\MockTest;
@@ -21,6 +20,7 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\EntityPersister;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ExecuteTestHandlerTest extends TestCase
 {
@@ -76,7 +76,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withIsCall(ExecutionState::FINISHED_STATES, true)
+                    ->withGetCall(ExecutionState::STATE_COMPLETE)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
@@ -89,7 +89,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withIsCall(ExecutionState::FINISHED_STATES, false)
+                    ->withGetCall(ExecutionState::STATE_AWAITING)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
@@ -102,7 +102,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withIsCall(ExecutionState::FINISHED_STATES, false)
+                    ->withGetCall(ExecutionState::STATE_AWAITING)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())

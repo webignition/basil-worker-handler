@@ -11,6 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ExecutionWorkflowHandler implements EventSubscriberInterface
 {
@@ -54,11 +56,11 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
 
     public function dispatchNextExecuteTestMessage(): void
     {
-        if (false === $this->compilationState->is(...CompilationState::FINISHED_STATES)) {
+        if (false === in_array($this->compilationState->get(), CompilationState::FINISHED_STATES)) {
             return;
         }
 
-        if ($this->executionState->is(...ExecutionState::FINISHED_STATES)) {
+        if (in_array($this->executionState->get(), ExecutionState::FINISHED_STATES)) {
             return;
         }
 

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Services\InvokableFactory;
 
-use App\Services\ApplicationState;
 use App\Tests\Model\EndToEndJob\Invokable;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Model\EndToEndJob\ServiceReference;
@@ -12,6 +11,7 @@ use App\Tests\Services\EntityRefresher;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Job;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
+use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 
 class WaitUntilApplicationStateIs
 {
@@ -35,7 +35,7 @@ class WaitUntilApplicationStateIs
                 $intervalInMicroseconds = 100000;
 
                 while (
-                    false === $applicationState->is(...$expectedEndStates) &&
+                    false === in_array($applicationState->get(), $expectedEndStates) &&
                     false === $maxDurationReached
                 ) {
                     usleep($intervalInMicroseconds);

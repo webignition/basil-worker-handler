@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Mock\Services;
 
-use App\Services\ExecutionState;
 use Mockery\MockInterface;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class MockExecutionState
 {
@@ -25,17 +25,15 @@ class MockExecutionState
     }
 
     /**
-     * @param array<ExecutionState::STATE_*> $states
-     * @param bool $is
+     * @param ExecutionState::STATE_* $state
      *
      * @return $this
      */
-    public function withIsCall(array $states, bool $is): self
+    public function withGetCall(string $state): self
     {
         $this->executionState
-            ->shouldReceive('is')
-            ->with(...$states)
-            ->andReturn($is);
+            ->shouldReceive('get')
+            ->andReturn($state);
 
         return $this;
     }

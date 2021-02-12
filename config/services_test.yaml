@@ -79,18 +79,6 @@ services:
     App\Services\SourceCompileEventFactory:
         public: true
 
-    App\Services\CompilationState:
-        public: true
-
-    App\Services\ExecutionState:
-        public: true
-
-    App\Services\CallbackState:
-        public: true
-
-    App\Services\ApplicationState:
-        public: true
-
     App\Services\SourceFactory:
         public: true
 

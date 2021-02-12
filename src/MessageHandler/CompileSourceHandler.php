@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Message\CompileSourceMessage;
-use App\Services\CompilationState;
 use App\Services\Compiler;
 use App\Services\SourceCompileEventDispatcher;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
 
 class CompileSourceHandler implements MessageHandlerInterface
 {
@@ -36,7 +36,7 @@ class CompileSourceHandler implements MessageHandlerInterface
             return;
         }
 
-        if (false === $this->compilationState->is(CompilationState::STATE_RUNNING)) {
+        if (false === in_array($this->compilationState->get(), [CompilationState::STATE_RUNNING])) {
             return;
         }
 
