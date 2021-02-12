@@ -6,12 +6,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    App\Services\TestConfigurationStore:
-        public: true
-
-    App\Services\TestStore:
-        public: true
-
     App\Services\Compiler:
         public: true
         arguments:
@@ -61,15 +55,6 @@ services:
     App\Services\TestCanceller:
         public: true
 
-    App\Services\CallbackStore:
-        public: true
-
-    App\Services\CallbackStateMutator:
-        public: true
-
-    App\Repository\CallbackRepository:
-        public: true
-
     App\Services\CallbackFactory:
         public: true
 
@@ -77,9 +62,6 @@ services:
         public: true
 
     App\Services\SourceCompileEventFactory:
-        public: true
-
-    App\Services\SourceFactory:
         public: true
 
     App\MessageHandler\TimeoutCheckHandler:
