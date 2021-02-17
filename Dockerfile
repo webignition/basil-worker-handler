@@ -30,14 +30,11 @@ RUN apt-get -qq update \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && composer check-platform-reqs --ansi \
   && composer install --no-dev --no-scripts \
-  && rm composer.lock
-
-RUN echo "Copying source"
-RUN chmod +x /app/bin/console
-RUN touch /app/.env
-
-RUN echo "Copy supervisor configuration"
-RUN mkdir -p var/log/supervisor
+  && rm composer.lock \
+  && rm /usr/bin/composer \
+  && chmod +x /app/bin/console \
+  && touch /app/.env \
+  && mkdir -p var/log/supervisor
 
 ENV DOCKERIZE_VERSION v1.2.0
 RUN curl -L --output dockerize.tar.gz \
@@ -69,8 +66,8 @@ ENV MESSENGER_TRANSPORT_DSN=$MESSENGER_TRANSPORT_DSN
 ENV CALLBACK_RETRY_LIMIT=$CALLBACK_RETRY_LIMIT
 ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
 
-RUN echo "Clearing app cache"
-RUN php bin/console cache:clear --env=prod
+RUN php bin/console cache:clear --env=prod \
+    && rm composer.json
 
 COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
