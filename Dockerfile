@@ -16,9 +16,7 @@ RUN apt-get -qq update && apt-get -qq -y install  \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN echo "Install composer"
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer --version
+COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN echo "Checking platform requirements"
 COPY composer.json /app
