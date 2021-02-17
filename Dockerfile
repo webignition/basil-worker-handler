@@ -26,6 +26,7 @@ RUN apt-get -qq update \
   && pecl install amqp \
   && docker-php-ext-enable amqp \
   && apt-get autoremove -y \
+  && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "Checking platform requirements"
