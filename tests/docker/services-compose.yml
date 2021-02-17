@@ -2,7 +2,7 @@ version: "3"
 
 services:
   compiler:
-    image: smartassert/basil-compiler:0.25
+    image: smartassert/basil-compiler:0.26
     container_name: ${WORKER_COMPILER_CONTAINER_NAME}
     volumes:
       - ${WORKER_COMPILER_LOCAL_SOURCE_PATH}:${WORKER_COMPILER_SOURCE_PATH}
