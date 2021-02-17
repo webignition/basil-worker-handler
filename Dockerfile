@@ -13,35 +13,6 @@ COPY config/packages/prod /app/config/packages/prod
 COPY config/routes/annotations.yaml /app/config/routes/
 COPY migrations /app/migrations
 
-RUN apt-get -qq update \
-  && apt-get -qq -y install  \
-    librabbitmq-dev \
-    libpq-dev \
-    libzip-dev \
-    supervisor \
-    zip \
-  && docker-php-ext-install \
-    pdo_pgsql \
-    zip \
-  && pecl install amqp \
-  && docker-php-ext-enable amqp \
-  && apt-get autoremove -y \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && composer check-platform-reqs --ansi \
-  && composer install --no-dev --no-scripts \
-  && rm composer.lock \
-  && rm /usr/bin/composer \
-  && chmod +x /app/bin/console \
-  && touch /app/.env \
-  && mkdir -p var/log/supervisor
-
-ENV DOCKERIZE_VERSION v1.2.0
-RUN curl -L --output dockerize.tar.gz \
-        https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
-    && rm dockerize.tar.gz
-
 ARG APP_ENV=prod
 ARG DATABASE_URL=postgresql://database_user:database_password@0.0.0.0:5432/database_name?serverVersion=12&charset=utf8
 ARG COMPILER_HOST=compiler
@@ -65,9 +36,36 @@ ENV DELEGATOR_PORT=$DELEGATOR_PORT
 ENV MESSENGER_TRANSPORT_DSN=$MESSENGER_TRANSPORT_DSN
 ENV CALLBACK_RETRY_LIMIT=$CALLBACK_RETRY_LIMIT
 ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
+ENV DOCKERIZE_VERSION v1.2.0
 
-RUN php bin/console cache:clear --env=prod \
-    && rm composer.json
+RUN apt-get -qq update \
+  && apt-get -qq -y install  \
+    librabbitmq-dev \
+    libpq-dev \
+    libzip-dev \
+    supervisor \
+    zip \
+  && docker-php-ext-install \
+    pdo_pgsql \
+    zip \
+  && pecl install amqp \
+  && docker-php-ext-enable amqp \
+  && apt-get autoremove -y \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && composer check-platform-reqs --ansi \
+  && composer install --no-dev --no-scripts \
+  && rm composer.lock \
+  && rm /usr/bin/composer \
+  && chmod +x /app/bin/console \
+  && touch /app/.env \
+  && mkdir -p var/log/supervisor \
+  && curl -L --output dockerize.tar.gz \
+        https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
+  && rm dockerize.tar.gz \
+  && php bin/console cache:clear --env=prod \
+  && rm composer.json
 
 COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
