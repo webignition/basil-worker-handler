@@ -2,6 +2,17 @@ FROM php:7.4-cli-buster
 
 WORKDIR /app
 
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock /app/
+COPY bin/console /app/bin/console
+COPY public/index.php public/
+COPY src /app/src
+COPY config/bundles.php config/services.yaml /app/config/
+COPY config/packages/*.yaml /app/config/packages/
+COPY config/packages/prod /app/config/packages/prod
+COPY config/routes/annotations.yaml /app/config/routes/
+COPY migrations /app/migrations
+
 RUN apt-get -qq update && apt-get -qq -y install  \
   librabbitmq-dev \
   libpq-dev \
@@ -16,11 +27,10 @@ RUN apt-get -qq update && apt-get -qq -y install  \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN echo "Checking platform requirements"
-COPY composer.json /app
-COPY composer.lock /app
 RUN composer check-platform-reqs --ansi
 
 RUN echo "Installing dependencies"
@@ -28,21 +38,10 @@ RUN composer install --no-dev --no-scripts
 RUN rm composer.lock
 
 RUN echo "Copying source"
-COPY bin/console /app/bin/console
 RUN chmod +x /app/bin/console
-COPY public/index.php public/
-COPY src /app/src
-COPY config/bundles.php /app/config/
-COPY config/services.yaml /app/config/
-COPY config/packages/*.yaml /app/config/packages/
-COPY config/packages/prod /app/config/packages/prod
-COPY config/routes/annotations.yaml /app/config/routes/
-COPY migrations /app/migrations
 RUN touch /app/.env
 
 RUN echo "Copy supervisor configuration"
-COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir -p var/log/supervisor
 
 ENV DOCKERIZE_VERSION v1.2.0
