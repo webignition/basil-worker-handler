@@ -2,7 +2,7 @@ version: "3"
 
 services:
   compiler:
-    image: smartassert/basil-compiler:0.25
+    image: smartassert/basil-compiler:0.26
     container_name: ${WORKER_COMPILER_CONTAINER_NAME}
     volumes:
       - ${WORKER_COMPILER_LOCAL_SOURCE_PATH}:${WORKER_COMPILER_SOURCE_PATH}
@@ -17,7 +17,7 @@ services:
       - ${WORKER_NGINX_HTML_SOURCE_PATH}:/usr/share/nginx/html
 
   chrome-runner:
-    image: smartassert/chrome-runner:0.14
+    image: smartassert/chrome-runner:0.15
     container_name: ${WORKER_CHROME_RUNNER_CONTAINER_NAME}
     volumes:
       - ${WORKER_COMPILER_LOCAL_TARGET_PATH}:/app/tests
@@ -25,7 +25,7 @@ services:
       - nginx-html
 
   firefox-runner:
-    image: smartassert/firefox-runner:0.14
+    image: smartassert/firefox-runner:0.15
     container_name: ${WORKER_FIREFOX_RUNNER_CONTAINER_NAME}
     volumes:
       - ${WORKER_COMPILER_LOCAL_TARGET_PATH}:/app/tests
