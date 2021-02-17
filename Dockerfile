@@ -28,10 +28,10 @@ RUN apt-get -qq update \
   && apt-get autoremove -y \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && composer check-platform-reqs --ansi
+  && composer check-platform-reqs --ansi \
+  && composer install --no-dev --no-scripts
 
 RUN echo "Installing dependencies"
-RUN composer install --no-dev --no-scripts
 RUN rm composer.lock
 
 RUN echo "Copying source"
