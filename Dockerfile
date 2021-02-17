@@ -29,10 +29,8 @@ RUN apt-get -qq update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
   && composer check-platform-reqs --ansi \
-  && composer install --no-dev --no-scripts
-
-RUN echo "Installing dependencies"
-RUN rm composer.lock
+  && composer install --no-dev --no-scripts \
+  && rm composer.lock
 
 RUN echo "Copying source"
 RUN chmod +x /app/bin/console
