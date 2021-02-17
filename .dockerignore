@@ -1,5 +1,16 @@
-.github
-build/build.sh
-tests
-var
-vendor
+# Ignore everything
+**
+
+# Allow source
+!/bin/console
+!/build/supervisor
+!/composer.json
+!/composer.lock
+!/config/bundles.php
+!/config/packages/*.yaml
+!/config/packages/prod/**
+!/config/routes/annotations.yaml
+!/config/services.yaml
+!/migrations
+!/public/index.php
+!/src
