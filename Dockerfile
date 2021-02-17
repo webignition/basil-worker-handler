@@ -13,22 +13,20 @@ COPY config/packages/prod /app/config/packages/prod
 COPY config/routes/annotations.yaml /app/config/routes/
 COPY migrations /app/migrations
 
-RUN apt-get -qq update && apt-get -qq -y install  \
-  librabbitmq-dev \
-  libpq-dev \
-  libzip-dev \
-  supervisor \
-  zip \
+RUN apt-get -qq update \
+  && apt-get -qq -y install  \
+    librabbitmq-dev \
+    libpq-dev \
+    libzip-dev \
+    supervisor \
+    zip \
   && docker-php-ext-install \
-  pdo_pgsql \
-  zip \
+    pdo_pgsql \
+    zip \
   && pecl install amqp \
   && docker-php-ext-enable amqp \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN echo "Checking platform requirements"
 RUN composer check-platform-reqs --ansi
@@ -76,5 +74,8 @@ ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
 
 RUN echo "Clearing app cache"
 RUN php bin/console cache:clear --env=prod
+
+COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
 
 CMD dockerize -wait tcp://rabbitmq:5672 -timeout 30s -wait tcp://postgres:5432 -timeout 30s supervisord -c /etc/supervisor/supervisord.conf
