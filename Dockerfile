@@ -64,8 +64,7 @@ RUN apt-get -qq update \
         https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
   && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
   && rm dockerize.tar.gz \
-  && php bin/console cache:clear --env=prod \
-  && rm composer.json
+  && php bin/console cache:clear --env=prod
 
 COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
