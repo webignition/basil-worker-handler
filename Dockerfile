@@ -27,10 +27,8 @@ RUN apt-get -qq update \
   && docker-php-ext-enable amqp \
   && apt-get autoremove -y \
   && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN echo "Checking platform requirements"
-RUN composer check-platform-reqs --ansi
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && composer check-platform-reqs --ansi
 
 RUN echo "Installing dependencies"
 RUN composer install --no-dev --no-scripts
