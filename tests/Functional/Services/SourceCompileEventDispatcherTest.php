@@ -34,7 +34,7 @@ class SourceCompileEventDispatcherTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testDispatchEventNotDispatched()
+    public function testDispatchEventNotDispatched(): void
     {
         $source = 'Test/test1.yml';
         $output = \Mockery::mock(OutputInterface::class);
@@ -57,7 +57,7 @@ class SourceCompileEventDispatcherTest extends AbstractBaseFunctionalTest
         string $source,
         OutputInterface $output,
         ExpectedDispatchedEvent $expectedDispatchedEvent
-    ) {
+    ): void {
         $eventDispatcher = (new MockEventDispatcher())
             ->withDispatchCalls(new ExpectedDispatchedEventCollection([
                 $expectedDispatchedEvent,
@@ -69,6 +69,9 @@ class SourceCompileEventDispatcherTest extends AbstractBaseFunctionalTest
         $this->dispatcher->dispatch($source, $output);
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchEventDispatchedDataProvider(): array
     {
         $compileFailureErrorOutput = \Mockery::mock(ErrorOutputInterface::class);

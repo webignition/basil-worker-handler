@@ -43,7 +43,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider dispatchNextCompileSourceMessageNoMessageDispatchedDataProvider
      */
-    public function testDispatchNextCompileSourceMessageNoMessageDispatched(InvokableInterface $setup)
+    public function testDispatchNextCompileSourceMessageNoMessageDispatched(InvokableInterface $setup): void
     {
         $this->invokableHandler->invoke($setup);
 
@@ -52,6 +52,9 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueIsEmpty();
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchNextCompileSourceMessageNoMessageDispatchedDataProvider(): array
     {
         return [
@@ -76,7 +79,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     public function testDispatchNextCompileSourceMessageMessageDispatched(
         InvokableInterface $setup,
         CompileSourceMessage $expectedQueuedMessage
-    ) {
+    ): void {
         $this->invokableHandler->invoke($setup);
 
         $this->handler->dispatchNextCompileSourceMessage();
@@ -85,6 +88,9 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertMessageAtPositionEquals(0, $expectedQueuedMessage);
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchNextCompileSourceMessageMessageDispatchedDataProvider(): array
     {
         return [
@@ -123,7 +129,7 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
      *
      * @param object[] $expectedQueuedMessages
      */
-    public function testSubscribesToEvents(Event $event, array $expectedQueuedMessages)
+    public function testSubscribesToEvents(Event $event, array $expectedQueuedMessages): void
     {
         $this->invokableHandler->invoke(new InvokableCollection([
             'create job' => JobSetupInvokableFactory::setup(),
@@ -145,6 +151,9 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function subscribesToEventsDataProvider(): array
     {
         return [

@@ -38,7 +38,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
     }
 
-    public function testDispatchNextExecuteTestMessageNoMessageDispatched()
+    public function testDispatchNextExecuteTestMessageNoMessageDispatched(): void
     {
         $this->handler->dispatchNextExecuteTestMessage();
         $this->messengerAsserter->assertQueueIsEmpty();
@@ -50,7 +50,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     public function testDispatchNextExecuteTestMessageMessageDispatched(
         InvokableInterface $setup,
         int $expectedNextTestIndex
-    ) {
+    ): void {
         $this->doSourceCompileSuccessEventDrivenTest(
             $setup,
             function () {
@@ -60,6 +60,9 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchNextExecuteTestMessageMessageDispatchedDataProvider(): array
     {
         return [
@@ -106,7 +109,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToSourceCompileSuccessEvent()
+    public function testSubscribesToSourceCompileSuccessEvent(): void
     {
         $this->doSourceCompileSuccessEventDrivenTest(
             new InvokableCollection([
@@ -161,7 +164,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         int $eventTestIndex,
         int $expectedQueuedMessageCount,
         ?int $expectedNextTestIndex
-    ) {
+    ): void {
         $this->doTestExecuteCompleteEventDrivenTest(
             $setup,
             $eventTestIndex,
@@ -173,6 +176,9 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchNextExecuteTestMessageFromTestExecuteCompleteEventDataProvider(): array
     {
         return [
@@ -233,7 +239,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent()
+    public function testSubscribesToTestExecuteCompleteEvent(): void
     {
         $this->doTestExecuteCompleteEventDrivenTest(
             new InvokableCollection([

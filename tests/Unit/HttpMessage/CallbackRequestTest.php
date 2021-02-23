@@ -12,7 +12,7 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class CallbackRequestTest extends TestCase
 {
-    public function testCreate()
+    public function testCreate(): void
     {
         $jobCallbackUrl = 'http://example.com/callback';
         $jobLabel = 'label content';

@@ -26,7 +26,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testCreateForCompileFailure()
+    public function testCreateForCompileFailure(): void
     {
         $errorOutputData = [
             'key1' => 'value1',
@@ -47,7 +47,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
         self::assertSame($errorOutputData, $callback->getPayload());
     }
 
-    public function testCreateForExecuteDocumentReceived()
+    public function testCreateForExecuteDocumentReceived(): void
     {
         $documentData = [
             'key1' => 'value1',

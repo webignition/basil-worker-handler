@@ -20,17 +20,17 @@ class CompileSourceMessageTest extends TestCase
         $this->message = new CompileSourceMessage(self::PATH);
     }
 
-    public function testGetPath()
+    public function testGetPath(): void
     {
         self::assertSame(self::PATH, $this->message->getPath());
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         self::assertSame(CompileSourceMessage::TYPE, $this->message->getType());
     }
 
-    public function testGetPayload()
+    public function testGetPayload(): void
     {
         self::assertSame(
             [
@@ -40,7 +40,7 @@ class CompileSourceMessageTest extends TestCase
         );
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         self::assertSame(
             [

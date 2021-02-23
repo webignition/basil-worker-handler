@@ -30,7 +30,7 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
     }
 
 
-    public function testDispatch()
+    public function testDispatch(): void
     {
         $this->messengerAsserter->assertQueueIsEmpty();
 
@@ -43,7 +43,7 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider subscribesToEventDataProvider
      */
-    public function testSubscribesToEvent(Event $event, TimeoutCheckMessage $expectedQueuedMessage)
+    public function testSubscribesToEvent(Event $event, TimeoutCheckMessage $expectedQueuedMessage): void
     {
         $this->messengerAsserter->assertQueueIsEmpty();
 
@@ -56,6 +56,9 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function subscribesToEventDataProvider(): array
     {
         return [

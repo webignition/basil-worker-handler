@@ -34,7 +34,7 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testInvokeNoJob()
+    public function testInvokeNoJob(): void
     {
         $eventDispatcher = (new MockEventDispatcher())
             ->withoutDispatchCall()
@@ -49,7 +49,7 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueCount(0);
     }
 
-    public function testInvokeJobMaximumDurationNotReached()
+    public function testInvokeJobMaximumDurationNotReached(): void
     {
         $eventDispatcher = (new MockEventDispatcher())
             ->withoutDispatchCall()
@@ -80,7 +80,7 @@ class TimeoutCheckHandlerTest extends AbstractBaseFunctionalTest
         );
     }
 
-    public function testInvokeJobMaximumDurationReached()
+    public function testInvokeJobMaximumDurationReached(): void
     {
         $jobMaximumDuration = 123;
 

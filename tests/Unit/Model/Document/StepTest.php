@@ -13,11 +13,14 @@ class StepTest extends TestCase
     /**
      * @dataProvider isStepDataProvider
      */
-    public function testIsStep(Step $step, bool $expectedIsStep)
+    public function testIsStep(Step $step, bool $expectedIsStep): void
     {
         self::assertSame($expectedIsStep, $step->isStep());
     }
 
+    /**
+     * @return array[]
+     */
     public function isStepDataProvider(): array
     {
         return [
@@ -51,11 +54,14 @@ class StepTest extends TestCase
     /**
      * @dataProvider statusIsPassedDataProvider
      */
-    public function testStatusIsPassed(Step $step, bool $expectedIsPassed)
+    public function testStatusIsPassed(Step $step, bool $expectedIsPassed): void
     {
         self::assertSame($expectedIsPassed, $step->statusIsPassed());
     }
 
+    /**
+     * @return array[]
+     */
     public function statusIsPassedDataProvider(): array
     {
         return [
@@ -89,11 +95,14 @@ class StepTest extends TestCase
     /**
      * @dataProvider statusIsFailedDataProvider
      */
-    public function testStatusIsFailed(Step $step, bool $expectedIsFailed)
+    public function testStatusIsFailed(Step $step, bool $expectedIsFailed): void
     {
         self::assertSame($expectedIsFailed, $step->statusIsFailed());
     }
 
+    /**
+     * @return array[]
+     */
     public function statusIsFailedDataProvider(): array
     {
         return [

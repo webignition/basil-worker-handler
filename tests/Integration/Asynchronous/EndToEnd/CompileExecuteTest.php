@@ -34,7 +34,6 @@ class CompileExecuteTest extends AbstractEndToEndTest
     /**
      * @dataProvider createAddSourcesCompileExecuteDataProvider
      *
-     * @param JobSetup $jobSetup
      * @param string[] $expectedSourcePaths
      * @param CompilationState::STATE_* $expectedCompilationEndState
      * @param ExecutionState::STATE_* $expectedExecutionEndState
@@ -47,7 +46,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
         string $expectedExecutionEndState,
         string $expectedApplicationEndState,
         InvokableInterface $assertions
-    ) {
+    ): void {
         $this->doCreateJobAddSourcesTest(
             $jobSetup,
             $expectedSourcePaths,
@@ -58,6 +57,9 @@ class CompileExecuteTest extends AbstractEndToEndTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function createAddSourcesCompileExecuteDataProvider(): array
     {
         $callbackUrl = ($_ENV['CALLBACK_BASE_URL'] ?? '') . '/status/200';

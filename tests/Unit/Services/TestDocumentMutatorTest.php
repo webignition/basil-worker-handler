@@ -29,13 +29,16 @@ class TestDocumentMutatorTest extends TestCase
     /**
      * @dataProvider removeCompilerSourceDirectoryFromSourceDataProvider
      */
-    public function testRemoveCompilerSourceDirectoryFromSource(Document $document, Document $expectedDocument)
+    public function testRemoveCompilerSourceDirectoryFromSource(Document $document, Document $expectedDocument): void
     {
         $mutatedDocument = $this->mutator->removeCompilerSourceDirectoryFromSource($document);
 
         self::assertEquals($expectedDocument, $mutatedDocument);
     }
 
+    /**
+     * @return \webignition\YamlDocument\Document[][]
+     */
     public function removeCompilerSourceDirectoryFromSourceDataProvider(): array
     {
         $step = new Document('{ type: step }');

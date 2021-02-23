@@ -35,12 +35,14 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider cancelAwaitingDataProvider
      *
-     * @param InvokableInterface $setup
      * @param array<Test::STATE_*> $expectedInitialStates
      * @param array<Test::STATE_*> $expectedStates
      */
-    public function testCancelAwaiting(InvokableInterface $setup, array $expectedInitialStates, array $expectedStates)
-    {
+    public function testCancelAwaiting(
+        InvokableInterface $setup,
+        array $expectedInitialStates,
+        array $expectedStates
+    ): void {
         $this->invokableHandler->invoke($setup);
 
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedInitialStates);
@@ -50,6 +52,9 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedStates);
     }
 
+    /**
+     * @return array[]
+     */
     public function cancelAwaitingDataProvider(): array
     {
         return [
@@ -121,12 +126,14 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider cancelUnfinishedDataProvider
      *
-     * @param InvokableInterface $setup
      * @param array<Test::STATE_*> $expectedInitialStates
      * @param array<Test::STATE_*> $expectedStates
      */
-    public function testCancelUnfinished(InvokableInterface $setup, array $expectedInitialStates, array $expectedStates)
-    {
+    public function testCancelUnfinished(
+        InvokableInterface $setup,
+        array $expectedInitialStates,
+        array $expectedStates
+    ): void {
         $this->invokableHandler->invoke($setup);
 
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedInitialStates);
@@ -136,6 +143,9 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedStates);
     }
 
+    /**
+     * @return array[]
+     */
     public function cancelUnfinishedDataProvider(): array
     {
         return [
@@ -204,7 +214,6 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider cancelAwaitingFromTestFailedEventDataProvider
      *
-     * @param InvokableInterface $setup
      * @param array<Test::STATE_*> $expectedInitialStates
      * @param array<Test::STATE_*> $expectedStates
      */
@@ -212,7 +221,7 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         InvokableInterface $setup,
         array $expectedInitialStates,
         array $expectedStates
-    ) {
+    ): void {
         $this->doTestFailedEventDrivenTest(
             $setup,
             $expectedInitialStates,
@@ -226,7 +235,6 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider cancelAwaitingFromTestFailedEventDataProvider
      *
-     * @param InvokableInterface $setup
      * @param array<Test::STATE_*> $expectedInitialStates
      * @param array<Test::STATE_*> $expectedStates
      */
@@ -234,7 +242,7 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         InvokableInterface $setup,
         array $expectedInitialStates,
         array $expectedStates
-    ) {
+    ): void {
         $this->doTestFailedEventDrivenTest(
             $setup,
             $expectedInitialStates,
@@ -245,6 +253,9 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function cancelAwaitingFromTestFailedEventDataProvider(): array
     {
         return [
@@ -316,7 +327,6 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider subscribesToJobTimeoutEventDataProvider
      *
-     * @param InvokableInterface $setup
      * @param array<Test::STATE_*> $expectedInitialStates
      * @param array<Test::STATE_*> $expectedStates
      */
@@ -324,7 +334,7 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         InvokableInterface $setup,
         array $expectedInitialStates,
         array $expectedStates
-    ) {
+    ): void {
         $tests = $this->invokableHandler->invoke($setup);
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedInitialStates);
 
@@ -337,6 +347,9 @@ class TestCancellerTest extends AbstractBaseFunctionalTest
         self::assertSame($this->invokableHandler->invoke(TestGetterFactory::getStates()), $expectedStates);
     }
 
+    /**
+     * @return array[]
+     */
     public function subscribesToJobTimeoutEventDataProvider(): array
     {
         return [

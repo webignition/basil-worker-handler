@@ -38,7 +38,7 @@ class CallbackResponseHandlerTest extends AbstractBaseFunctionalTest
      *
      * @param ClientExceptionInterface|ResponseInterface $context
      */
-    public function testHandle(object $context, StampCollection $expectedCallbackStamps)
+    public function testHandle(object $context, StampCollection $expectedCallbackStamps): void
     {
         $callback = new TestCallback();
         self::assertSame(0, $callback->getRetryCount());
@@ -59,6 +59,9 @@ class CallbackResponseHandlerTest extends AbstractBaseFunctionalTest
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function handleDataProvider(): array
     {
         return [

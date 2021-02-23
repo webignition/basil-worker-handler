@@ -19,7 +19,7 @@ class DelayedCallbackTest extends TestCase
     /**
      * @dataProvider encapsulatesDataProvider
      */
-    public function testEncapsulates(CallbackInterface $callback)
+    public function testEncapsulates(CallbackInterface $callback): void
     {
         $delayedCallback = new DelayedCallback($callback, new ExponentialBackoffStrategy());
 
@@ -28,6 +28,9 @@ class DelayedCallbackTest extends TestCase
         self::assertSame($callback->getPayload(), $delayedCallback->getPayload());
     }
 
+    /**
+     * @return array[]
+     */
     public function encapsulatesDataProvider(): array
     {
         return [
@@ -55,11 +58,14 @@ class DelayedCallbackTest extends TestCase
     /**
      * @dataProvider getStampsDataProvider
      */
-    public function testGetStamps(DelayedCallback $callback, StampCollection $expectedStamps)
+    public function testGetStamps(DelayedCallback $callback, StampCollection $expectedStamps): void
     {
         self::assertEquals($expectedStamps, $callback->getStamps());
     }
 
+    /**
+     * @return array[]
+     */
     public function getStampsDataProvider(): array
     {
         return [

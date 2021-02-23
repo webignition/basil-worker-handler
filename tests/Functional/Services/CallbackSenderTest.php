@@ -41,7 +41,7 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider sendResponseSuccessDataProvider
      */
-    public function testSendResponseSuccess(ResponseInterface $response)
+    public function testSendResponseSuccess(ResponseInterface $response): void
     {
         $callback = new TestCallback();
         $callback = $callback->withState(CallbackInterface::STATE_SENDING);
@@ -61,6 +61,9 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
         self::assertSame(CallbackInterface::STATE_COMPLETE, $callback->getState());
     }
 
+    /**
+     * @return array[]
+     */
     public function sendResponseSuccessDataProvider(): array
     {
         $dataSets = [];
@@ -77,7 +80,7 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider sendResponseErrorResponseDataProvider
      */
-    public function testSendResponseErrorResponse(object $httpFixture)
+    public function testSendResponseErrorResponse(object $httpFixture): void
     {
         $callback = new TestCallback();
         $callback = $callback->withState(CallbackInterface::STATE_SENDING);
@@ -97,6 +100,9 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
         self::assertSame(CallbackInterface::STATE_SENDING, $callback->getState());
     }
 
+    /**
+     * @return array[]
+     */
     public function sendResponseErrorResponseDataProvider(): array
     {
         return [
@@ -109,7 +115,7 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSendNoJob()
+    public function testSendNoJob(): void
     {
         $responseHandler = (new MockCallbackResponseHandler())
             ->withoutHandleCall()
@@ -120,7 +126,7 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
         $this->callbackSender->send(new TestCallback());
     }
 
-    public function testSendCallbackRetryLimitReached()
+    public function testSendCallbackRetryLimitReached(): void
     {
         $this->createJob();
 

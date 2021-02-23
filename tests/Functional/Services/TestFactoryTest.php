@@ -80,7 +80,7 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
      * @param string[] $manifestKeys
      * @param string[] $expectedTestKeys
      */
-    public function testCreateFromTestManifestCollection(array $manifestKeys, array $expectedTestKeys)
+    public function testCreateFromTestManifestCollection(array $manifestKeys, array $expectedTestKeys): void
     {
         $manifests = $this->createTestManifestCollection($manifestKeys);
         $expectedTests = $this->createExpectedTestCollection($expectedTestKeys);
@@ -93,6 +93,9 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function createFromTestManifestCollectionDataProvider(): array
     {
         return [
@@ -121,7 +124,7 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testCreateFromSourceCompileSuccessEvent()
+    public function testCreateFromSourceCompileSuccessEvent(): void
     {
         $this->doSourceCompileSuccessEventDrivenTest(function (SuiteManifest $suiteManifest) {
             $event = new SourceCompileSuccessEvent('/app/source/Test/test.yml', $suiteManifest);
@@ -130,7 +133,7 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
         });
     }
 
-    public function testSubscribesToSourceCompileSuccessEvent()
+    public function testSubscribesToSourceCompileSuccessEvent(): void
     {
         $this->doSourceCompileSuccessEventDrivenTest(function (SuiteManifest $suiteManifest) {
             $event = new SourceCompileSuccessEvent('/app/source/Test/test.yml', $suiteManifest);

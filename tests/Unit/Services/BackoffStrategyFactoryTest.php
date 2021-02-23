@@ -29,11 +29,14 @@ class BackoffStrategyFactoryTest extends TestCase
      * @param object $context
      * @param BackoffStrategyInterface $expectedBackoffStrategy
      */
-    public function testCreate(object $context, BackoffStrategyInterface $expectedBackoffStrategy)
+    public function testCreate(object $context, BackoffStrategyInterface $expectedBackoffStrategy): void
     {
         self::assertEquals($expectedBackoffStrategy, $this->factory->create($context));
     }
 
+    /**
+     * @return array[]
+     */
     public function createDataProvider(): array
     {
         return [

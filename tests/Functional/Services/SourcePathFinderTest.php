@@ -33,13 +33,16 @@ class SourcePathFinderTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider findNextNonCompiledPathDataProvider
      */
-    public function testFindNextNonCompiledPath(InvokableInterface $setup, ?string $expectedNextNonCompiledSource)
+    public function testFindNextNonCompiledPath(InvokableInterface $setup, ?string $expectedNextNonCompiledSource): void
     {
         $this->invokableHandler->invoke($setup);
 
         self::assertSame($expectedNextNonCompiledSource, $this->sourcePathFinder->findNextNonCompiledPath());
     }
 
+    /**
+     * @return array[]
+     */
     public function findNextNonCompiledPathDataProvider(): array
     {
         $sources = [
@@ -140,13 +143,16 @@ class SourcePathFinderTest extends AbstractBaseFunctionalTest
      * @param InvokableInterface $setup
      * @param string[] $expectedCompiledSources
      */
-    public function testFindCompiledPaths(InvokableInterface $setup, array $expectedCompiledSources)
+    public function testFindCompiledPaths(InvokableInterface $setup, array $expectedCompiledSources): void
     {
         $this->invokableHandler->invoke($setup);
 
         self::assertSame($expectedCompiledSources, $this->sourcePathFinder->findCompiledPaths());
     }
 
+    /**
+     * @return array[]
+     */
     public function findCompiledPathsDataProvider(): array
     {
         $sources = [

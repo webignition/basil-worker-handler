@@ -32,7 +32,7 @@ class SendCallbackHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testInvokeCallbackNotExists()
+    public function testInvokeCallbackNotExists(): void
     {
         $callback = \Mockery::mock(CallbackInterface::class);
         $callback
@@ -55,7 +55,7 @@ class SendCallbackHandlerTest extends AbstractBaseFunctionalTest
         ($this->handler)($message);
     }
 
-    public function testInvokeCallbackExists()
+    public function testInvokeCallbackExists(): void
     {
         $callback = $this->invokableHandler->invoke(CallbackSetupInvokableFactory::setup());
 
