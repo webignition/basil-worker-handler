@@ -1,4 +1,4 @@
-FROM php:7.4-cli-buster
+FROM php:8-cli-buster
 
 WORKDIR /app
 
@@ -29,6 +29,7 @@ ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
 ENV DOCKERIZE_VERSION v1.2.0
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/install-php-extensions
 COPY composer.json composer.lock /app/
 COPY bin/console /app/bin/console
 COPY public/index.php public/
@@ -48,7 +49,8 @@ RUN apt-get -qq update && apt-get -qq -y install  \
   && docker-php-ext-install \
   pdo_pgsql \
   zip \
-  && pecl install amqp \
+  && install-php-extensions amqp \
+  && rm /usr/bin/install-php-extensions \
   && docker-php-ext-enable amqp \
   && apt-get autoremove -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
