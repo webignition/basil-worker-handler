@@ -2,55 +2,6 @@ FROM php:7.4-cli-buster
 
 WORKDIR /app
 
-RUN apt-get -qq update && apt-get -qq -y install  \
-  librabbitmq-dev \
-  libpq-dev \
-  libzip-dev \
-  supervisor \
-  zip \
-  && docker-php-ext-install \
-  pdo_pgsql \
-  zip \
-  && pecl install amqp \
-  && docker-php-ext-enable amqp \
-  && apt-get autoremove -y \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-COPY --from=composer /usr/bin/composer /usr/bin/composer
-
-RUN echo "Checking platform requirements"
-COPY composer.json /app
-COPY composer.lock /app
-RUN composer check-platform-reqs --ansi
-
-RUN echo "Installing dependencies"
-RUN composer install --no-dev --no-scripts
-RUN rm composer.lock
-
-RUN echo "Copying source"
-COPY bin/console /app/bin/console
-RUN chmod +x /app/bin/console
-COPY public/index.php public/
-COPY src /app/src
-COPY config/bundles.php /app/config/
-COPY config/services.yaml /app/config/
-COPY config/packages/*.yaml /app/config/packages/
-COPY config/packages/prod /app/config/packages/prod
-COPY config/routes/annotations.yaml /app/config/routes/
-COPY migrations /app/migrations
-RUN touch /app/.env
-
-RUN echo "Copy supervisor configuration"
-COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
-RUN mkdir -p var/log/supervisor
-
-ENV DOCKERIZE_VERSION v1.2.0
-RUN curl -L --output dockerize.tar.gz \
-        https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
-    && rm dockerize.tar.gz
-
 ARG APP_ENV=prod
 ARG DATABASE_URL=postgresql://database_user:database_password@0.0.0.0:5432/database_name?serverVersion=12&charset=utf8
 ARG COMPILER_HOST=compiler
@@ -75,7 +26,45 @@ ENV MESSENGER_TRANSPORT_DSN=$MESSENGER_TRANSPORT_DSN
 ENV CALLBACK_RETRY_LIMIT=$CALLBACK_RETRY_LIMIT
 ENV JOB_TIMEOUT_CHECK_PERIOD=$JOB_TIMEOUT_CHECK_PERIOD
 
-RUN echo "Clearing app cache"
-RUN php bin/console cache:clear --env=prod
+ENV DOCKERIZE_VERSION v1.2.0
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock /app/
+COPY bin/console /app/bin/console
+COPY public/index.php public/
+COPY src /app/src
+COPY config/bundles.php config/services.yaml /app/config/
+COPY config/packages/*.yaml /app/config/packages/
+COPY config/packages/prod /app/config/packages/prod
+COPY config/routes/annotations.yaml /app/config/routes/
+COPY migrations /app/migrations
+
+RUN apt-get -qq update && apt-get -qq -y install  \
+  librabbitmq-dev \
+  libpq-dev \
+  libzip-dev \
+  supervisor \
+  zip \
+  && docker-php-ext-install \
+  pdo_pgsql \
+  zip \
+  && pecl install amqp \
+  && docker-php-ext-enable amqp \
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && composer check-platform-reqs --ansi \
+  && composer install --no-dev --no-scripts \
+  && rm composer.lock \
+  && chmod +x /app/bin/console \
+  && touch /app/.env \
+  && curl -L --output dockerize.tar.gz \
+     https://github.com/presslabs/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && tar -C /usr/local/bin -xzvf dockerize.tar.gz \
+  && rm dockerize.tar.gz \
+  && mkdir -p var/log/supervisor \
+  && php bin/console cache:clear --env=prod
+
+COPY build/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY build/supervisor/conf.d/app.conf /etc/supervisor/conf.d/supervisord.conf
 
 CMD dockerize -wait tcp://rabbitmq:5672 -timeout 30s -wait tcp://postgres:5432 -timeout 30s supervisord -c /etc/supervisor/supervisord.conf
