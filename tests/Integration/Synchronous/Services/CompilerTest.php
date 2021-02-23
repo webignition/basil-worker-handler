@@ -198,9 +198,10 @@ class CompilerTest extends AbstractBaseIntegrationTest
         self::assertInstanceOf(Client::class, $compilerClient);
 
         $compilerTargetDirectory = self::$container->getParameter('compiler_target_directory');
-
-        $request = 'rm ' . $compilerTargetDirectory . '/*.php';
-        $compilerClient->request($request);
+        if (is_string($compilerTargetDirectory)) {
+            $request = 'rm ' . $compilerTargetDirectory . '/*.php';
+            $compilerClient->request($request);
+        }
 
         parent::tearDown();
     }

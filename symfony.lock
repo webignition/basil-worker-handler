@@ -20,9 +20,6 @@
             "config/packages/test/dama_doctrine_test_bundle.yaml"
         ]
     },
-    "dealerdirect/phpcodesniffer-composer-installer": {
-        "version": "v0.7.0"
-    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -150,6 +147,9 @@
     "nette/finder": {
         "version": "v2.5.2"
     },
+    "nette/neon": {
+        "version": "v3.2.1"
+    },
     "nette/robot-loader": {
         "version": "v3.3.1"
     },
@@ -197,9 +197,6 @@
     },
     "phpstan/extension-installer": {
         "version": "1.0.5"
-    },
-    "phpstan/phpdoc-parser": {
-        "version": "0.4.9"
     },
     "phpstan/phpstan": {
         "version": "0.12.43"
@@ -316,9 +313,6 @@
     },
     "sebastian/version": {
         "version": "3.0.1"
-    },
-    "slevomat/coding-standard": {
-        "version": "6.4.0"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.0",
@@ -518,17 +512,38 @@
     "symplify/coding-standard": {
         "version": "8.3.13"
     },
+    "symplify/composer-json-manipulator": {
+        "version": "9.2.1"
+    },
     "symplify/console-color-diff": {
         "version": "8.3.13"
+    },
+    "symplify/console-package-builder": {
+        "version": "9.2.1"
     },
     "symplify/easy-coding-standard": {
         "version": "8.3.13"
     },
+    "symplify/easy-testing": {
+        "version": "9.2.1"
+    },
+    "symplify/markdown-diff": {
+        "version": "9.2.1"
+    },
     "symplify/package-builder": {
         "version": "8.3.13"
     },
+    "symplify/php-config-printer": {
+        "version": "9.2.1"
+    },
+    "symplify/rule-doc-generator": {
+        "version": "9.2.1"
+    },
     "symplify/set-config-resolver": {
         "version": "8.3.13"
+    },
+    "symplify/skipper": {
+        "version": "9.2.1"
     },
     "symplify/smart-file-system": {
         "version": "8.3.13"
