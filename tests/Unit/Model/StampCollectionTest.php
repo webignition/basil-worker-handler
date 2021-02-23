@@ -15,14 +15,16 @@ class StampCollectionTest extends TestCase
     /**
      * @dataProvider getStampsDataProvider
      *
-     * @param StampCollection $collection
      * @param StampInterface[] $expectedStamps
      */
-    public function testGetStamps(StampCollection $collection, array $expectedStamps)
+    public function testGetStamps(StampCollection $collection, array $expectedStamps): void
     {
         self::assertSame($expectedStamps, $collection->getStamps());
     }
 
+    /**
+     * @return array[]
+     */
     public function getStampsDataProvider(): array
     {
         $delayStamp = new DelayStamp(1000);
@@ -52,11 +54,14 @@ class StampCollectionTest extends TestCase
     /**
      * @dataProvider countDataProvider
      */
-    public function testCount(StampCollection $collection, int $expectedCount)
+    public function testCount(StampCollection $collection, int $expectedCount): void
     {
         self::assertCount($expectedCount, $collection);
     }
 
+    /**
+     * @return array[]
+     */
     public function countDataProvider(): array
     {
         return [
@@ -80,11 +85,14 @@ class StampCollectionTest extends TestCase
     /**
      * @dataProvider hasStampsDataProvider
      */
-    public function testHasStamps(StampCollection $collection, bool $expectedIsEmpty)
+    public function testHasStamps(StampCollection $collection, bool $expectedIsEmpty): void
     {
         self::assertSame($expectedIsEmpty, $collection->hasStamps());
     }
 
+    /**
+     * @return array[]
+     */
     public function hasStampsDataProvider(): array
     {
         return [

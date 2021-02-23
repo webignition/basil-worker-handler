@@ -41,7 +41,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
      * @param Test::STATE_* $initialState
      * @param Test::STATE_* $expectedState
      */
-    public function testSetComplete(string $initialState, string $expectedState)
+    public function testSetComplete(string $initialState, string $expectedState): void
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, $initialState));
         self::assertSame($initialState, $this->test->getState());
@@ -51,6 +51,9 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
         self::assertSame($expectedState, $this->test->getState());
     }
 
+    /**
+     * @return array[]
+     */
     public function setCompleteDataProvider(): array
     {
         return [
@@ -77,14 +80,14 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSetCompleteFromTestExecuteCompleteEvent()
+    public function testSetCompleteFromTestExecuteCompleteEvent(): void
     {
         $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
             $this->mutator->setCompleteFromTestExecuteCompleteEvent($event);
         });
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent()
+    public function testSubscribesToTestExecuteCompleteEvent(): void
     {
         $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
             $this->eventDispatcher->dispatch($event);
@@ -105,7 +108,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider handleTestExecuteDocumentReceivedEventDataProvider
      */
-    public function testSetFailedFromTestExecuteDocumentReceivedEvent(Document $document, string $expectedState)
+    public function testSetFailedFromTestExecuteDocumentReceivedEvent(Document $document, string $expectedState): void
     {
         $this->doTestExecuteDocumentReceivedEventDrivenTest(
             $document,
@@ -119,7 +122,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider handleTestExecuteDocumentReceivedEventDataProvider
      */
-    public function testSubscribesToTestExecuteDocumentReceivedEvent(Document $document, string $expectedState)
+    public function testSubscribesToTestExecuteDocumentReceivedEvent(Document $document, string $expectedState): void
     {
         $this->doTestExecuteDocumentReceivedEventDrivenTest(
             $document,
@@ -146,6 +149,9 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
         self::assertSame($expectedState, $this->test->getState());
     }
 
+    /**
+     * @return array[]
+     */
     public function handleTestExecuteDocumentReceivedEventDataProvider(): array
     {
         return [

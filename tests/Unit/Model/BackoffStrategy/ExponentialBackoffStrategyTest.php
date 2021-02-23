@@ -12,11 +12,14 @@ class ExponentialBackoffStrategyTest extends TestCase
     /**
      * @dataProvider getDelayDataProvider
      */
-    public function testGetDelay(ExponentialBackoffStrategy $backoffStrategy, int $retryCount, int $expectedDelay)
+    public function testGetDelay(ExponentialBackoffStrategy $backoffStrategy, int $retryCount, int $expectedDelay): void
     {
         self::assertSame($expectedDelay, $backoffStrategy->getDelay($retryCount));
     }
 
+    /**
+     * @return array[]
+     */
     public function getDelayDataProvider(): array
     {
         return [

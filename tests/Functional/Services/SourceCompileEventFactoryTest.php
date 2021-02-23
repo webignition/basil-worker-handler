@@ -31,7 +31,7 @@ class SourceCompileEventFactoryTest extends AbstractBaseFunctionalTest
     /**
      * @dataProvider createForSourceCompileFailureDataProvider
      */
-    public function testCreateForSourceCompileFailure(string $source, OutputInterface $output)
+    public function testCreateForSourceCompileFailure(string $source, OutputInterface $output): void
     {
         $event = $this->sourceCompileEventFactory->create($source, $output);
 
@@ -46,6 +46,9 @@ class SourceCompileEventFactoryTest extends AbstractBaseFunctionalTest
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function createForSourceCompileFailureDataProvider(): array
     {
         $source = '/app/source/Test/test.yml';
@@ -69,7 +72,7 @@ class SourceCompileEventFactoryTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testCreateForSourceCompileSuccess()
+    public function testCreateForSourceCompileSuccess(): void
     {
         $source = '/app/source/Test/test.yml';
         $output = (new MockSuiteManifest())->getMock();

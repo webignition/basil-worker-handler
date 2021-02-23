@@ -20,17 +20,17 @@ class ExecuteTestMessageTest extends TestCase
         $this->message = new ExecuteTestMessage(self::TEST_ID);
     }
 
-    public function testGetTestId()
+    public function testGetTestId(): void
     {
         self::assertSame(self::TEST_ID, $this->message->getTestId());
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         self::assertSame(ExecuteTestMessage::TYPE, $this->message->getType());
     }
 
-    public function testGetPayload()
+    public function testGetPayload(): void
     {
         self::assertSame(
             [
@@ -40,7 +40,7 @@ class ExecuteTestMessageTest extends TestCase
         );
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         self::assertSame(
             [

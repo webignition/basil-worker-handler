@@ -25,7 +25,7 @@ class YamlDocumentFactoryTest extends TestCase
      * @param string[] $contentChunks
      * @param Document[] $expectedDocuments
      */
-    public function testProcess(array $contentChunks, array $expectedDocuments)
+    public function testProcess(array $contentChunks, array $expectedDocuments): void
     {
         $documents = [];
         $onDocumentCreated = function (Document $document) use (&$documents) {
@@ -44,6 +44,9 @@ class YamlDocumentFactoryTest extends TestCase
         self::assertEquals($expectedDocuments, $documents);
     }
 
+    /**
+     * @return array[]
+     */
     public function processDataProvider(): array
     {
         return [

@@ -34,7 +34,7 @@ class ExecuteTestHandlerTest extends TestCase
         ExecutionState $executionState,
         ExecuteTestMessage $message,
         TestRepository $testRepository
-    ) {
+    ): void {
         $testExecutor = (new MockTestExecutor())
             ->withoutExecuteCall()
             ->getMock();
@@ -52,6 +52,9 @@ class ExecuteTestHandlerTest extends TestCase
         $handler($message);
     }
 
+    /**
+     * @return array[]
+     */
     public function invokeNoExecutionDataProvider(): array
     {
         $testInWrongState = (new MockTest())

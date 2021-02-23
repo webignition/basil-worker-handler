@@ -26,10 +26,9 @@ class CompilerTest extends AbstractBaseIntegrationTest
     /**
      * @dataProvider compileSuccessDataProvider
      *
-     * @param string $source
      * @param array<mixed> $expectedSuiteManifestData
      */
-    public function testCompileSuccess(string $source, array $expectedSuiteManifestData)
+    public function testCompileSuccess(string $source, array $expectedSuiteManifestData): void
     {
         /** @var SuiteManifest $suiteManifest */
         $suiteManifest = $this->compiler->compile($source);
@@ -43,6 +42,9 @@ class CompilerTest extends AbstractBaseIntegrationTest
         self::assertEquals($expectedSuiteManifest, $suiteManifest);
     }
 
+    /**
+     * @return array[]
+     */
     public function compileSuccessDataProvider(): array
     {
         return [
@@ -106,10 +108,9 @@ class CompilerTest extends AbstractBaseIntegrationTest
     /**
      * @dataProvider compileFailureDataProvider
      *
-     * @param string $source
      * @param array<mixed> $expectedErrorOutputData
      */
-    public function testCompileFailure(string $source, array $expectedErrorOutputData)
+    public function testCompileFailure(string $source, array $expectedErrorOutputData): void
     {
         /** @var ErrorOutput $errorOutput */
         $errorOutput = $this->compiler->compile($source);
@@ -123,6 +124,9 @@ class CompilerTest extends AbstractBaseIntegrationTest
         self::assertEquals($expectedErrorOutput, $errorOutput);
     }
 
+    /**
+     * @return array[]
+     */
     public function compileFailureDataProvider(): array
     {
         return [

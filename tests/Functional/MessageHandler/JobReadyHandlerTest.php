@@ -28,7 +28,7 @@ class JobReadyHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testInvoke()
+    public function testInvoke(): void
     {
         $eventDispatcher = (new MockEventDispatcher())
             ->withDispatchCalls(new ExpectedDispatchedEventCollection([

@@ -20,17 +20,17 @@ class SendCallbackMessageTest extends TestCase
         $this->message = new SendCallbackMessage(self::CALLBACK_ID);
     }
 
-    public function testGetCallbackId()
+    public function testGetCallbackId(): void
     {
         self::assertSame(self::CALLBACK_ID, $this->message->getCallbackId());
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         self::assertSame(SendCallbackMessage::TYPE, $this->message->getType());
     }
 
-    public function testGetPayload()
+    public function testGetPayload(): void
     {
         self::assertSame(
             [
@@ -40,7 +40,7 @@ class SendCallbackMessageTest extends TestCase
         );
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         self::assertSame(
             [

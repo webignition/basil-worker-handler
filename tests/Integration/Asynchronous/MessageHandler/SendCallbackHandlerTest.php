@@ -55,7 +55,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
         CallbackInterface $callback,
         InvokableInterface $waitUntil,
         InvokableInterface $assertions
-    ) {
+    ): void {
         $callback->setState(CallbackInterface::STATE_SENDING);
         $this->entityPersister->persist($callback->getEntity());
 
@@ -80,6 +80,9 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
         $this->invokableHandler->invoke($assertions);
     }
 
+    /**
+     * @return array[]
+     */
     public function sendDataProvider(): array
     {
         $callbackBaseUrl = $_ENV['CALLBACK_BASE_URL'] ?? '';

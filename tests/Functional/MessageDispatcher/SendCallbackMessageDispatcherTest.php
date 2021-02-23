@@ -54,14 +54,13 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
      * @dataProvider dispatchForCallbackEventDataProvider
      *
      * @param CallbackInterface $callback
-     * @param string|null $expectedEnvelopeNotContainsStampsOfType
      * @param array<string, array<int, StampInterface>> $expectedEnvelopeContainsStampCollections
      */
     public function testDispatchForCallbackEvent(
         CallbackInterface $callback,
         ?string $expectedEnvelopeNotContainsStampsOfType,
         array $expectedEnvelopeContainsStampCollections
-    ) {
+    ): void {
         $event = \Mockery::mock(CallbackEventInterface::class);
         $event
             ->shouldReceive('getCallback')
@@ -93,6 +92,9 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function dispatchForCallbackEventDataProvider(): array
     {
         $nonDelayedCallback = new TestCallback();
@@ -126,7 +128,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     public function testSubscribesToEvent(
         CallbackEventInterface $event,
         CallbackInterface $expectedQueuedMessageCallback
-    ) {
+    ): void {
         $callback = $event->getCallback();
         self::assertSame(CallbackInterface::STATE_AWAITING, $callback->getState());
         $this->messengerAsserter->assertQueueIsEmpty();
@@ -142,6 +144,9 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         );
     }
 
+    /**
+     * @return array[]
+     */
     public function subscribesToEventDataProvider(): array
     {
         $httpExceptionEventCallback = TestCallbackEntity::createWithUniquePayload();

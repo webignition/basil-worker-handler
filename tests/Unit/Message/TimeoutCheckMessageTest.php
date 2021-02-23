@@ -18,12 +18,12 @@ class TimeoutCheckMessageTest extends TestCase
         $this->message = new TimeoutCheckMessage();
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         self::assertSame(TimeoutCheckMessage::TYPE, $this->message->getType());
     }
 
-    public function testGetPayload()
+    public function testGetPayload(): void
     {
         self::assertSame(
             [],
@@ -31,7 +31,7 @@ class TimeoutCheckMessageTest extends TestCase
         );
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         self::assertSame(
             [

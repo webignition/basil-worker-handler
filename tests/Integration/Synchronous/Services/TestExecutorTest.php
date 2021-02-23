@@ -37,10 +37,9 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
     /**
      * @dataProvider executeSuccessDataProvider
      *
-     * @param string $source
      * @param array<int, Document[]> $expectedDispatchedEventDocumentsPerTest
      */
-    public function testExecute(string $source, array $expectedDispatchedEventDocumentsPerTest)
+    public function testExecute(string $source, array $expectedDispatchedEventDocumentsPerTest): void
     {
         /** @var SuiteManifest $suiteManifest */
         $suiteManifest = $this->compiler->compile($source);
@@ -83,6 +82,9 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
         }
     }
 
+    /**
+     * @return array[]
+     */
     public function executeSuccessDataProvider(): array
     {
         return [

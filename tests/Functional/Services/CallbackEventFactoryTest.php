@@ -27,7 +27,7 @@ class CallbackEventFactoryTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testCreateSourceCompileFailureEvent()
+    public function testCreateSourceCompileFailureEvent(): void
     {
         $source = '/app/source/Test/test.yml';
         $errorOutputData = [
@@ -50,7 +50,7 @@ class CallbackEventFactoryTest extends AbstractBaseFunctionalTest
         self::assertSame($errorOutputData, $callback->getPayload());
     }
 
-    public function testCreateTestExecuteDocumentReceivedEvent()
+    public function testCreateTestExecuteDocumentReceivedEvent(): void
     {
         $documentData = [
             'key' => 'value',

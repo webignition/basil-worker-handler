@@ -35,7 +35,7 @@ class ExecuteTestHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testInvokeExecuteSuccess()
+    public function testInvokeExecuteSuccess(): void
     {
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
 

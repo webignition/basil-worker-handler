@@ -36,7 +36,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
     }
 
-    public function testInvokeNoJob()
+    public function testInvokeNoJob(): void
     {
         $eventDispatcher = (new MockSourceCompileEventDispatcher())
             ->withoutDispatchCall()
@@ -48,7 +48,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         $handler(\Mockery::mock(CompileSourceMessage::class));
     }
 
-    public function testInvokeJobInWrongState()
+    public function testInvokeJobInWrongState(): void
     {
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
 
@@ -62,7 +62,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         $handler(\Mockery::mock(CompileSourceMessage::class));
     }
 
-    public function testInvokeCompileSuccess()
+    public function testInvokeCompileSuccess(): void
     {
         $sourcePath = 'Test/test1.yml';
 
@@ -109,7 +109,7 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         $handler($compileSourceMessage);
     }
 
-    public function testInvokeCompileFailure()
+    public function testInvokeCompileFailure(): void
     {
         $sourcePath = 'Test/test1.yml';
 
