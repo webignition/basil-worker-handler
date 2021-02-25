@@ -15,18 +15,11 @@ class TimeoutCheckMessageDispatcher implements EventSubscriberInterface
 {
     private const MILLISECONDS_PER_SECOND = 1000;
 
-    private MessageBusInterface $messageBus;
-    private int $recheckPeriodInSeconds;
-    private bool $enabled;
-
     public function __construct(
-        MessageBusInterface $messageBus,
-        int $recheckPeriodInSeconds,
-        bool $enabled = true
+        private MessageBusInterface $messageBus,
+        private int $recheckPeriodInSeconds,
+        private bool $enabled = true
     ) {
-        $this->messageBus = $messageBus;
-        $this->recheckPeriodInSeconds = $recheckPeriodInSeconds;
-        $this->enabled = $enabled;
     }
 
     public static function getSubscribedEvents()
