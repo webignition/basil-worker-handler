@@ -6,7 +6,7 @@ namespace App\Tests\Services\Integration;
 
 use App\Model\BackoffStrategy\BackoffStrategyInterface;
 use App\Services\BackoffStrategyFactory as ServiceBackoffStrategyFactory;
-use App\Tests\Model\MaximumNumberOfDelaysExpontentialBackoffStrategy;
+use App\Tests\Model\MaximumNumberOfDelaysExponentialBackoffStrategy;
 
 class BackoffStrategyFactory extends ServiceBackoffStrategyFactory
 {
@@ -19,6 +19,6 @@ class BackoffStrategyFactory extends ServiceBackoffStrategyFactory
 
     public function create(object $context): BackoffStrategyInterface
     {
-        return new MaximumNumberOfDelaysExpontentialBackoffStrategy($this->maximumNumberOfDelays);
+        return new MaximumNumberOfDelaysExponentialBackoffStrategy($this->maximumNumberOfDelays);
     }
 }

@@ -6,7 +6,7 @@ namespace App\Tests\Model;
 
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 
-class MaximumNumberOfDelaysExpontentialBackoffStrategy extends ExponentialBackoffStrategy
+class MaximumNumberOfDelaysExponentialBackoffStrategy extends ExponentialBackoffStrategy
 {
     private int $maximumNumberOfDelays;
 
