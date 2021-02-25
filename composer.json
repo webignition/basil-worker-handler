@@ -46,7 +46,7 @@
         "phpunit/php-timer": "^5.0",
         "phpunit/phpunit": "^9.5",
         "psr/log": "^1.1",
-        "squizlabs/php_codesniffer": "^3.5",
+        "squizlabs/php_codesniffer": "dev-master",
         "symfony/browser-kit": "5.2.*",
         "symfony/maker-bundle": "^1.29",
         "symplify/easy-coding-standard": "^9.2",
