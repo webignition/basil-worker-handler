@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class MockCallbackResponseHandler
 {
-    /**
-     * @var CallbackResponseHandler|MockInterface
-     */
-    private CallbackResponseHandler $callbackResponseHandler;
+    private CallbackResponseHandler $mock;
 
     public function __construct()
     {
-        $this->callbackResponseHandler = \Mockery::mock(CallbackResponseHandler::class);
+        $this->mock = \Mockery::mock(CallbackResponseHandler::class);
     }
 
     public function getMock(): CallbackResponseHandler
     {
-        return $this->callbackResponseHandler;
+        return $this->mock;
     }
 
     public function withHandleCall(CallbackInterface $callback, object $context): self
     {
-        $this->callbackResponseHandler
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('handle')
             ->once()
             ->with($callback, $context);
@@ -37,7 +38,11 @@ class MockCallbackResponseHandler
 
     public function withoutHandleCall(): self
     {
-        $this->callbackResponseHandler
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('handle');
 
         return $this;

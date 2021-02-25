@@ -10,24 +10,25 @@ use webignition\BasilCompilerModels\OutputInterface;
 
 class MockSourceCompileEventDispatcher
 {
-    /**
-     * @var SourceCompileEventDispatcher|MockInterface
-     */
-    private SourceCompileEventDispatcher $eventDispatcher;
+    private SourceCompileEventDispatcher $mock;
 
     public function __construct()
     {
-        $this->eventDispatcher = \Mockery::mock(SourceCompileEventDispatcher::class);
+        $this->mock = \Mockery::mock(SourceCompileEventDispatcher::class);
     }
 
     public function getMock(): SourceCompileEventDispatcher
     {
-        return $this->eventDispatcher;
+        return $this->mock;
     }
 
     public function withDispatchCall(string $source, OutputInterface $output): self
     {
-        $this->eventDispatcher
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('dispatch')
             ->once()
             ->with($source, $output);
@@ -37,7 +38,11 @@ class MockSourceCompileEventDispatcher
 
     public function withoutDispatchCall(): self
     {
-        $this->eventDispatcher
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('dispatch');
 
         return $this;

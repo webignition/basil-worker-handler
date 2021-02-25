@@ -10,24 +10,25 @@ use webignition\BasilCompilerModels\OutputInterface;
 
 class MockCompiler
 {
-    /**
-     * @var Compiler|MockInterface
-     */
-    private Compiler $compiler;
+    private Compiler $mock;
 
     public function __construct()
     {
-        $this->compiler = \Mockery::mock(Compiler::class);
+        $this->mock = \Mockery::mock(Compiler::class);
     }
 
     public function getMock(): Compiler
     {
-        return $this->compiler;
+        return $this->mock;
     }
 
     public function withCompileCall(string $source, OutputInterface $output): self
     {
-        $this->compiler
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('compile')
             ->with($source)
             ->andReturn($output);

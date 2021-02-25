@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
 
 class MockCallbackStateMutator
 {
-    /**
-     * @var CallbackStateMutator|MockInterface
-     */
-    private CallbackStateMutator $callbackStateMutator;
+    private CallbackStateMutator $mock;
 
     public function __construct()
     {
-        $this->callbackStateMutator = \Mockery::mock(CallbackStateMutator::class);
+        $this->mock = \Mockery::mock(CallbackStateMutator::class);
     }
 
     public function getMock(): CallbackStateMutator
     {
-        return $this->callbackStateMutator;
+        return $this->mock;
     }
 
     public function withoutSetSendingCall(): self
     {
-        $this->callbackStateMutator
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('setSending');
 
         return $this;
@@ -35,7 +36,11 @@ class MockCallbackStateMutator
 
     public function withSetSendingCall(CallbackInterface $callback): self
     {
-        $this->callbackStateMutator
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('setSending')
             ->with($callback);
 

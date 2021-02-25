@@ -9,24 +9,25 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 
 class MockTest
 {
-    /**
-     * @var Test|MockInterface
-     */
-    private Test $test;
+    private Test $mock;
 
     public function __construct()
     {
-        $this->test = \Mockery::mock(Test::class);
+        $this->mock = \Mockery::mock(Test::class);
     }
 
     public function getMock(): Test
     {
-        return $this->test;
+        return $this->mock;
     }
 
     public function withGetStateCall(string $state): self
     {
-        $this->test
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('getState')
             ->andReturn($state);
 

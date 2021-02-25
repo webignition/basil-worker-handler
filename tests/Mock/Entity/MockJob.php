@@ -9,24 +9,25 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Job;
 
 class MockJob
 {
-    /**
-     * @var Job|MockInterface
-     */
-    private Job $job;
+    private Job $mock;
 
     public function __construct()
     {
-        $this->job = \Mockery::mock(Job::class);
+        $this->mock = \Mockery::mock(Job::class);
     }
 
     public function getMock(): Job
     {
-        return $this->job;
+        return $this->mock;
     }
 
     public function withGetCallbackUrlCall(string $callbackUrl): self
     {
-        $this->job
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('getCallbackUrl')
             ->andReturn($callbackUrl);
 
@@ -35,7 +36,11 @@ class MockJob
 
     public function withGetLabelCall(string $label): self
     {
-        $this->job
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('getLabel')
             ->andReturn($label);
 
@@ -44,7 +49,11 @@ class MockJob
 
     public function withHasReachedMaximumDurationCall(bool $hasReachedMaximumDuration): self
     {
-        $this->job
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('hasReachedMaximumDuration')
             ->andReturn($hasReachedMaximumDuration);
 
@@ -53,7 +62,11 @@ class MockJob
 
     public function withGetMaximumDurationInSecondsCall(int $maximumDurationInSeconds): self
     {
-        $this->job
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('getMaximumDurationInSeconds')
             ->andReturn($maximumDurationInSeconds);
 
