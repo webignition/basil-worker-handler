@@ -11,11 +11,8 @@ class SendCallbackMessage extends AbstractSerializableMessage
     public const TYPE = 'send-callback';
     public const PAYLOAD_KEY_CALLBACK_ID = 'callback_id';
 
-    private int $callbackId;
-
-    public function __construct(int $callbackId)
+    public function __construct(private int $callbackId)
     {
-        $this->callbackId = $callbackId;
     }
 
     /**

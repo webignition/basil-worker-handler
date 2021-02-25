@@ -11,11 +11,8 @@ class CompileSourceMessage extends AbstractSerializableMessage
     public const TYPE = 'compile-source';
     public const PAYLOAD_KEY_PATH = 'path';
 
-    private string $path;
-
-    public function __construct(string $path)
+    public function __construct(private string $path)
     {
-        $this->path = $path;
     }
 
     /**
