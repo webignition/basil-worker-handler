@@ -8,13 +8,11 @@ use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 
 class MaximumNumberOfDelaysExponentialBackoffStrategy extends ExponentialBackoffStrategy
 {
-    private int $maximumNumberOfDelays;
-
-    public function __construct(int $maximumNumberOfDelays, int $window = 1000)
-    {
+    public function __construct(
+        private int $maximumNumberOfDelays,
+        $window = 1000
+    ) {
         parent::__construct($window);
-
-        $this->maximumNumberOfDelays = $maximumNumberOfDelays;
     }
 
     public function getDelay(int $retryCount): int
