@@ -86,7 +86,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                     [
                         $this->createHttpTransactionCollection([
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'test',
                                     'path' => 'Test/chrome-open-index.yml',
                                     'config' => [
@@ -97,7 +97,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'step',
                                     'name' => 'verify page is open',
                                     'status' => 'passed',
@@ -112,7 +112,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'test',
                                     'path' => 'Test/chrome-firefox-open-index.yml',
                                     'config' => [
@@ -123,7 +123,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'step',
                                     'name' => 'verify page is open',
                                     'status' => 'passed',
@@ -138,7 +138,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'test',
                                     'path' => 'Test/chrome-firefox-open-index.yml',
                                     'config' => [
@@ -149,7 +149,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'step',
                                     'name' => 'verify page is open',
                                     'status' => 'passed',
@@ -164,7 +164,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'test',
                                     'path' => 'Test/chrome-open-form.yml',
                                     'config' => [
@@ -175,7 +175,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, [
+                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                     'type' => 'step',
                                     'name' => 'verify page is open',
                                     'status' => 'passed',
@@ -187,6 +187,10 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                         ],
                                     ],
                                 ]),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest($label, $callbackUrl, 'job-complete', []),
                                 new Response()
                             ),
                         ]),
@@ -218,7 +222,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                         [
                             $this->createHttpTransactionCollection([
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, [
+                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                         'type' => 'test',
                                         'path' => 'Test/chrome-open-index-with-step-failure.yml',
                                         'config' => [
@@ -229,7 +233,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     new Response()
                                 ),
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, [
+                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                         'type' => 'step',
                                         'name' => 'verify page is open',
                                         'status' => 'passed',
@@ -244,7 +248,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     new Response()
                                 ),
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, [
+                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
                                         'type' => 'step',
                                         'name' => 'fail on intentionally-missing element',
                                         'status' => 'failed',
@@ -273,6 +277,10 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                             ],
                                         ],
                                     ]),
+                                    new Response()
+                                ),
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest($label, $callbackUrl, 'job-complete', []),
                                     new Response()
                                 ),
                             ]),
@@ -400,14 +408,16 @@ class CompileExecuteTest extends AbstractEndToEndTest
     }
 
     /**
-     * @param string $label
-     * @param string $callbackUrl
      * @param array<mixed> $payload
      *
      * @return RequestInterface
      */
-    private function createExpectedRequest(string $label, string $callbackUrl, array $payload): RequestInterface
-    {
+    private function createExpectedRequest(
+        string $label,
+        string $callbackUrl,
+        string $type,
+        array $payload
+    ): RequestInterface {
         return new Request(
             'POST',
             $callbackUrl,
@@ -416,7 +426,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
             ],
             (string) json_encode([
                 'label' => $label,
-                'type' => 'execute-document-received',
+                'type' => $type,
                 'payload' => $payload,
             ])
         );
