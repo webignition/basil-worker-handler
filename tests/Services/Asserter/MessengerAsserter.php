@@ -67,7 +67,7 @@ class MessengerAsserter
         int $expectedStampIndex
     ): void {
         $stamps = $envelope->all();
-        $typeIndex = get_class($expectedStamp);
+        $typeIndex = $expectedStamp::class;
 
         TestCase::assertArrayHasKey($typeIndex, $stamps);
 
