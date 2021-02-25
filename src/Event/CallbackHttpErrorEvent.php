@@ -12,13 +12,13 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 class CallbackHttpErrorEvent extends Event implements CallbackEventInterface
 {
     private CallbackInterface $callback;
-    private ClientExceptionInterface|ResponseInterface $context;
+    private ClientExceptionInterface | ResponseInterface $context;
 
     /**
      * @param CallbackInterface $callback
      * @param ClientExceptionInterface|ResponseInterface $context
      */
-    public function __construct(CallbackInterface $callback, ClientExceptionInterface|ResponseInterface $context)
+    public function __construct(CallbackInterface $callback, ClientExceptionInterface | ResponseInterface $context)
     {
         $this->callback = $callback;
         $this->context = $context;
@@ -29,7 +29,7 @@ class CallbackHttpErrorEvent extends Event implements CallbackEventInterface
         return $this->callback;
     }
 
-    public function getContext(): ClientExceptionInterface|ResponseInterface
+    public function getContext(): ClientExceptionInterface | ResponseInterface
     {
         return $this->context;
     }
