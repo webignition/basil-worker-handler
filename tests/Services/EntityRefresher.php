@@ -9,11 +9,8 @@ use Doctrine\Persistence\ObjectRepository;
 
 class EntityRefresher
 {
-    private EntityManagerInterface $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(private EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
     }
 
     /**

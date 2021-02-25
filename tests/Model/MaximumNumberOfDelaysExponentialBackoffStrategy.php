@@ -10,7 +10,7 @@ class MaximumNumberOfDelaysExponentialBackoffStrategy extends ExponentialBackoff
 {
     public function __construct(
         private int $maximumNumberOfDelays,
-        $window = 1000
+        int $window = 1000
     ) {
         parent::__construct($window);
     }

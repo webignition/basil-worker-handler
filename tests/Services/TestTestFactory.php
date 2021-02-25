@@ -13,13 +13,10 @@ use webignition\BasilWorker\PersistenceBundle\Services\EntityPersister;
 
 class TestTestFactory
 {
-    private TestFactory $testFactory;
-    private EntityPersister $entityPersister;
-
-    public function __construct(TestFactory $testFactory, EntityPersister $entityPersister)
-    {
-        $this->testFactory = $testFactory;
-        $this->entityPersister = $entityPersister;
+    public function __construct(
+        private TestFactory $testFactory,
+        private EntityPersister $entityPersister
+    ) {
     }
 
     /**

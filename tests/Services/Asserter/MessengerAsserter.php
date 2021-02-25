@@ -11,11 +11,8 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
 
 class MessengerAsserter
 {
-    private TransportInterface $transport;
-
-    public function __construct(TransportInterface $transport)
+    public function __construct(private TransportInterface $transport)
     {
-        $this->transport = $transport;
     }
 
     public function getEnvelopeAtPosition(int $index): Envelope
