@@ -9,16 +9,12 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class JobTimeoutCallback extends AbstractCallbackWrapper
 {
-    private int $maximumDurationInSeconds;
-
-    public function __construct(int $maximumDurationInSeconds)
+    public function __construct(private int $maximumDurationInSeconds)
     {
-        $this->maximumDurationInSeconds = $maximumDurationInSeconds;
-
         parent::__construct(CallbackEntity::create(
             CallbackInterface::TYPE_JOB_TIMEOUT,
             [
-                'maximum_duration_in_seconds' => $this->maximumDurationInSeconds,
+                'maximum_duration_in_seconds' => $maximumDurationInSeconds,
             ]
         ));
     }

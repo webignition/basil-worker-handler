@@ -9,11 +9,8 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 abstract class AbstractCallbackWrapper implements CallbackInterface
 {
-    private CallbackInterface $callback;
-
-    public function __construct(CallbackInterface $callback)
+    public function __construct(private CallbackInterface $callback)
     {
-        $this->callback = $callback;
     }
 
     public function getEntity(): CallbackEntity

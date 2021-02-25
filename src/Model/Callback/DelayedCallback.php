@@ -11,13 +11,9 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class DelayedCallback extends AbstractCallbackWrapper implements StampedCallbackInterface
 {
-    private BackoffStrategyInterface $backoffStrategy;
-
-    public function __construct(CallbackInterface $callback, BackoffStrategyInterface $backoffStrategy)
+    public function __construct(CallbackInterface $callback, private BackoffStrategyInterface $backoffStrategy)
     {
         parent::__construct($callback);
-
-        $this->backoffStrategy = $backoffStrategy;
     }
 
     public function getStamps(): StampCollection

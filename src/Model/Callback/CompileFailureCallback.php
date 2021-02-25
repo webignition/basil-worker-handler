@@ -10,12 +10,8 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class CompileFailureCallback extends AbstractCallbackWrapper
 {
-    private ErrorOutputInterface $errorOutput;
-
-    public function __construct(ErrorOutputInterface $errorOutput)
+    public function __construct(private ErrorOutputInterface $errorOutput)
     {
-        $this->errorOutput = $errorOutput;
-
         parent::__construct(CallbackEntity::create(
             CallbackInterface::TYPE_COMPILE_FAILURE,
             $errorOutput->getData()

@@ -10,11 +10,8 @@ use webignition\YamlDocument\Document;
 
 class ExecuteDocumentReceivedCallback extends AbstractCallbackWrapper
 {
-    private Document $document;
-
-    public function __construct(Document $document)
+    public function __construct(private Document $document)
     {
-        $this->document = $document;
         $documentData = $document->parse();
         $documentData = is_array($documentData) ? $documentData : [];
 
