@@ -9,11 +9,8 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 
 abstract class AbstractTestEvent extends Event
 {
-    private Test $test;
-
-    public function __construct(Test $test)
+    public function __construct(private Test $test)
     {
-        $this->test = $test;
     }
 
     public function getTest(): Test
