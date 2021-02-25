@@ -13,24 +13,13 @@ use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 
 class CallbackSender
 {
-    private HttpClientInterface $httpClient;
-    private JobStore $jobStore;
-    private CallbackResponseHandler $callbackResponseHandler;
-    private CallbackStateMutator $callbackStateMutator;
-    private int $retryLimit;
-
     public function __construct(
-        HttpClientInterface $httpClient,
-        JobStore $jobStore,
-        CallbackResponseHandler $callbackResponseHandler,
-        CallbackStateMutator $callbackStateMutator,
-        int $retryLimit
+        private HttpClientInterface $httpClient,
+        private JobStore $jobStore,
+        private CallbackResponseHandler $callbackResponseHandler,
+        private CallbackStateMutator $callbackStateMutator,
+        private int $retryLimit
     ) {
-        $this->httpClient = $httpClient;
-        $this->jobStore = $jobStore;
-        $this->callbackResponseHandler = $callbackResponseHandler;
-        $this->callbackStateMutator = $callbackStateMutator;
-        $this->retryLimit = $retryLimit;
     }
 
     public function send(CallbackInterface $callback): void

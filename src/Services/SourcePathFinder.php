@@ -10,18 +10,11 @@ use webignition\StringPrefixRemover\DefinedStringPrefixRemover;
 
 class SourcePathFinder
 {
-    private TestRepository $testRepository;
-    private SourceStore $sourceStore;
-    private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover;
-
     public function __construct(
-        TestRepository $testRepository,
-        SourceStore $sourceStore,
-        DefinedStringPrefixRemover $compilerSourcePathPrefixRemover
+        private TestRepository $testRepository,
+        private SourceStore $sourceStore,
+        private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover
     ) {
-        $this->testRepository = $testRepository;
-        $this->sourceStore = $sourceStore;
-        $this->compilerSourcePathPrefixRemover = $compilerSourcePathPrefixRemover;
     }
 
     /**
