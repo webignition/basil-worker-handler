@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 
 class MockJobStore
 {
-    /**
-     * @var JobStore|MockInterface
-     */
-    private JobStore $jobStore;
+    private JobStore $mock;
 
     public function __construct()
     {
-        $this->jobStore = \Mockery::mock(JobStore::class);
+        $this->mock = \Mockery::mock(JobStore::class);
     }
 
     public function getMock(): JobStore
     {
-        return $this->jobStore;
+        return $this->mock;
     }
 
     public function withHasCall(bool $return): self
     {
-        $this->jobStore
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('has')
             ->andReturn($return);
 
@@ -36,7 +37,11 @@ class MockJobStore
 
     public function withGetCall(Job $job): self
     {
-        $this->jobStore
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('get')
             ->andReturn($job);
 

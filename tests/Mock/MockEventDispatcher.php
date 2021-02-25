@@ -13,24 +13,25 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class MockEventDispatcher
 {
-    /**
-     * @var EventDispatcherInterface|MockInterface
-     */
-    private EventDispatcherInterface $eventDispatcher;
+    private EventDispatcherInterface $mock;
 
     public function __construct()
     {
-        $this->eventDispatcher = \Mockery::mock(EventDispatcherInterface::class);
+        $this->mock = \Mockery::mock(EventDispatcherInterface::class);
     }
 
     public function getMock(): EventDispatcherInterface
     {
-        return $this->eventDispatcher;
+        return $this->mock;
     }
 
     public function withDispatchCalls(ExpectedDispatchedEventCollection $expectedDispatchedEvents): self
     {
-        $this->eventDispatcher
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('dispatch')
             ->withArgs(function (Event $passedEvent) use ($expectedDispatchedEvents) {
                 static $dispatchCallIndex = 0;
@@ -51,7 +52,11 @@ class MockEventDispatcher
 
     public function withoutDispatchCall(): self
     {
-        $this->eventDispatcher
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('dispatch');
 
         return $this;

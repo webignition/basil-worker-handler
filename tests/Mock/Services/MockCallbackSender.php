@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class MockCallbackSender
 {
-    /**
-     * @var CallbackSender|MockInterface
-     */
-    private CallbackSender $callbackSender;
+    private CallbackSender $mock;
 
     public function __construct()
     {
-        $this->callbackSender = \Mockery::mock(CallbackSender::class);
+        $this->mock = \Mockery::mock(CallbackSender::class);
     }
 
     public function getMock(): CallbackSender
     {
-        return $this->callbackSender;
+        return $this->mock;
     }
 
     public function withSendCall(CallbackInterface $callback): self
     {
-        $this->callbackSender
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('send')
             ->with($callback);
 
@@ -36,7 +37,11 @@ class MockCallbackSender
 
     public function withoutSendCall(): self
     {
-        $this->callbackSender
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('send');
 
         return $this;

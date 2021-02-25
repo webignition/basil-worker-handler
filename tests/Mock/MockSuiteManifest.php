@@ -10,29 +10,28 @@ use webignition\BasilCompilerModels\TestManifest;
 
 class MockSuiteManifest
 {
-    /**
-     * @var SuiteManifest|MockInterface
-     */
-    private SuiteManifest $suiteManifest;
+    private SuiteManifest $mock;
 
     public function __construct()
     {
-        $this->suiteManifest = \Mockery::mock(SuiteManifest::class);
+        $this->mock = \Mockery::mock(SuiteManifest::class);
     }
 
     public function getMock(): SuiteManifest
     {
-        return $this->suiteManifest;
+        return $this->mock;
     }
 
     /**
      * @param TestManifest[] $testManifests
-     *
-     * @return $this
      */
     public function withGetTestManifestsCall(array $testManifests): self
     {
-        $this->suiteManifest
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('getTestManifests')
             ->andReturn($testManifests);
 

@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository
 
 class MockTestRepository
 {
-    /**
-     * @var TestRepository|MockInterface
-     */
-    private TestRepository $testRepository;
+    private TestRepository $mock;
 
     public function __construct()
     {
-        $this->testRepository = \Mockery::mock(TestRepository::class);
+        $this->mock = \Mockery::mock(TestRepository::class);
     }
 
     public function getMock(): TestRepository
     {
-        return $this->testRepository;
+        return $this->mock;
     }
 
     public function withoutFindCall(): self
     {
-        $this->testRepository
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('find');
 
         return $this;
@@ -35,7 +36,11 @@ class MockTestRepository
 
     public function withFindCall(int $testId, ?Test $test): self
     {
-        $this->testRepository
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('find')
             ->with($testId)
             ->andReturn($test);

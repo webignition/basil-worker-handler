@@ -9,29 +9,28 @@ use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class MockExecutionState
 {
-    /**
-     * @var ExecutionState|MockInterface
-     */
-    private ExecutionState $executionState;
+    private ExecutionState $mock;
 
     public function __construct()
     {
-        $this->executionState = \Mockery::mock(ExecutionState::class);
+        $this->mock = \Mockery::mock(ExecutionState::class);
     }
 
     public function getMock(): ExecutionState
     {
-        return $this->executionState;
+        return $this->mock;
     }
 
     /**
      * @param ExecutionState::STATE_* $state
-     *
-     * @return $this
      */
     public function withGetCall(string $state): self
     {
-        $this->executionState
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('get')
             ->andReturn($state);
 

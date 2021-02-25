@@ -10,24 +10,25 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 
 class MockTestExecutor
 {
-    /**
-     * @var TestExecutor|MockInterface
-     */
-    private TestExecutor $testExecutor;
+    private TestExecutor $mock;
 
     public function __construct()
     {
-        $this->testExecutor = \Mockery::mock(TestExecutor::class);
+        $this->mock = \Mockery::mock(TestExecutor::class);
     }
 
     public function getMock(): TestExecutor
     {
-        return $this->testExecutor;
+        return $this->mock;
     }
 
     public function withoutExecuteCall(): self
     {
-        $this->testExecutor
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldNotReceive('execute');
 
         return $this;
@@ -35,7 +36,11 @@ class MockTestExecutor
 
     public function withExecuteCall(Test $test): self
     {
-        $this->testExecutor
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
             ->shouldReceive('execute')
             ->with($test);
 
