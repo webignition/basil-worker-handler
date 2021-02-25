@@ -69,4 +69,12 @@ class CallbackEventFactoryTest extends AbstractBaseFunctionalTest
         self::assertSame(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED, $callback->getType());
         self::assertSame($documentData, $callback->getPayload());
     }
+
+    public function testCreateJobCompleteEvent(): void
+    {
+        $event = $this->callbackEventFactory->createJobCompleteEvent();
+        $callback = $event->getCallback();
+        self::assertNotNull($callback->getId());
+        self::assertSame([], $callback->getPayload());
+    }
 }

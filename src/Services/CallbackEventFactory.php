@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Event\JobCompleteEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Model\Callback\CompileFailureCallback;
 use App\Model\Callback\ExecuteDocumentReceivedCallback;
+use App\Model\Callback\JobCompleteCallback;
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\EntityPersister;
@@ -37,5 +39,13 @@ class CallbackEventFactory
         $this->entityPersister->persist($callback->getEntity());
 
         return new TestExecuteDocumentReceivedEvent($test, $document, $callback);
+    }
+
+    public function createJobCompleteEvent(): JobCompleteEvent
+    {
+        $callback = new JobCompleteCallback();
+        $this->entityPersister->persist($callback->getEntity());
+
+        return new JobCompleteEvent($callback);
     }
 }
