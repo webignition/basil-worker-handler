@@ -13,21 +13,12 @@ use webignition\BasilWorker\StateBundle\Services\CompilationState;
 
 class CompileSourceHandler implements MessageHandlerInterface
 {
-    private Compiler $compiler;
-    private JobStore $jobStore;
-    private SourceCompileEventDispatcher $eventDispatcher;
-    private CompilationState $compilationState;
-
     public function __construct(
-        Compiler $compiler,
-        JobStore $jobStore,
-        SourceCompileEventDispatcher $eventDispatcher,
-        CompilationState $compilationState
+        private Compiler $compiler,
+        private JobStore $jobStore,
+        private SourceCompileEventDispatcher $eventDispatcher,
+        private CompilationState $compilationState
     ) {
-        $this->compiler = $compiler;
-        $this->jobStore = $jobStore;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->compilationState = $compilationState;
     }
 
     public function __invoke(CompileSourceMessage $message): void
