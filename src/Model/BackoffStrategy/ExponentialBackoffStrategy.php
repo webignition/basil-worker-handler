@@ -6,11 +6,8 @@ namespace App\Model\BackoffStrategy;
 
 class ExponentialBackoffStrategy implements BackoffStrategyInterface
 {
-    private int $window;
-
-    public function __construct(int $window = 1000)
+    public function __construct(private int $window = 1000)
     {
-        $this->window = $window;
     }
 
     public function getDelay(int $retryCount): int
