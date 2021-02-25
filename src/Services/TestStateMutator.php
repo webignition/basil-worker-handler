@@ -15,13 +15,10 @@ use webignition\BasilWorker\PersistenceBundle\Services\EntityPersister;
 
 class TestStateMutator implements EventSubscriberInterface
 {
-    private EntityPersister $entityPersister;
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EntityPersister $entityPersister, EventDispatcherInterface $eventDispatcher)
-    {
-        $this->entityPersister = $entityPersister;
-        $this->eventDispatcher = $eventDispatcher;
+    public function __construct(
+        private EntityPersister $entityPersister,
+        private EventDispatcherInterface $eventDispatcher
+    ) {
     }
 
     public static function getSubscribedEvents()

@@ -11,14 +11,12 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class SourceCompileFailureEvent extends AbstractSourceCompileEvent implements CallbackEventInterface
 {
-    private ErrorOutputInterface $errorOutput;
-    private CallbackInterface $callback;
-
-    public function __construct(string $source, ErrorOutputInterface $errorOutput, CompileFailureCallback $callback)
-    {
+    public function __construct(
+        string $source,
+        private ErrorOutputInterface $errorOutput,
+        private CompileFailureCallback $callback
+    ) {
         parent::__construct($source);
-        $this->errorOutput = $errorOutput;
-        $this->callback = $callback;
     }
 
     public function getOutput(): ErrorOutputInterface

@@ -13,15 +13,10 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class CallbackResponseHandler
 {
-    private EventDispatcherInterface $eventDispatcher;
-    private BackoffStrategyFactory $backoffStrategyFactory;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        BackoffStrategyFactory $backoffStrategyFactory
+        private EventDispatcherInterface $eventDispatcher,
+        private BackoffStrategyFactory $backoffStrategyFactory
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->backoffStrategyFactory = $backoffStrategyFactory;
     }
 
     public function handle(CallbackInterface $callback, ClientExceptionInterface | ResponseInterface $context): void

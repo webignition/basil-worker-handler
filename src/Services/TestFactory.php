@@ -13,11 +13,8 @@ use webignition\BasilWorker\PersistenceBundle\Services\Factory\TestFactory as Bu
 
 class TestFactory implements EventSubscriberInterface
 {
-    private BundleTestFactory $bundleTestFactory;
-
-    public function __construct(BundleTestFactory $bundleTestFactory)
+    public function __construct(private BundleTestFactory $bundleTestFactory)
     {
-        $this->bundleTestFactory = $bundleTestFactory;
     }
 
     public static function getSubscribedEvents()

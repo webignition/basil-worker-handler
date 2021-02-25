@@ -13,24 +13,13 @@ use webignition\TcpCliProxyClient\HandlerFactory;
 
 class Compiler
 {
-    private Client $client;
-    private string $compilerSourceDirectory;
-    private string $compilerTargetDirectory;
-    private YamlParser $yamlParser;
-    private HandlerFactory $handlerFactory;
-
     public function __construct(
-        Client $client,
-        string $compilerSourceDirectory,
-        string $compilerTargetDirectory,
-        YamlParser $yamlParser,
-        HandlerFactory $handlerFactory
+        private Client $client,
+        private string $compilerSourceDirectory,
+        private string $compilerTargetDirectory,
+        private YamlParser $yamlParser,
+        private HandlerFactory $handlerFactory
     ) {
-        $this->client = $client;
-        $this->compilerTargetDirectory = $compilerTargetDirectory;
-        $this->compilerSourceDirectory = $compilerSourceDirectory;
-        $this->yamlParser = $yamlParser;
-        $this->handlerFactory = $handlerFactory;
     }
 
     public function compile(string $source): OutputInterface

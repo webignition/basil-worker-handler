@@ -19,13 +19,10 @@ use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
 
 class SendCallbackMessageDispatcher implements EventSubscriberInterface
 {
-    private MessageBusInterface $messageBus;
-    private CallbackStateMutator $callbackStateMutator;
-
-    public function __construct(MessageBusInterface $messageBus, CallbackStateMutator $callbackStateMutator)
-    {
-        $this->messageBus = $messageBus;
-        $this->callbackStateMutator = $callbackStateMutator;
+    public function __construct(
+        private MessageBusInterface $messageBus,
+        private CallbackStateMutator $callbackStateMutator
+    ) {
     }
 
     public static function getSubscribedEvents()

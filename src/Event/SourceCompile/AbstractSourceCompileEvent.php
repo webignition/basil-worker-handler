@@ -8,11 +8,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class AbstractSourceCompileEvent extends Event implements SourceCompileEventInterface
 {
-    private string $source;
-
-    public function __construct(string $source)
+    public function __construct(private string $source)
     {
-        $this->source = $source;
     }
 
     public function getSource(): string

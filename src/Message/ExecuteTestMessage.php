@@ -11,11 +11,8 @@ class ExecuteTestMessage extends AbstractSerializableMessage
     public const TYPE = 'execute-test';
     public const PAYLOAD_KEY_TEST_ID = 'test_id';
 
-    private int $testId;
-
-    public function __construct(int $testId)
+    public function __construct(private int $testId)
     {
-        $this->testId = $testId;
     }
 
     /**

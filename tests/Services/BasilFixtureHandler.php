@@ -8,13 +8,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BasilFixtureHandler
 {
-    private string $fixturesPath;
-    private string $uploadedPath;
-
-    public function __construct(string $fixturesPath, string $uploadedPath)
-    {
-        $this->fixturesPath = $fixturesPath;
-        $this->uploadedPath = $uploadedPath;
+    public function __construct(
+        private string $fixturesPath,
+        private string $uploadedPath
+    ) {
     }
 
     public function createUploadedFile(string $relativePath): UploadedFile

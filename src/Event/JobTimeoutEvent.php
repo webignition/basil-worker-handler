@@ -10,12 +10,10 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class JobTimeoutEvent extends Event implements CallbackEventInterface
 {
-    private int $jobMaximumDuration;
     private CallbackInterface $callback;
 
-    public function __construct(int $jobMaximumDuration)
+    public function __construct(private int $jobMaximumDuration)
     {
-        $this->jobMaximumDuration = $jobMaximumDuration;
         $this->callback = new JobTimeoutCallback($this->jobMaximumDuration);
     }
 

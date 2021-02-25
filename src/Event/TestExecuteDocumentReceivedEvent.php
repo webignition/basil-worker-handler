@@ -11,15 +11,12 @@ use webignition\YamlDocument\Document;
 
 class TestExecuteDocumentReceivedEvent extends AbstractTestEvent implements CallbackEventInterface
 {
-    private Document $document;
-    private CallbackInterface $callback;
-
-    public function __construct(Test $test, Document $document, ExecuteDocumentReceivedCallback $callback)
-    {
+    public function __construct(
+        Test $test,
+        private Document $document,
+        private ExecuteDocumentReceivedCallback $callback
+    ) {
         parent::__construct($test);
-
-        $this->document = $document;
-        $this->callback = $callback;
     }
 
     public function getDocument(): Document

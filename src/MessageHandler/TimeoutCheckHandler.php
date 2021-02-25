@@ -13,18 +13,11 @@ use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 
 class TimeoutCheckHandler implements MessageHandlerInterface
 {
-    private JobStore $jobStore;
-    private TimeoutCheckMessageDispatcher $timeoutCheckMessageDispatcher;
-    private EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        JobStore $jobStore,
-        TimeoutCheckMessageDispatcher $timeoutCheckMessageDispatcher,
-        EventDispatcherInterface $eventDispatcher
+        private JobStore $jobStore,
+        private TimeoutCheckMessageDispatcher $timeoutCheckMessageDispatcher,
+        private EventDispatcherInterface $eventDispatcher
     ) {
-        $this->jobStore = $jobStore;
-        $this->timeoutCheckMessageDispatcher = $timeoutCheckMessageDispatcher;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(TimeoutCheckMessage $timeoutCheck): void

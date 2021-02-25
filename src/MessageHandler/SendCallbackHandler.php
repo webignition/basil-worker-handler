@@ -13,18 +13,11 @@ use webignition\BasilWorker\PersistenceBundle\Services\Repository\CallbackReposi
 
 class SendCallbackHandler implements MessageHandlerInterface
 {
-    private CallbackRepository $repository;
-    private CallbackSender $sender;
-    private CallbackStateMutator $stateMutator;
-
     public function __construct(
-        CallbackRepository $repository,
-        CallbackSender $sender,
-        CallbackStateMutator $stateMutator
+        private CallbackRepository $repository,
+        private CallbackSender $sender,
+        private CallbackStateMutator $stateMutator
     ) {
-        $this->repository = $repository;
-        $this->sender = $sender;
-        $this->stateMutator = $stateMutator;
     }
 
     public function __invoke(SendCallbackMessage $message): void

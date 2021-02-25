@@ -11,13 +11,10 @@ use webignition\YamlDocument\Document;
 
 class TestDocumentMutator
 {
-    private Dumper $yamlDumper;
-    private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover;
-
-    public function __construct(Dumper $yamlDumper, DefinedStringPrefixRemover $compilerSourcePathPrefixRemover)
-    {
-        $this->yamlDumper = $yamlDumper;
-        $this->compilerSourcePathPrefixRemover = $compilerSourcePathPrefixRemover;
+    public function __construct(
+        private Dumper $yamlDumper,
+        private DefinedStringPrefixRemover $compilerSourcePathPrefixRemover
+    ) {
     }
 
     public function removeCompilerSourceDirectoryFromSource(Document $document): Document

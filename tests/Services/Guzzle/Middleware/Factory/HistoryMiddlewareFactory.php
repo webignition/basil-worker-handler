@@ -10,11 +10,8 @@ use webignition\HttpHistoryContainer\LoggableContainer;
 
 class HistoryMiddlewareFactory implements MiddlewareFactoryInterface
 {
-    private LoggableContainer $container;
-
-    public function __construct(LoggableContainer $container)
+    public function __construct(private LoggableContainer $container)
     {
-        $this->container = $container;
     }
 
     public function create(): MiddlewareArguments

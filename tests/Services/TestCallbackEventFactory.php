@@ -10,11 +10,8 @@ use webignition\BasilCompilerModels\ErrorOutputInterface;
 
 class TestCallbackEventFactory
 {
-    private CallbackEventFactory $callbackEventFactory;
-
-    public function __construct(CallbackEventFactory $callbackEventFactory)
+    public function __construct(private CallbackEventFactory $callbackEventFactory)
     {
-        $this->callbackEventFactory = $callbackEventFactory;
     }
 
     /**
