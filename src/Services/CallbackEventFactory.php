@@ -15,11 +15,8 @@ use webignition\YamlDocument\Document;
 
 class CallbackEventFactory
 {
-    private EntityPersister $entityPersister;
-
-    public function __construct(EntityPersister $entityPersister)
+    public function __construct(private EntityPersister $entityPersister)
     {
-        $this->entityPersister = $entityPersister;
     }
 
     public function createSourceCompileFailureEvent(

@@ -13,22 +13,13 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
 class CallbackResponseHandler
 {
-    private EventDispatcherInterface $eventDispatcher;
-    private BackoffStrategyFactory $backoffStrategyFactory;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        BackoffStrategyFactory $backoffStrategyFactory
+        private EventDispatcherInterface $eventDispatcher,
+        private BackoffStrategyFactory $backoffStrategyFactory
     ) {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->backoffStrategyFactory = $backoffStrategyFactory;
     }
 
-    /**
-     * @param CallbackInterface $callback
-     * @param ClientExceptionInterface|ResponseInterface $context
-     */
-    public function handle(CallbackInterface $callback, object $context): void
+    public function handle(CallbackInterface $callback, ClientExceptionInterface | ResponseInterface $context): void
     {
         $callback->incrementRetryCount();
         $callback = $this->createNextCallback($callback, $context);
@@ -36,13 +27,10 @@ class CallbackResponseHandler
         $this->eventDispatcher->dispatch(new CallbackHttpErrorEvent($callback, $context));
     }
 
-    /**
-     * @param CallbackInterface $callback
-     * @param ClientExceptionInterface|ResponseInterface $context
-     * @return CallbackInterface
-     */
-    private function createNextCallback(CallbackInterface $callback, object $context): CallbackInterface
-    {
+    private function createNextCallback(
+        CallbackInterface $callback,
+        ClientExceptionInterface | ResponseInterface $context
+    ): CallbackInterface {
         if (0 === $callback->getRetryCount()) {
             return $callback;
         }

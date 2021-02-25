@@ -11,11 +11,8 @@ use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
 class JobReadyHandler implements MessageHandlerInterface
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(private EventDispatcherInterface $eventDispatcher)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function __invoke(JobReadyMessage $message): void

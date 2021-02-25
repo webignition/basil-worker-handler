@@ -8,12 +8,9 @@ use webignition\BasilCompilerModels\SuiteManifest;
 
 class SourceCompileSuccessEvent extends AbstractSourceCompileEvent
 {
-    private SuiteManifest $suiteManifest;
-
-    public function __construct(string $source, SuiteManifest $suiteManifest)
+    public function __construct(string $source, private SuiteManifest $suiteManifest)
     {
         parent::__construct($source);
-        $this->suiteManifest = $suiteManifest;
     }
 
     public function getOutput(): SuiteManifest

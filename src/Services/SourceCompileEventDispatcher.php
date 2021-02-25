@@ -10,13 +10,10 @@ use webignition\BasilCompilerModels\OutputInterface;
 
 class SourceCompileEventDispatcher
 {
-    private SourceCompileEventFactory $factory;
-    private EventDispatcherInterface $dispatcher;
-
-    public function __construct(SourceCompileEventFactory $factory, EventDispatcherInterface $dispatcher)
-    {
-        $this->factory = $factory;
-        $this->dispatcher = $dispatcher;
+    public function __construct(
+        private SourceCompileEventFactory $factory,
+        private EventDispatcherInterface $dispatcher
+    ) {
     }
 
     public function dispatch(string $source, OutputInterface $output): void

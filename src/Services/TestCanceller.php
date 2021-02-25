@@ -12,13 +12,10 @@ use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository
 
 class TestCanceller implements EventSubscriberInterface
 {
-    private TestStateMutator $testStateMutator;
-    private TestRepository $testRepository;
-
-    public function __construct(TestStateMutator $testStateMutator, TestRepository $testRepository)
-    {
-        $this->testStateMutator = $testStateMutator;
-        $this->testRepository = $testRepository;
+    public function __construct(
+        private TestStateMutator $testStateMutator,
+        private TestRepository $testRepository
+    ) {
     }
 
     public static function getSubscribedEvents()

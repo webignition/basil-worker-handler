@@ -12,11 +12,8 @@ use webignition\BasilCompilerModels\SuiteManifest;
 
 class SourceCompileEventFactory
 {
-    private CallbackEventFactory $callbackEventFactory;
-
-    public function __construct(CallbackEventFactory $callbackEventFactory)
+    public function __construct(private CallbackEventFactory $callbackEventFactory)
     {
-        $this->callbackEventFactory = $callbackEventFactory;
     }
 
     public function create(string $source, OutputInterface $output): ?SourceCompileEventInterface

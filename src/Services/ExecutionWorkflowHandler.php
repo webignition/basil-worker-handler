@@ -16,21 +16,12 @@ use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ExecutionWorkflowHandler implements EventSubscriberInterface
 {
-    private MessageBusInterface $messageBus;
-    private TestRepository $testRepository;
-    private CompilationState $compilationState;
-    private ExecutionState $executionState;
-
     public function __construct(
-        MessageBusInterface $messageBus,
-        TestRepository $testRepository,
-        CompilationState $compilationState,
-        ExecutionState $executionState
+        private MessageBusInterface $messageBus,
+        private TestRepository $testRepository,
+        private CompilationState $compilationState,
+        private ExecutionState $executionState
     ) {
-        $this->messageBus = $messageBus;
-        $this->testRepository = $testRepository;
-        $this->compilationState = $compilationState;
-        $this->executionState = $executionState;
     }
 
     public static function getSubscribedEvents()

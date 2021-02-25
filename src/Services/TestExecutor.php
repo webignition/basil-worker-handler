@@ -14,27 +14,14 @@ use webignition\YamlDocumentGenerator\YamlGenerator;
 
 class TestExecutor
 {
-    private Client $delegatorClient;
-    private EventDispatcherInterface $eventDispatcher;
-    private YamlDocumentFactory $yamlDocumentFactory;
-    private YamlGenerator $yamlGenerator;
-    private TestDocumentMutator $testDocumentMutator;
-    private CallbackEventFactory $callbackEventFactory;
-
     public function __construct(
-        Client $delegatorClient,
-        YamlDocumentFactory $yamlDocumentFactory,
-        EventDispatcherInterface $eventDispatcher,
-        YamlGenerator $yamlGenerator,
-        TestDocumentMutator $testDocumentMutator,
-        CallbackEventFactory $callbackEventFactory
+        private Client $delegatorClient,
+        private YamlDocumentFactory $yamlDocumentFactory,
+        private EventDispatcherInterface $eventDispatcher,
+        private YamlGenerator $yamlGenerator,
+        private TestDocumentMutator $testDocumentMutator,
+        private CallbackEventFactory $callbackEventFactory
     ) {
-        $this->delegatorClient = $delegatorClient;
-        $this->yamlDocumentFactory = $yamlDocumentFactory;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->yamlGenerator = $yamlGenerator;
-        $this->testDocumentMutator = $testDocumentMutator;
-        $this->callbackEventFactory = $callbackEventFactory;
     }
 
     public function execute(Test $test): void

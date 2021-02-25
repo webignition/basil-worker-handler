@@ -12,13 +12,10 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class CompilationWorkflowHandler implements EventSubscriberInterface
 {
-    private MessageBusInterface $messageBus;
-    private SourcePathFinder $sourcePathFinder;
-
-    public function __construct(MessageBusInterface $messageBus, SourcePathFinder $sourcePathFinder)
-    {
-        $this->messageBus = $messageBus;
-        $this->sourcePathFinder = $sourcePathFinder;
+    public function __construct(
+        private MessageBusInterface $messageBus,
+        private SourcePathFinder $sourcePathFinder
+    ) {
     }
 
     /**
