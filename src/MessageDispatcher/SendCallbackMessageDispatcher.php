@@ -55,6 +55,13 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 
+    public function dispatchForJobCompleteEvent(JobCompleteEvent $jobCompleteEvent): void
+    {
+        // create callback (event will no longer be holding this
+        // dispatch message
+        // profit?
+    }
+
     /**
      * @param CallbackInterface $callback
      *
