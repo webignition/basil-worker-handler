@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\MessageDispatcher;
 
-use App\Event\CallbackEventInterface;
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
@@ -17,12 +16,14 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
+use webignition\BasilWorker\PersistenceBundle\Services\Factory\CallbackFactory;
 
 class SendCallbackMessageDispatcher implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private CallbackStateMutator $callbackStateMutator
+        private CallbackStateMutator $callbackStateMutator,
+        private CallbackFactory $callbackFactory
     ) {
     }
 
@@ -30,28 +31,71 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         return [
             CallbackHttpErrorEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForCallbackHttpErrorEventEvent', 0],
             ],
             SourceCompileFailureEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForSourceCompileFailureEvent', 0],
             ],
             TestExecuteDocumentReceivedEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForTextExecuteDocumentReceivedEvent', 0],
             ],
             JobTimeoutEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForJobTimeoutEvent', 0],
             ],
             JobCompleteEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForJobCompleteEvent', 0],
             ],
         ];
     }
 
-    public function dispatchForCallbackEvent(CallbackEventInterface $event): void
+    public function dispatchForSourceCompileFailureEvent(SourceCompileFailureEvent $event): void
     {
-        $callback = $event->getCallback();
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_COMPILE_FAILURE, $event->getOutput()->getData());
+    }
 
+    public function dispatchForCallbackHttpErrorEventEvent(CallbackHttpErrorEvent $event): void
+    {
+        $this->dispatchCallback($event->getCallback());
+    }
+
+    public function dispatchForTextExecuteDocumentReceivedEvent(TestExecuteDocumentReceivedEvent $event): void
+    {
+        $document = $event->getDocument();
+
+        $documentData = $document->parse();
+        $documentData = is_array($documentData) ? $documentData : [];
+
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED, $documentData);
+    }
+
+    public function dispatchForJobTimeoutEvent(JobTimeoutEvent $event): void
+    {
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_JOB_TIMEOUT, []);
+    }
+
+    public function dispatchForJobCompleteEvent(JobCompleteEvent $jobCompleteEvent): void
+    {
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_JOB_COMPLETE, []);
+    }
+
+    /**
+     * @param CallbackInterface::TYPE_* $type
+     * @param array<mixed> $payload
+     */
+    private function createAndDispatchCallback(string $type, array $payload): void
+    {
+        $this->dispatchCallback(
+            $this->callbackFactory->create(
+                $type,
+                $payload
+            )
+        );
+    }
+
+    private function dispatchCallback(CallbackInterface $callback): void
+    {
         $this->callbackStateMutator->setQueued($callback);
+
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 

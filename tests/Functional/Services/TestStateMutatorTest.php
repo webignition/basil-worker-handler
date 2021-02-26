@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\TestExecuteCompleteEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
-use App\Services\CallbackEventFactory;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\InvokableFactory\TestMutatorFactory;
@@ -24,7 +23,6 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     private TestStateMutator $mutator;
     private EventDispatcherInterface $eventDispatcher;
     private Test $test;
-    private CallbackEventFactory $callbackEventFactory;
     private InvokableHandler $invokableHandler;
 
     protected function setUp(): void
@@ -140,10 +138,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     ): void {
         self::assertSame(Test::STATE_AWAITING, $this->test->getState());
 
-        $event = $this->callbackEventFactory->createTestExecuteDocumentReceivedEvent(
-            $this->test,
-            $document
-        );
+        $event = new TestExecuteDocumentReceivedEvent($this->test, $document);
         $execute($event);
 
         self::assertSame($expectedState, $this->test->getState());
