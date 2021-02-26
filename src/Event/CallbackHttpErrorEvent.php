@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
-class CallbackHttpErrorEvent extends Event implements CallbackEventInterface
+class CallbackHttpErrorEvent extends Event
 {
     public function __construct(
         private CallbackInterface $callback,
