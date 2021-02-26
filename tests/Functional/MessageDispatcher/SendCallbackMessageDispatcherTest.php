@@ -129,7 +129,9 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             JobTimeoutEvent::class => [
                 'event' => new JobTimeoutEvent(10),
                 'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIMEOUT,
-                'expectedCallbackPayload' => [],
+                'expectedCallbackPayload' => [
+                    'maximum_duration_in_seconds' => 10,
+                ],
             ],
         ];
     }
