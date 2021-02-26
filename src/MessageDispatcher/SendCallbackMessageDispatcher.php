@@ -38,7 +38,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForCallbackEvent', 0],
             ],
             TestExecuteDocumentReceivedEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForTextExecuteDocumentReceivedEvent', 0],
             ],
             JobTimeoutEvent::class => [
                 ['dispatchForJobTimeoutEvent', 0],
@@ -55,6 +55,16 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
 
         $this->callbackStateMutator->setQueued($callback);
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
+    }
+
+    public function dispatchForTextExecuteDocumentReceivedEvent(TestExecuteDocumentReceivedEvent $event): void
+    {
+        $document = $event->getDocument();
+
+        $documentData = $document->parse();
+        $documentData = is_array($documentData) ? $documentData : [];
+
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED, $documentData);
     }
 
     public function dispatchForJobTimeoutEvent(JobTimeoutEvent $event): void

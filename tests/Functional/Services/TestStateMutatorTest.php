@@ -140,10 +140,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     ): void {
         self::assertSame(Test::STATE_AWAITING, $this->test->getState());
 
-        $event = $this->callbackEventFactory->createTestExecuteDocumentReceivedEvent(
-            $this->test,
-            $document
-        );
+        $event = new TestExecuteDocumentReceivedEvent($this->test, $document);
         $execute($event);
 
         self::assertSame($expectedState, $this->test->getState());

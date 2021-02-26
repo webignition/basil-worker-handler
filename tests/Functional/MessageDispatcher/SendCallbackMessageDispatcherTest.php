@@ -15,8 +15,6 @@ use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 use App\Model\Callback\CompileFailureCallback;
 use App\Model\Callback\DelayedCallback;
-use App\Model\Callback\ExecuteDocumentReceivedCallback;
-use App\Model\Callback\JobTimeoutCallback;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
 use App\Tests\Model\TestCallback;
@@ -174,16 +172,6 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'compile-failure-key' => 'value',
             ]);
 
-        $sourceCompileFailureEventCallback = new CompileFailureCallback($sourceCompileFailureEventOutput);
-
-        $document = new Document('document-key: value');
-        $testExecuteDocumentReceivedEventCallback = new ExecuteDocumentReceivedCallback($document);
-
-        $jobTimeoutEvent = new JobTimeoutEvent(10);
-
-        $jobTimeoutCallback = new JobTimeoutCallback(10);
-        $jobTimeoutCallback->setState(CallbackInterface::STATE_QUEUED);
-
         return [
             'http exception' => [
                 'event' => new CallbackHttpErrorEvent($httpExceptionEventCallback, new Response(503)),
@@ -196,7 +184,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'event' => new SourceCompileFailureEvent(
                     '/app/source/Test/test.yml',
                     $sourceCompileFailureEventOutput,
-                    $sourceCompileFailureEventCallback
+                    new CompileFailureCallback($sourceCompileFailureEventOutput)
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
                 'expectedCallbackPayload' => [
@@ -206,8 +194,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             TestExecuteDocumentReceivedEvent::class => [
                 'event' => new TestExecuteDocumentReceivedEvent(
                     (new MockTest())->getMock(),
-                    $document,
-                    $testExecuteDocumentReceivedEventCallback
+                    new Document('document-key: value')
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED,
                 'expectedCallbackPayload' => [
@@ -220,7 +207,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'expectedCallbackPayload' => [],
             ],
             JobTimeoutEvent::class => [
-                'event' => $jobTimeoutEvent,
+                'event' => new JobTimeoutEvent(10),
                 'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIMEOUT,
                 'expectedCallbackPayload' => [],
             ],

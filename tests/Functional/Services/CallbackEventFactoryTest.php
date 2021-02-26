@@ -7,12 +7,9 @@ namespace App\Tests\Functional\Services;
 use App\Services\CallbackEventFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Symfony\Component\Yaml\Yaml;
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
-use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
-use webignition\YamlDocument\Document;
 
 class CallbackEventFactoryTest extends AbstractBaseFunctionalTest
 {
@@ -48,25 +45,5 @@ class CallbackEventFactoryTest extends AbstractBaseFunctionalTest
         self::assertNotNull($callback->getId());
         self::assertSame(CallbackInterface::TYPE_COMPILE_FAILURE, $callback->getType());
         self::assertSame($errorOutputData, $callback->getPayload());
-    }
-
-    public function testCreateTestExecuteDocumentReceivedEvent(): void
-    {
-        $documentData = [
-            'key' => 'value',
-        ];
-
-        $document = new Document(Yaml::dump($documentData));
-
-        $test = \Mockery::mock(Test::class);
-
-        $event = $this->callbackEventFactory->createTestExecuteDocumentReceivedEvent($test, $document);
-        self::assertSame($test, $event->getTest());
-        self::assertSame($document, $event->getDocument());
-
-        $callback = $event->getCallback();
-        self::assertNotNull($callback->getId());
-        self::assertSame(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED, $callback->getType());
-        self::assertSame($documentData, $callback->getPayload());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Model\RunnerTest\TestProxy;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
@@ -38,15 +39,14 @@ class TestExecutor
         $runnerTestString = $this->yamlGenerator->generate($runnerTest);
 
         $this->eventDispatcher->dispatch(
-            $this->callbackEventFactory->createTestExecuteDocumentReceivedEvent(
+            new TestExecuteDocumentReceivedEvent(
                 $test,
                 $this->testDocumentMutator->removeCompilerSourceDirectoryFromSource(new Document($runnerTestString))
             )
         );
 
         $this->yamlDocumentFactory->setOnDocumentCreated(function (Document $document) use ($test) {
-            $event = $this->callbackEventFactory->createTestExecuteDocumentReceivedEvent($test, $document);
-            $this->eventDispatcher->dispatch($event);
+            $this->eventDispatcher->dispatch(new TestExecuteDocumentReceivedEvent($test, $document));
         });
 
         $this->yamlDocumentFactory->start();
