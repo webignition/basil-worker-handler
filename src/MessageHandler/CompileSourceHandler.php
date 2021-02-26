@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
+use App\Event\SourceCompile\SourceCompileFailureEvent;
+use App\Event\SourceCompile\SourceCompileSuccessEvent;
 use App\Message\CompileSourceMessage;
 use App\Services\Compiler;
-use App\Services\SourceCompileEventDispatcher;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\Store\JobStore;
 use webignition\BasilWorker\StateBundle\Services\CompilationState;
 
@@ -16,8 +19,8 @@ class CompileSourceHandler implements MessageHandlerInterface
     public function __construct(
         private Compiler $compiler,
         private JobStore $jobStore,
-        private SourceCompileEventDispatcher $eventDispatcher,
-        private CompilationState $compilationState
+        private CompilationState $compilationState,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -34,6 +37,10 @@ class CompileSourceHandler implements MessageHandlerInterface
         $sourcePath = $message->getPath();
         $output = $this->compiler->compile($sourcePath);
 
-        $this->eventDispatcher->dispatch($sourcePath, $output);
+        $event = $output instanceof ErrorOutputInterface
+            ? new SourceCompileFailureEvent($sourcePath, $output)
+            : new SourceCompileSuccessEvent($sourcePath, $output);
+
+        $this->eventDispatcher->dispatch($event);
     }
 }

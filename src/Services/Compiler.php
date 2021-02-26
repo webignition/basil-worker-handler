@@ -6,7 +6,7 @@ namespace App\Services;
 
 use Symfony\Component\Yaml\Parser as YamlParser;
 use webignition\BasilCompilerModels\ErrorOutput;
-use webignition\BasilCompilerModels\OutputInterface;
+use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilCompilerModels\SuiteManifest;
 use webignition\TcpCliProxyClient\Client;
 use webignition\TcpCliProxyClient\HandlerFactory;
@@ -22,7 +22,7 @@ class Compiler
     ) {
     }
 
-    public function compile(string $source): OutputInterface
+    public function compile(string $source): ErrorOutputInterface | SuiteManifest
     {
         $output = '';
         $exitCode = null;
@@ -40,10 +40,8 @@ class Compiler
 
         $outputData = $this->yamlParser->parse($output);
 
-        if (0 === $exitCode) {
-            return SuiteManifest::fromArray($outputData);
-        }
-
-        return ErrorOutput::fromArray($outputData);
+        return 0 === $exitCode
+            ? SuiteManifest::fromArray($outputData)
+            : ErrorOutput::fromArray($outputData);
     }
 }
