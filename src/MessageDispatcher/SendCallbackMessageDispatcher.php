@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\MessageDispatcher;
 
-use App\Event\CallbackEventInterface;
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
@@ -47,14 +46,6 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForJobCompleteEvent', 0],
             ],
         ];
-    }
-
-    public function dispatchForCallbackEvent(CallbackEventInterface $event): void
-    {
-        $callback = $event->getCallback();
-
-        $this->callbackStateMutator->setQueued($callback);
-        $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 
     public function dispatchForSourceCompileFailureEvent(SourceCompileFailureEvent $event): void
