@@ -13,7 +13,6 @@ use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
-use App\Model\Callback\CompileFailureCallback;
 use App\Model\Callback\DelayedCallback;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
@@ -183,8 +182,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             SourceCompileFailureEvent::class => [
                 'event' => new SourceCompileFailureEvent(
                     '/app/source/Test/test.yml',
-                    $sourceCompileFailureEventOutput,
-                    new CompileFailureCallback($sourceCompileFailureEventOutput)
+                    $sourceCompileFailureEventOutput
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
                 'expectedCallbackPayload' => [
