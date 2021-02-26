@@ -20,8 +20,7 @@ class TestExecutor
         private YamlDocumentFactory $yamlDocumentFactory,
         private EventDispatcherInterface $eventDispatcher,
         private YamlGenerator $yamlGenerator,
-        private TestDocumentMutator $testDocumentMutator,
-        private CallbackEventFactory $callbackEventFactory
+        private TestDocumentMutator $testDocumentMutator
     ) {
     }
 

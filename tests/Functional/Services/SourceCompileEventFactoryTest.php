@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
-use App\Model\Callback\CompileFailureCallback;
 use App\Services\SourceCompileEventFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
@@ -38,12 +37,6 @@ class SourceCompileEventFactoryTest extends AbstractBaseFunctionalTest
         self::assertInstanceOf(SourceCompileFailureEvent::class, $event);
         self::assertSame($source, $event->getSource());
         self::assertSame($output, $event->getOutput());
-
-        if ($event instanceof SourceCompileFailureEvent) {
-            $callback = $event->getCallback();
-            self::assertSame($output->getData(), $callback->getPayload());
-            self::assertIsInt($callback->getId());
-        }
     }
 
     /**
@@ -63,11 +56,7 @@ class SourceCompileEventFactoryTest extends AbstractBaseFunctionalTest
             'default' => [
                 'source' => '/app/source/Test/test.yml',
                 'output' => $errorOutput,
-                'expectedEvent' => new SourceCompileFailureEvent(
-                    $source,
-                    $errorOutput,
-                    new CompileFailureCallback($errorOutput)
-                ),
+                'expectedEvent' => new SourceCompileFailureEvent($source, $errorOutput),
             ],
         ];
     }

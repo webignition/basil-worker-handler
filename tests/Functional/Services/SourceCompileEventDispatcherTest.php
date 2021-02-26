@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\SourceCompile\SourceCompileSuccessEvent;
-use App\Model\Callback\CompileFailureCallback;
 use App\Services\SourceCompileEventDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockEventDispatcher;
@@ -94,11 +93,6 @@ class SourceCompileEventDispatcherTest extends AbstractBaseFunctionalTest
                         if ($actualEvent instanceof SourceCompileFailureEvent) {
                             self::assertSame('Test/test1.yml', $actualEvent->getSource());
                             self::assertSame($actualEvent->getOutput(), $compileFailureErrorOutput);
-
-                            $callback = $actualEvent->getCallback();
-                            self::assertIsInt($callback->getId());
-                            self::assertSame(CompileFailureCallback::TYPE_COMPILE_FAILURE, $callback->getType());
-                            self::assertSame($compileFailureErrorOutput->getData(), $callback->getPayload());
                         }
 
                         return true;

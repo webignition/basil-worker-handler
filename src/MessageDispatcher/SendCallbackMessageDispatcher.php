@@ -35,7 +35,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForCallbackEvent', 0],
             ],
             SourceCompileFailureEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForSourceCompileFailureEvent', 0],
             ],
             TestExecuteDocumentReceivedEvent::class => [
                 ['dispatchForTextExecuteDocumentReceivedEvent', 0],
@@ -55,6 +55,11 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
 
         $this->callbackStateMutator->setQueued($callback);
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
+    }
+
+    public function dispatchForSourceCompileFailureEvent(SourceCompileFailureEvent $event): void
+    {
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_COMPILE_FAILURE, $event->getOutput()->getData());
     }
 
     public function dispatchForTextExecuteDocumentReceivedEvent(TestExecuteDocumentReceivedEvent $event): void

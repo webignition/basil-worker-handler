@@ -58,9 +58,6 @@ services:
     App\Services\CallbackFactory:
         public: true
 
-    App\Services\CallbackEventFactory:
-        public: true
-
     App\Services\SourceCompileEventFactory:
         public: true
 
@@ -99,9 +96,6 @@ services:
 
     Symfony\Component\Messenger\Transport\InMemoryTransport:
         alias: 'messenger.transport.async'
-
-    App\Tests\Services\TestCallbackEventFactory:
-        public: true
 
     App\Tests\Services\Asserter\MessengerAsserter:
         public: true

@@ -6,7 +6,6 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\TestExecuteCompleteEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
-use App\Services\CallbackEventFactory;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\InvokableFactory\TestMutatorFactory;
@@ -24,7 +23,6 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     private TestStateMutator $mutator;
     private EventDispatcherInterface $eventDispatcher;
     private Test $test;
-    private CallbackEventFactory $callbackEventFactory;
     private InvokableHandler $invokableHandler;
 
     protected function setUp(): void
