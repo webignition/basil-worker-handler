@@ -17,12 +17,14 @@ use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
+use webignition\BasilWorker\PersistenceBundle\Services\Factory\CallbackFactory;
 
 class SendCallbackMessageDispatcher implements EventSubscriberInterface
 {
     public function __construct(
         private MessageBusInterface $messageBus,
-        private CallbackStateMutator $callbackStateMutator
+        private CallbackStateMutator $callbackStateMutator,
+        private CallbackFactory $callbackFactory
     ) {
     }
 
@@ -42,7 +44,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForCallbackEvent', 0],
             ],
             JobCompleteEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForJobCompleteEvent', 0],
             ],
         ];
     }
@@ -57,9 +59,14 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
 
     public function dispatchForJobCompleteEvent(JobCompleteEvent $jobCompleteEvent): void
     {
-        // create callback (event will no longer be holding this
-        // dispatch message
-        // profit?
+        $callback = $this->callbackFactory->create(
+            CallbackInterface::TYPE_JOB_COMPLETE,
+            []
+        );
+
+        $this->callbackStateMutator->setQueued($callback);
+
+        $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 
     /**
