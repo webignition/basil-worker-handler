@@ -46,9 +46,6 @@ services:
     App\Services\CallbackResponseHandler:
         public: true
 
-    App\Services\SourceCompileEventDispatcher:
-        public: true
-
     App\MessageDispatcher\SendCallbackMessageDispatcher:
         public: true
 
@@ -56,9 +53,6 @@ services:
         public: true
 
     App\Services\CallbackFactory:
-        public: true
-
-    App\Services\SourceCompileEventFactory:
         public: true
 
     App\MessageHandler\TimeoutCheckHandler:
