@@ -6,13 +6,11 @@ namespace App\Tests\Unit\Model\Callback;
 
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
 use App\Model\Callback\DelayedCallback;
-use App\Model\Callback\ExecuteDocumentReceivedCallback;
 use App\Model\StampCollection;
 use App\Tests\Model\TestCallback;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
-use webignition\YamlDocument\Document;
 
 class DelayedCallbackTest extends TestCase
 {
@@ -48,9 +46,8 @@ class DelayedCallbackTest extends TestCase
                     ->withRetryCount(1),
             ],
             'with type' => [
-                'callback' => new ExecuteDocumentReceivedCallback(
-                    new Document('{ key: value }')
-                ),
+                'callback' => (new TestCallback())
+                    ->withType(CallbackInterface::TYPE_JOB_COMPLETE),
             ],
         ];
     }
