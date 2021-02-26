@@ -32,7 +32,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         return [
             CallbackHttpErrorEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForCallbackHttpErrorEventEvent', 0],
             ],
             SourceCompileFailureEvent::class => [
                 ['dispatchForSourceCompileFailureEvent', 0],
@@ -60,6 +60,11 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     public function dispatchForSourceCompileFailureEvent(SourceCompileFailureEvent $event): void
     {
         $this->createAndDispatchCallback(CallbackInterface::TYPE_COMPILE_FAILURE, $event->getOutput()->getData());
+    }
+
+    public function dispatchForCallbackHttpErrorEventEvent(CallbackHttpErrorEvent $event): void
+    {
+        $this->dispatchCallback($event->getCallback());
     }
 
     public function dispatchForTextExecuteDocumentReceivedEvent(TestExecuteDocumentReceivedEvent $event): void
