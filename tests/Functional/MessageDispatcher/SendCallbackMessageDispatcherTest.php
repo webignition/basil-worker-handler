@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageDispatcher;
 
-use App\Event\CallbackEventInterface;
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
@@ -12,18 +11,13 @@ use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
-use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
-use App\Model\Callback\DelayedCallback;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
-use App\Tests\Model\TestCallback;
 use App\Tests\Services\Asserter\MessengerAsserter;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Messenger\Stamp\DelayStamp;
-use Symfony\Component\Messenger\Stamp\StampInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
@@ -47,78 +41,6 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
-    }
-
-    /**
-     * @dataProvider dispatchForCallbackEventDataProvider
-     *
-     * @param CallbackInterface $callback
-     * @param array<string, array<int, StampInterface>> $expectedEnvelopeContainsStampCollections
-     */
-    public function testDispatchForCallbackEvent(
-        CallbackInterface $callback,
-        ?string $expectedEnvelopeNotContainsStampsOfType,
-        array $expectedEnvelopeContainsStampCollections
-    ): void {
-        $event = \Mockery::mock(CallbackEventInterface::class);
-        $event
-            ->shouldReceive('getCallback')
-            ->andReturn($callback);
-
-        $this->messageDispatcher->dispatchForCallbackEvent($event);
-
-        $callbackRepository = $this->entityManager->getRepository(CallbackEntity::class);
-        $callbacks = $callbackRepository->findAll();
-        $callback = array_pop($callbacks);
-
-        self::assertInstanceOf(CallbackInterface::class, $callback);
-
-        $this->messengerAsserter->assertQueueCount(1);
-        $this->messengerAsserter->assertMessageAtPositionEquals(0, new SendCallbackMessage((int) $callback->getId()));
-
-        $envelope = $this->messengerAsserter->getEnvelopeAtPosition(0);
-
-        if (is_string($expectedEnvelopeNotContainsStampsOfType)) {
-            $this->messengerAsserter->assertEnvelopeNotContainsStampsOfType(
-                $envelope,
-                $expectedEnvelopeNotContainsStampsOfType
-            );
-        }
-
-        $this->messengerAsserter->assertEnvelopeContainsStampCollections(
-            $envelope,
-            $expectedEnvelopeContainsStampCollections
-        );
-    }
-
-    /**
-     * @return array[]
-     */
-    public function dispatchForCallbackEventDataProvider(): array
-    {
-        $nonDelayedCallback = new TestCallback();
-        $delayedCallbackRetryCount1 = new DelayedCallback(
-            (new TestCallback())
-                ->withRetryCount(1),
-            new ExponentialBackoffStrategy()
-        );
-
-        return [
-            'non-delayed' => [
-                'callback' => $nonDelayedCallback,
-                'expectedEnvelopeNotContainsStampsOfType' => DelayStamp::class,
-                'expectedEnvelopeContainsStampCollections' => [],
-            ],
-            'delayed, retry count 1' => [
-                'callback' => $delayedCallbackRetryCount1,
-                'expectedEnvelopeNotContainsStampsOfType' => null,
-                'expectedEnvelopeContainsStampCollections' => [
-                    DelayStamp::class => [
-                        new DelayStamp(1000),
-                    ],
-                ],
-            ],
-        ];
     }
 
     /**
