@@ -41,7 +41,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForCallbackEvent', 0],
             ],
             JobTimeoutEvent::class => [
-                ['dispatchForCallbackEvent', 0],
+                ['dispatchForJobTimeoutEvent', 0],
             ],
             JobCompleteEvent::class => [
                 ['dispatchForJobCompleteEvent', 0],
@@ -57,13 +57,32 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 
+    public function dispatchForJobTimeoutEvent(JobTimeoutEvent $event): void
+    {
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_JOB_TIMEOUT, []);
+    }
+
     public function dispatchForJobCompleteEvent(JobCompleteEvent $jobCompleteEvent): void
     {
-        $callback = $this->callbackFactory->create(
-            CallbackInterface::TYPE_JOB_COMPLETE,
-            []
-        );
+        $this->createAndDispatchCallback(CallbackInterface::TYPE_JOB_COMPLETE, []);
+    }
 
+    /**
+     * @param CallbackInterface::TYPE_* $type
+     * @param array<mixed> $payload
+     */
+    private function createAndDispatchCallback(string $type, array $payload): void
+    {
+        $this->dispatchCallback(
+            $this->callbackFactory->create(
+                $type,
+                $payload
+            )
+        );
+    }
+
+    private function dispatchCallback(CallbackInterface $callback): void
+    {
         $this->callbackStateMutator->setQueued($callback);
 
         $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
