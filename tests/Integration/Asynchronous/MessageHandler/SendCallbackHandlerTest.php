@@ -6,7 +6,6 @@ namespace App\Tests\Integration\Asynchronous\MessageHandler;
 
 use App\Message\SendCallbackMessage;
 use App\Model\BackoffStrategy\ExponentialBackoffStrategy;
-use App\Model\Callback\JobTimeoutCallback;
 use App\Tests\Integration\AbstractBaseIntegrationTest;
 use App\Tests\Model\EndToEndJob\Invokable;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -95,7 +94,9 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                             ->withCallbackUrl($callbackBaseUrl . '/status/200')
                     ),
                 ]),
-                'callback' => new JobTimeoutCallback(600),
+                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIMEOUT, [
+                    'maximum_duration_in_seconds' => 600,
+                ]),
                 'waitUntil' => $this->createWaitUntilCallbackIsFinished(),
                 'assertions' => new Invokable(
                     function (CallbackRepository $callbackRepository) {
@@ -120,7 +121,9 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                             ->withCallbackUrl($callbackBaseUrl . '/status/500')
                     ),
                 ]),
-                'callback' => new JobTimeoutCallback(600),
+                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIMEOUT, [
+                    'maximum_duration_in_seconds' => 600,
+                ]),
                 'waitUntil' => $this->createWaitUntilCallbackIsFinished(),
                 'assertions' => new InvokableCollection([
                     'verify http transactions' => new Invokable(
