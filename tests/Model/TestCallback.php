@@ -13,6 +13,11 @@ class TestCallback extends AbstractCallbackWrapper
     private const ID = 'id';
 
     /**
+     * @var CallbackInterface::TYPE_*
+     */
+    private string $type = CallbackInterface::TYPE_COMPILE_FAILURE;
+
+    /**
      * @var array<mixed>
      */
     private array $payload;
@@ -41,8 +46,6 @@ class TestCallback extends AbstractCallbackWrapper
 
     /**
      * @param CallbackInterface::STATE_* $state
-     *
-     * @return $this
      */
     public function withState(string $state): self
     {
@@ -53,9 +56,18 @@ class TestCallback extends AbstractCallbackWrapper
     }
 
     /**
+     * @param CallbackInterface::TYPE_* $type
+     */
+    public function withType(string $type): self
+    {
+        $new = clone $this;
+        $new->type = $type;
+
+        return $new;
+    }
+
+    /**
      * @param array<mixed> $payload
-     *
-     * @return $this
      */
     public function withPayload(array $payload): self
     {
@@ -63,6 +75,14 @@ class TestCallback extends AbstractCallbackWrapper
         $new->payload = $payload;
 
         return $new;
+    }
+
+    /**
+     * @return CallbackInterface::TYPE_*
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     public function getPayload(): array
