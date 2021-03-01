@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\JobCompletedEvent;
 use App\Services\EventCallbackFactory\EventCallbackFactoryInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
@@ -33,12 +32,8 @@ class CallbackFactory
     {
         foreach ($this->eventCallbackFactories as $eventCallbackFactory) {
             if ($eventCallbackFactory->handles($event)) {
-                return $eventCallbackFactory->create($event);
+                return $eventCallbackFactory->createForEvent($event);
             }
-        }
-
-        if ($event instanceof JobCompletedEvent) {
-            return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETED, []);
         }
 
         return null;

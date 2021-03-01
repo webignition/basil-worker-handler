@@ -32,15 +32,15 @@ abstract class AbstractEventCallbackFactoryTest extends AbstractBaseFunctionalTe
 
     public function testCreateForEventUnsupportedEvent(): void
     {
-        self::assertNull($this->callbackFactory->create(new Event()));
+        self::assertNull($this->callbackFactory->createForEvent(new Event()));
     }
 
     /**
      * @dataProvider createDataProvider
      */
-    public function testCreate(Event $event, CallbackInterface $expectedCallback): void
+    public function testCreateForEvent(Event $event, CallbackInterface $expectedCallback): void
     {
-        $callback = $this->callbackFactory->create($event);
+        $callback = $this->callbackFactory->createForEvent($event);
 
         self::assertInstanceOf(CallbackInterface::class, $callback);
 

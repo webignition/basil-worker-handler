@@ -9,9 +9,8 @@ use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
-use webignition\BasilWorker\PersistenceBundle\Services\Factory\CallbackFactory as PersistenceBundleCallbackFactory;
 
-class TestEventCallbackFactory implements EventCallbackFactoryInterface
+class TestEventCallbackFactory extends AbstractEventCallbackFactory
 {
     /**
      * @var array<class-string, CallbackInterface::TYPE_*>
@@ -22,11 +21,6 @@ class TestEventCallbackFactory implements EventCallbackFactoryInterface
         TestStepFailedEvent::class => CallbackInterface::TYPE_STEP_FAILED,
     ];
 
-    public function __construct(
-        private PersistenceBundleCallbackFactory $persistenceBundleCallbackFactory
-    ) {
-    }
-
     public function handles(Event $event): bool
     {
         return
@@ -35,7 +29,7 @@ class TestEventCallbackFactory implements EventCallbackFactoryInterface
             $event instanceof TestStepFailedEvent;
     }
 
-    public function create(Event $event): ?CallbackInterface
+    public function createForEvent(Event $event): ?CallbackInterface
     {
         if (
             $event instanceof TestStartedEvent ||
@@ -47,10 +41,7 @@ class TestEventCallbackFactory implements EventCallbackFactoryInterface
             $documentData = $document->parse();
             $documentData = is_array($documentData) ? $documentData : [];
 
-            return $this->persistenceBundleCallbackFactory->create(
-                self::EVENT_TO_CALLBACK_TYPE_MAP[$event::class],
-                $documentData
-            );
+            return $this->create(self::EVENT_TO_CALLBACK_TYPE_MAP[$event::class], $documentData);
         }
 
         return null;
