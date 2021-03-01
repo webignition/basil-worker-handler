@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
@@ -27,10 +26,6 @@ class CallbackFactory
                 CallbackInterface::TYPE_COMPILE_FAILURE,
                 $event->getOutput()->getData()
             );
-        }
-
-        if ($event instanceof CallbackHttpErrorEvent) {
-            return $event->getCallback();
         }
 
         if ($event instanceof TestExecuteDocumentReceivedEvent) {
