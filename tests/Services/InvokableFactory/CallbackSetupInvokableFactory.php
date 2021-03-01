@@ -40,11 +40,11 @@ class CallbackSetupInvokableFactory
         return new Invokable(
             function (CallbackFactory $callbackFactory, string $type, array $payload): CallbackInterface {
                 if (
-                    CallbackInterface::TYPE_COMPILE_FAILURE !== $type &&
+                    CallbackInterface::TYPE_COMPILATION_FAILED !== $type &&
                     CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED !== $type &&
                     CallbackInterface::TYPE_JOB_TIMEOUT !== $type
                 ) {
-                    $type = CallbackInterface::TYPE_COMPILE_FAILURE;
+                    $type = CallbackInterface::TYPE_COMPILATION_FAILED;
                 }
 
                 return $callbackFactory->create($type, $payload);

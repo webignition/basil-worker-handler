@@ -80,7 +80,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     public function subscribesToEventDataProvider(): array
     {
         $httpExceptionEventCallback = CallbackEntity::create(
-            CallbackInterface::TYPE_COMPILE_FAILURE,
+            CallbackInterface::TYPE_COMPILATION_FAILED,
             [
                 'http-exception-event-key' => 'value',
             ]
@@ -96,7 +96,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         return [
             'http exception' => [
                 'event' => new CallbackHttpErrorEvent($httpExceptionEventCallback, new Response(503)),
-                'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
                     'http-exception-event-key' => 'value',
                 ],
@@ -106,7 +106,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     '/app/source/Test/test.yml',
                     $sourceCompileFailureEventOutput
                 ),
-                'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
                     'compile-failure-key' => 'value',
                 ],

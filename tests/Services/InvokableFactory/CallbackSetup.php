@@ -25,7 +25,7 @@ class CallbackSetup
 
     public function __construct()
     {
-        $this->type = CallbackInterface::TYPE_COMPILE_FAILURE;
+        $this->type = CallbackInterface::TYPE_COMPILATION_FAILED;
         $this->payload = [];
         $this->state = CallbackInterface::STATE_AWAITING;
     }

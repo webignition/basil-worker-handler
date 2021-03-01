@@ -23,7 +23,7 @@ class CallbackFactory
     {
         if ($event instanceof SourceCompileFailureEvent) {
             return $this->persistenceBundleCallbackFactory->create(
-                CallbackInterface::TYPE_COMPILE_FAILURE,
+                CallbackInterface::TYPE_COMPILATION_FAILED,
                 $event->getOutput()->getData()
             );
         }

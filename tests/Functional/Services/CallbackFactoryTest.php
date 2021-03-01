@@ -80,7 +80,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
                     $errorOutput
                 ),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILE_FAILURE)
+                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
                     ->withGetPayloadCall($errorOutputData)
                     ->getMock(),
             ],
