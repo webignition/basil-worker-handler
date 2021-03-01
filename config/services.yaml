@@ -103,3 +103,4 @@ services:
         arguments:
             $eventCallbackFactories:
                 - '@App\Services\EventCallbackFactory\CompilationFailedEventCallbackFactory'
+                - '@App\Services\EventCallbackFactory\TestEventCallbackFactory'
