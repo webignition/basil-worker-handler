@@ -32,7 +32,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         return [
             CallbackHttpErrorEvent::class => [
-                ['dispatchForEvent', 0],
+                ['dispatchForCallbackHttpErrorEvent', 0],
             ],
             SourceCompileFailureEvent::class => [
                 ['dispatchForEvent', 0],
@@ -53,10 +53,19 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         $callback = $this->callbackFactory->createForEvent($event);
         if ($callback instanceof CallbackInterface) {
-            $this->callbackStateMutator->setQueued($callback);
-
-            $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
+            $this->dispatch($callback);
         }
+    }
+
+    public function dispatchForCallbackHttpErrorEvent(CallbackHttpErrorEvent $event): void
+    {
+        $this->dispatch($event->getCallback());
+    }
+
+    private function dispatch(CallbackInterface $callback): void
+    {
+        $this->callbackStateMutator->setQueued($callback);
+        $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
     }
 
     /**
