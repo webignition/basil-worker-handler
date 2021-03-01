@@ -87,107 +87,147 @@ class CompileExecuteTest extends AbstractEndToEndTest
                     [
                         $this->createHttpTransactionCollection([
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'chrome',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ]),
-                                new Response()
-                            ),
-                            $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'step',
-                                    'name' => 'verify page is open',
-                                    'status' => 'passed',
-                                    'statements' => [
-                                        [
-                                            'type' => 'assertion',
-                                            'source' => '$page.url is "http://nginx-html/index.html"',
-                                            'status' => 'passed',
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_STARTED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
                                         ],
-                                    ],
-                                ]),
+                                    ]
+                                ),
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-firefox-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'chrome',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ]),
-                                new Response()
-                            ),
-                            $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'step',
-                                    'name' => 'verify page is open',
-                                    'status' => 'passed',
-                                    'statements' => [
-                                        [
-                                            'type' => 'assertion',
-                                            'source' => '$page.url is "http://nginx-html/index.html"',
-                                            'status' => 'passed',
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_STEP_PASSED,
+                                    [
+                                        'type' => 'step',
+                                        'name' => 'verify page is open',
+                                        'status' => 'passed',
+                                        'statements' => [
+                                            [
+                                                'type' => 'assertion',
+                                                'source' => '$page.url is "http://nginx-html/index.html"',
+                                                'status' => 'passed',
+                                            ],
                                         ],
-                                    ],
-                                ]),
+                                    ]
+                                ),
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-firefox-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'firefox',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ]),
-                                new Response()
-                            ),
-                            $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'step',
-                                    'name' => 'verify page is open',
-                                    'status' => 'passed',
-                                    'statements' => [
-                                        [
-                                            'type' => 'assertion',
-                                            'source' => '$page.url is "http://nginx-html/index.html"',
-                                            'status' => 'passed',
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_STARTED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
                                         ],
-                                    ],
-                                ]),
+                                    ]
+                                ),
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-open-form.yml',
-                                    'config' => [
-                                        'browser' => 'chrome',
-                                        'url' => 'http://nginx-html/form.html',
-                                    ],
-                                ]),
-                                new Response()
-                            ),
-                            $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                    'type' => 'step',
-                                    'name' => 'verify page is open',
-                                    'status' => 'passed',
-                                    'statements' => [
-                                        [
-                                            'type' => 'assertion',
-                                            'source' => '$page.url is "http://nginx-html/form.html"',
-                                            'status' => 'passed',
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_STEP_PASSED,
+                                    [
+                                        'type' => 'step',
+                                        'name' => 'verify page is open',
+                                        'status' => 'passed',
+                                        'statements' => [
+                                            [
+                                                'type' => 'assertion',
+                                                'source' => '$page.url is "http://nginx-html/index.html"',
+                                                'status' => 'passed',
+                                            ],
                                         ],
-                                    ],
-                                ]),
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_STARTED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'firefox',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_STEP_PASSED,
+                                    [
+                                        'type' => 'step',
+                                        'name' => 'verify page is open',
+                                        'status' => 'passed',
+                                        'statements' => [
+                                            [
+                                                'type' => 'assertion',
+                                                'source' => '$page.url is "http://nginx-html/index.html"',
+                                                'status' => 'passed',
+                                            ],
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_STARTED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-form.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/form.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_STEP_PASSED,
+                                    [
+                                        'type' => 'step',
+                                        'name' => 'verify page is open',
+                                        'status' => 'passed',
+                                        'statements' => [
+                                            [
+                                                'type' => 'assertion',
+                                                'source' => '$page.url is "http://nginx-html/form.html"',
+                                                'status' => 'passed',
+                                            ],
+                                        ],
+                                    ]
+                                ),
                                 new Response()
                             ),
                             $this->createHttpTransaction(
@@ -228,61 +268,76 @@ class CompileExecuteTest extends AbstractEndToEndTest
                         [
                             $this->createHttpTransactionCollection([
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                        'type' => 'test',
-                                        'path' => 'Test/chrome-open-index-with-step-failure.yml',
-                                        'config' => [
-                                            'browser' => 'chrome',
-                                            'url' => 'http://nginx-html/index.html',
-                                        ],
-                                    ]),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                        'type' => 'step',
-                                        'name' => 'verify page is open',
-                                        'status' => 'passed',
-                                        'statements' => [
-                                            [
-                                                'type' => 'assertion',
-                                                'source' => '$page.url is "http://nginx-html/index.html"',
-                                                'status' => 'passed',
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_TEST_STARTED,
+                                        [
+                                            'type' => 'test',
+                                            'path' => 'Test/chrome-open-index-with-step-failure.yml',
+                                            'config' => [
+                                                'browser' => 'chrome',
+                                                'url' => 'http://nginx-html/index.html',
                                             ],
-                                        ],
-                                    ]),
+                                        ]
+                                    ),
                                     new Response()
                                 ),
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, 'execute-document-received', [
-                                        'type' => 'step',
-                                        'name' => 'fail on intentionally-missing element',
-                                        'status' => 'failed',
-                                        'statements' => [
-                                            [
-                                                'type' => 'assertion',
-                                                'source' => '$".non-existent" exists',
-                                                'status' => 'failed',
-                                                'summary' => [
-                                                    'operator' => 'exists',
-                                                    'source' => [
-                                                        'type' => 'node',
-                                                        'body' => [
-                                                            'type' => 'element',
-                                                            'identifier' => [
-                                                                'source' => '$".non-existent"',
-                                                                'properties' => [
-                                                                    'type' => 'css',
-                                                                    'locator' => '.non-existent',
-                                                                    'position' => 1,
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_STEP_PASSED,
+                                        [
+                                            'type' => 'step',
+                                            'name' => 'verify page is open',
+                                            'status' => 'passed',
+                                            'statements' => [
+                                                [
+                                                    'type' => 'assertion',
+                                                    'source' => '$page.url is "http://nginx-html/index.html"',
+                                                    'status' => 'passed',
+                                                ],
+                                            ],
+                                        ]
+                                    ),
+                                    new Response()
+                                ),
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_STEP_FAILED,
+                                        [
+                                            'type' => 'step',
+                                            'name' => 'fail on intentionally-missing element',
+                                            'status' => 'failed',
+                                            'statements' => [
+                                                [
+                                                    'type' => 'assertion',
+                                                    'source' => '$".non-existent" exists',
+                                                    'status' => 'failed',
+                                                    'summary' => [
+                                                        'operator' => 'exists',
+                                                        'source' => [
+                                                            'type' => 'node',
+                                                            'body' => [
+                                                                'type' => 'element',
+                                                                'identifier' => [
+                                                                    'source' => '$".non-existent"',
+                                                                    'properties' => [
+                                                                        'type' => 'css',
+                                                                        'locator' => '.non-existent',
+                                                                        'position' => 1,
+                                                                    ],
                                                                 ],
                                                             ],
                                                         ],
                                                     ],
                                                 ],
                                             ],
-                                        ],
-                                    ]),
+                                        ]
+                                    ),
                                     new Response()
                                 ),
                                 $this->createHttpTransaction(

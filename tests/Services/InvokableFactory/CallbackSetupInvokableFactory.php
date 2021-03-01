@@ -41,7 +41,7 @@ class CallbackSetupInvokableFactory
             function (CallbackFactory $callbackFactory, string $type, array $payload): CallbackInterface {
                 if (
                     CallbackInterface::TYPE_COMPILATION_FAILED !== $type &&
-                    CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED !== $type &&
+                    CallbackInterface::TYPE_STEP_PASSED !== $type &&
                     CallbackInterface::TYPE_JOB_TIME_OUT !== $type
                 ) {
                     $type = CallbackInterface::TYPE_COMPILATION_FAILED;

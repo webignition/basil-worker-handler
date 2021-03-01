@@ -7,8 +7,9 @@ namespace App\Tests\Functional\Services;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockCallback;
@@ -95,13 +96,23 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
                     ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],
-            TestExecuteDocumentReceivedEvent::class => [
-                'event' => new TestExecuteDocumentReceivedEvent(
+            TestStepPassedEvent::class => [
+                'event' => new TestStepPassedEvent(
                     (new MockTest())->getMock(),
                     $document
                 ),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                    ->withGetTypeCall(CallbackInterface::TYPE_STEP_PASSED)
+                    ->withGetPayloadCall($documentData)
+                    ->getMock(),
+            ],
+            TestStepFailedEvent::class => [
+                'event' => new TestStepFailedEvent(
+                    (new MockTest())->getMock(),
+                    $document
+                ),
+                'expectedCallback' => (new MockCallback())
+                    ->withGetTypeCall(CallbackInterface::TYPE_STEP_FAILED)
                     ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],

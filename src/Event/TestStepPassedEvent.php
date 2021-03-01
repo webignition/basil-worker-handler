@@ -7,7 +7,7 @@ namespace App\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\YamlDocument\Document;
 
-class TestExecuteDocumentReceivedEvent extends AbstractTestEvent
+class TestStepPassedEvent extends AbstractTestEvent
 {
     public function __construct(Test $test, private Document $document)
     {

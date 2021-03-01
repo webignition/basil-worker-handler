@@ -82,7 +82,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     ]),
                     CallbackSetupInvokableFactory::setup(
                         (new CallbackSetup())
-                            ->withType(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                            ->withType(CallbackInterface::TYPE_STEP_PASSED)
                             ->withState(CallbackInterface::STATE_COMPLETE)
                     ),
                 ]),
@@ -108,7 +108,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 ]),
                 CallbackSetupInvokableFactory::setup(
                     (new CallbackSetup())
-                        ->withType(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                        ->withType(CallbackInterface::TYPE_STEP_PASSED)
                         ->withState(CallbackInterface::STATE_COMPLETE)
                 ),
             ]),

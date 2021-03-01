@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Synchronous\Services;
 
-use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Event\TestStartedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Services\Compiler;
 use App\Services\TestExecutor;
 use App\Services\TestFactory;
@@ -96,7 +96,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                     ),
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestExecuteDocumentReceivedEvent::class, $event);
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
                                 'type: step' . "\n" .
@@ -109,7 +109,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                                 '    status: passed' . "\n"
                             );
 
-                            if ($event instanceof TestExecuteDocumentReceivedEvent) {
+                            if ($event instanceof TestStepPassedEvent) {
                                 self::assertEquals($event->getDocument(), $expectedDocument);
                             }
 
@@ -146,7 +146,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                     ),
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestExecuteDocumentReceivedEvent::class, $event);
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
                                 'type: step' . "\n" .
@@ -159,7 +159,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                                 '    status: passed' . "\n"
                             );
 
-                            if ($event instanceof TestExecuteDocumentReceivedEvent) {
+                            if ($event instanceof TestStepPassedEvent) {
                                 self::assertEquals($event->getDocument(), $expectedDocument);
                             }
 
@@ -196,7 +196,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                     ),
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestExecuteDocumentReceivedEvent::class, $event);
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
                                 'type: step' . "\n" .
@@ -209,7 +209,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                                 '    status: passed' . "\n"
                             );
 
-                            if ($event instanceof TestExecuteDocumentReceivedEvent) {
+                            if ($event instanceof TestStepPassedEvent) {
                                 self::assertEquals($event->getDocument(), $expectedDocument);
                             }
 
@@ -241,7 +241,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                     ),
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestExecuteDocumentReceivedEvent::class, $event);
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
                                 'type: step' . "\n" .
@@ -254,7 +254,7 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                                 '    status: passed' . "\n"
                             );
 
-                            if ($event instanceof TestExecuteDocumentReceivedEvent) {
+                            if ($event instanceof TestStepPassedEvent) {
                                 self::assertEquals($event->getDocument(), $expectedDocument);
                             }
 

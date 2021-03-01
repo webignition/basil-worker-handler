@@ -8,8 +8,9 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
 use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\Model\Callback\StampedCallbackInterface;
 use App\Services\CallbackFactory;
@@ -38,9 +39,6 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
             SourceCompileFailureEvent::class => [
                 ['dispatchForEvent', 0],
             ],
-            TestExecuteDocumentReceivedEvent::class => [
-                ['dispatchForEvent', 0],
-            ],
             JobTimeoutEvent::class => [
                 ['dispatchForEvent', 0],
             ],
@@ -48,6 +46,12 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForEvent', 0],
             ],
             TestStartedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            TestStepPassedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            TestStepFailedEvent::class => [
                 ['dispatchForEvent', 0],
             ],
         ];

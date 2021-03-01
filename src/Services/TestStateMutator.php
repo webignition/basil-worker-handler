@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Event\TestExecuteCompleteEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
-use App\Event\TestFailedEvent;
-use App\Model\Document\Step;
+use App\Event\TestStepFailedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
@@ -27,8 +25,8 @@ class TestStateMutator implements EventSubscriberInterface
             TestExecuteCompleteEvent::class => [
                 ['setCompleteFromTestExecuteCompleteEvent', 100],
             ],
-            TestExecuteDocumentReceivedEvent::class => [
-                ['setFailedFromTestExecuteDocumentReceivedEvent', 50],
+            TestStepFailedEvent::class => [
+                ['setFailedFromTestStepFailedEvent', 50],
             ],
         ];
     }
@@ -38,17 +36,9 @@ class TestStateMutator implements EventSubscriberInterface
         $this->setComplete($event->getTest());
     }
 
-    public function setFailedFromTestExecuteDocumentReceivedEvent(TestExecuteDocumentReceivedEvent $event): void
+    public function setFailedFromTestStepFailedEvent(TestStepFailedEvent $event): void
     {
-        $document = $event->getDocument();
-
-        $step = new Step($document);
-        if ($step->isStep() && $step->statusIsFailed()) {
-            $test = $event->getTest();
-
-            $this->setFailed($test);
-            $this->eventDispatcher->dispatch(new TestFailedEvent($test));
-        }
+        $this->setFailed($event->getTest());
     }
 
     public function setRunning(Test $test): void
