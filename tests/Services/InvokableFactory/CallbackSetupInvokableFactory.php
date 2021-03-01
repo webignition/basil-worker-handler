@@ -42,7 +42,7 @@ class CallbackSetupInvokableFactory
                 if (
                     CallbackInterface::TYPE_COMPILATION_FAILED !== $type &&
                     CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED !== $type &&
-                    CallbackInterface::TYPE_JOB_TIMEOUT !== $type
+                    CallbackInterface::TYPE_JOB_TIME_OUT !== $type
                 ) {
                     $type = CallbackInterface::TYPE_COMPILATION_FAILED;
                 }

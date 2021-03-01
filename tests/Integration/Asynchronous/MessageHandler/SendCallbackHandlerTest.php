@@ -94,7 +94,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                             ->withCallbackUrl($callbackBaseUrl . '/status/200')
                     ),
                 ]),
-                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIMEOUT, [
+                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIME_OUT, [
                     'maximum_duration_in_seconds' => 600,
                 ]),
                 'waitUntil' => $this->createWaitUntilCallbackIsFinished(),
@@ -121,7 +121,7 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                             ->withCallbackUrl($callbackBaseUrl . '/status/500')
                     ),
                 ]),
-                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIMEOUT, [
+                'callback' => CallbackEntity::create(CallbackInterface::TYPE_JOB_TIME_OUT, [
                     'maximum_duration_in_seconds' => 600,
                 ]),
                 'waitUntil' => $this->createWaitUntilCallbackIsFinished(),

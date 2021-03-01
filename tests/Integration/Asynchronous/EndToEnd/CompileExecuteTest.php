@@ -133,7 +133,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $lastRequestPayload = json_decode($lastRequest->getBody()->getContents(), true);
                             }
 
-                            self::assertSame(CallbackInterface::TYPE_JOB_TIMEOUT, $lastRequestPayload['type']);
+                            self::assertSame(CallbackInterface::TYPE_JOB_TIME_OUT, $lastRequestPayload['type']);
                         },
                         [
                             new ServiceReference(HttpLogReader::class),

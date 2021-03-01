@@ -97,7 +97,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
             JobTimeoutEvent::class => [
                 'event' => new JobTimeoutEvent(150),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_TIMEOUT)
+                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_TIME_OUT)
                     ->withGetPayloadCall([
                         'maximum_duration_in_seconds' => 150,
                     ])
