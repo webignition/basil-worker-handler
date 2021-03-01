@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
+use App\Model\Document\Step;
 use App\Model\RunnerTest\TestProxy;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
@@ -38,14 +41,14 @@ class TestExecutor
         $runnerTestString = $this->yamlGenerator->generate($runnerTest);
 
         $this->eventDispatcher->dispatch(
-            new TestExecuteDocumentReceivedEvent(
+            new TestStartedEvent(
                 $test,
                 $this->testDocumentMutator->removeCompilerSourceDirectoryFromSource(new Document($runnerTestString))
             )
         );
 
         $this->yamlDocumentFactory->setOnDocumentCreated(function (Document $document) use ($test) {
-            $this->eventDispatcher->dispatch(new TestExecuteDocumentReceivedEvent($test, $document));
+            $this->dispatchStepProgressEvent($test, $document);
         });
 
         $this->yamlDocumentFactory->start();
@@ -60,5 +63,20 @@ class TestExecutor
         );
 
         $this->yamlDocumentFactory->stop();
+    }
+
+    private function dispatchStepProgressEvent(Test $test, Document $document): void
+    {
+        $step = new Step($document);
+
+        if ($step->isStep()) {
+            if ($step->statusIsPassed()) {
+                $this->eventDispatcher->dispatch(new TestStepPassedEvent($test, $document));
+            }
+
+            if ($step->statusIsFailed()) {
+                $this->eventDispatcher->dispatch(new TestStepFailedEvent($test, $document));
+            }
+        }
     }
 }

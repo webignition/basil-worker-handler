@@ -8,20 +8,24 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
 use App\Tests\Services\Asserter\MessengerAsserter;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
+use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\CallbackRepository;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
@@ -36,11 +40,20 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     private MessengerAsserter $messengerAsserter;
     private EntityManagerInterface $entityManager;
     private CallbackRepository $callbackRepository;
+    private TestStateMutator $testStateMutator;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $this->eventDispatcher->removeListener(
+            TestStepFailedEvent::class,
+            [
+                $this->testStateMutator,
+                'setFailedFromTestStepFailedEvent'
+            ]
+        );
     }
 
     /**
@@ -80,7 +93,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     public function subscribesToEventDataProvider(): array
     {
         $httpExceptionEventCallback = CallbackEntity::create(
-            CallbackInterface::TYPE_COMPILE_FAILURE,
+            CallbackInterface::TYPE_COMPILATION_FAILED,
             [
                 'http-exception-event-key' => 'value',
             ]
@@ -94,9 +107,9 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             ]);
 
         return [
-            'http exception' => [
+            CallbackHttpErrorEvent::class => [
                 'event' => new CallbackHttpErrorEvent($httpExceptionEventCallback, new Response(503)),
-                'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
                     'http-exception-event-key' => 'value',
                 ],
@@ -106,31 +119,53 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     '/app/source/Test/test.yml',
                     $sourceCompileFailureEventOutput
                 ),
-                'expectedCallbackType' => CallbackInterface::TYPE_COMPILE_FAILURE,
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
                     'compile-failure-key' => 'value',
                 ],
             ],
-            TestExecuteDocumentReceivedEvent::class => [
-                'event' => new TestExecuteDocumentReceivedEvent(
-                    (new MockTest())->getMock(),
-                    new Document('document-key: value')
-                ),
-                'expectedCallbackType' => CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED,
-                'expectedCallbackPayload' => [
-                    'document-key' => 'value',
-                ],
-            ],
             JobCompleteEvent::class => [
                 'event' => new JobCompleteEvent(),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETE,
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
                 'expectedCallbackPayload' => [],
             ],
             JobTimeoutEvent::class => [
                 'event' => new JobTimeoutEvent(10),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIMEOUT,
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIME_OUT,
                 'expectedCallbackPayload' => [
                     'maximum_duration_in_seconds' => 10,
+                ],
+            ],
+            TestStartedEvent::class => [
+                'event' => new TestStartedEvent(
+                    (new MockTest())->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_TEST_STARTED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
+                ],
+            ],
+            TestStepPassedEvent::class => [
+                'event' => new TestStepPassedEvent(
+                    (new MockTest())->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_STEP_PASSED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
+                ],
+            ],
+            TestStepFailedEvent::class => [
+                'event' => new TestStepFailedEvent(
+                    (new MockTest())
+                        ->withSetStateCall(Test::STATE_FAILED)
+                        ->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_STEP_FAILED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
                 ],
             ],
         ];

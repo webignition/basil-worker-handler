@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Event\JobTimeoutEvent;
-use App\Event\TestFailedEvent;
+use App\Event\TestStepFailedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
@@ -21,7 +21,7 @@ class TestCanceller implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TestFailedEvent::class => [
+            TestStepFailedEvent::class => [
                 ['cancelAwaitingFromTestFailedEvent', 0],
             ],
             JobTimeoutEvent::class => [
@@ -30,13 +30,9 @@ class TestCanceller implements EventSubscriberInterface
         ];
     }
 
-    public function cancelAwaitingFromTestFailedEvent(TestFailedEvent $event): void
+    public function cancelAwaitingFromTestFailedEvent(TestStepFailedEvent $event): void
     {
-        $test = $event->getTest();
-
-        if (Test::STATE_FAILED === $test->getState()) {
-            $this->cancelAwaiting();
-        }
+        $this->cancelAwaiting();
     }
 
     public function cancelUnfinished(): void

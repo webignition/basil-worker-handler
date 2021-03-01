@@ -7,7 +7,9 @@ namespace App\Services;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\Factory\CallbackFactory as PersistenceBundleCallbackFactory;
@@ -23,26 +25,50 @@ class CallbackFactory
     {
         if ($event instanceof SourceCompileFailureEvent) {
             return $this->persistenceBundleCallbackFactory->create(
-                CallbackInterface::TYPE_COMPILE_FAILURE,
+                CallbackInterface::TYPE_COMPILATION_FAILED,
                 $event->getOutput()->getData()
             );
         }
 
-        if ($event instanceof TestExecuteDocumentReceivedEvent) {
+        if ($event instanceof TestStartedEvent) {
             $document = $event->getDocument();
 
             $documentData = $document->parse();
             $documentData = is_array($documentData) ? $documentData : [];
 
             return $this->persistenceBundleCallbackFactory->create(
-                CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED,
+                CallbackInterface::TYPE_TEST_STARTED,
+                $documentData
+            );
+        }
+
+        if ($event instanceof TestStepPassedEvent) {
+            $document = $event->getDocument();
+
+            $documentData = $document->parse();
+            $documentData = is_array($documentData) ? $documentData : [];
+
+            return $this->persistenceBundleCallbackFactory->create(
+                CallbackInterface::TYPE_STEP_PASSED,
+                $documentData
+            );
+        }
+
+        if ($event instanceof TestStepFailedEvent) {
+            $document = $event->getDocument();
+
+            $documentData = $document->parse();
+            $documentData = is_array($documentData) ? $documentData : [];
+
+            return $this->persistenceBundleCallbackFactory->create(
+                CallbackInterface::TYPE_STEP_FAILED,
                 $documentData
             );
         }
 
         if ($event instanceof JobTimeoutEvent) {
             return $this->persistenceBundleCallbackFactory->create(
-                CallbackInterface::TYPE_JOB_TIMEOUT,
+                CallbackInterface::TYPE_JOB_TIME_OUT,
                 [
                     'maximum_duration_in_seconds' => $event->getJobMaximumDuration(),
                 ]
@@ -50,7 +76,7 @@ class CallbackFactory
         }
 
         if ($event instanceof JobCompleteEvent) {
-            return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETE, []);
+            return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETED, []);
         }
 
         return null;

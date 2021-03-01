@@ -47,7 +47,7 @@ class DelayedCallbackTest extends TestCase
             ],
             'with type' => [
                 'callback' => (new TestCallback())
-                    ->withType(CallbackInterface::TYPE_JOB_COMPLETE),
+                    ->withType(CallbackInterface::TYPE_JOB_COMPLETED),
             ],
         ];
     }

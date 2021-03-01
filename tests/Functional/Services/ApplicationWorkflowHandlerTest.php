@@ -82,7 +82,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     ]),
                     CallbackSetupInvokableFactory::setup(
                         (new CallbackSetup())
-                            ->withType(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                            ->withType(CallbackInterface::TYPE_STEP_PASSED)
                             ->withState(CallbackInterface::STATE_COMPLETE)
                     ),
                 ]),
@@ -108,7 +108,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 ]),
                 CallbackSetupInvokableFactory::setup(
                     (new CallbackSetup())
-                        ->withType(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                        ->withType(CallbackInterface::TYPE_STEP_PASSED)
                         ->withState(CallbackInterface::STATE_COMPLETE)
                 ),
             ]),
@@ -137,7 +137,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $latestCallback = array_pop($callbacks);
 
         self::assertInstanceOf(CallbackInterface::class, $latestCallback);
-        self::assertSame(CallbackInterface::TYPE_JOB_COMPLETE, $latestCallback->getType());
+        self::assertSame(CallbackInterface::TYPE_JOB_COMPLETED, $latestCallback->getType());
 
         $this->messengerAsserter->assertMessageAtPositionEquals(
             0,

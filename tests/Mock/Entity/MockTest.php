@@ -33,4 +33,17 @@ class MockTest
 
         return $this;
     }
+
+    public function withSetStateCall(string $state): self
+    {
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
+            ->shouldReceive('setState')
+            ->with($state);
+
+        return $this;
+    }
 }

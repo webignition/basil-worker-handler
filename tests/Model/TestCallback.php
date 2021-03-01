@@ -15,7 +15,7 @@ class TestCallback extends AbstractCallbackWrapper
     /**
      * @var CallbackInterface::TYPE_*
      */
-    private string $type = CallbackInterface::TYPE_COMPILE_FAILURE;
+    private string $type = CallbackInterface::TYPE_COMPILATION_FAILED;
 
     /**
      * @var array<mixed>
@@ -29,7 +29,7 @@ class TestCallback extends AbstractCallbackWrapper
         ];
 
         parent::__construct(CallbackEntity::create(
-            CallbackInterface::TYPE_COMPILE_FAILURE,
+            CallbackInterface::TYPE_COMPILATION_FAILED,
             $this->payload
         ));
     }

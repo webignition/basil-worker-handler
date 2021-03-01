@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Synchronous\Services;
 
-use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Services\Compiler;
 use App\Services\TestExecutor;
 use App\Services\TestFactory;
@@ -36,10 +37,8 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
 
     /**
      * @dataProvider executeSuccessDataProvider
-     *
-     * @param array<int, Document[]> $expectedDispatchedEventDocumentsPerTest
      */
-    public function testExecute(string $source, array $expectedDispatchedEventDocumentsPerTest): void
+    public function testExecute(string $source, ExpectedDispatchedEventCollection $expectedDispatchedEvents): void
     {
         /** @var SuiteManifest $suiteManifest */
         $suiteManifest = $this->compiler->compile($source);
@@ -47,27 +46,8 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
 
         $tests = $this->testFactory->createFromManifestCollection($suiteManifest->getTestManifests());
 
-        $expectedDispatchedEvents = [];
-        foreach ($tests as $testIndex => $test) {
-            $expectedDispatchedEventDocuments = $expectedDispatchedEventDocumentsPerTest[$testIndex] ?? [];
-
-            foreach ($expectedDispatchedEventDocuments as $expectedDispatchedEventDocument) {
-                $expectedDispatchedEvents[] = new ExpectedDispatchedEvent(
-                    function (Event $actualEvent) use ($expectedDispatchedEventDocument): bool {
-                        self::assertInstanceOf(TestExecuteDocumentReceivedEvent::class, $actualEvent);
-
-                        if ($actualEvent instanceof TestExecuteDocumentReceivedEvent) {
-                            self::assertEquals($actualEvent->getDocument(), $expectedDispatchedEventDocument);
-                        }
-
-                        return true;
-                    }
-                );
-            }
-        }
-
         $eventDispatcher = (new MockEventDispatcher())
-            ->withDispatchCalls(new ExpectedDispatchedEventCollection($expectedDispatchedEvents))
+            ->withDispatchCalls($expectedDispatchedEvents)
             ->getMock();
 
         ObjectReflector::setProperty(
@@ -90,110 +70,198 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
         return [
             'Test/chrome-open-index.yml: single-browser test (chrome)' => [
                 'source' => 'Test/chrome-open-index.yml',
-                'expectedDispatchedEventDocumentsPerTest' => [
-                    [
-                        new Document(Yaml::dump(
-                            [
-                                'type' => 'test',
-                                'path' => 'Test/chrome-open-index.yml',
-                                'config' => [
-                                    'browser' => 'chrome',
-                                    'url' => 'http://nginx-html/index.html',
+                'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStartedEvent::class, $event);
+
+                            $expectedDocument = new Document(Yaml::dump(
+                                [
+                                    'type' => 'test',
+                                    'path' => 'Test/chrome-open-index.yml',
+                                    'config' => [
+                                        'browser' => 'chrome',
+                                        'url' => 'http://nginx-html/index.html',
+                                    ],
                                 ],
-                            ],
-                            0
-                        )),
-                        new Document(
-                            'type: step' . "\n" .
-                            'name: \'verify page is open\'' . "\n" .
-                            'status: passed' . "\n" .
-                            'statements:' . "\n" .
-                            '  -' . "\n" .
-                            '    type: assertion' . "\n" .
-                            '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
-                            '    status: passed' . "\n"
-                        ),
-                    ],
-                ],
+                                0
+                            ));
+
+                            if ($event instanceof TestStartedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
+
+                            $expectedDocument = new Document(
+                                'type: step' . "\n" .
+                                'name: \'verify page is open\'' . "\n" .
+                                'status: passed' . "\n" .
+                                'statements:' . "\n" .
+                                '  -' . "\n" .
+                                '    type: assertion' . "\n" .
+                                '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
+                                '    status: passed' . "\n"
+                            );
+
+                            if ($event instanceof TestStepPassedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                ]),
             ],
             'Test/chrome-open-index.yml: single-browser test (firefox)' => [
                 'source' => 'Test/firefox-open-index.yml',
-                'expectedDispatchedEventDocuments' => [
-                    [
-                        new Document(Yaml::dump(
-                            [
-                                'type' => 'test',
-                                'path' => 'Test/firefox-open-index.yml',
-                                'config' => [
-                                    'browser' => 'firefox',
-                                    'url' => 'http://nginx-html/index.html',
+                'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStartedEvent::class, $event);
+
+                            $expectedDocument = new Document(Yaml::dump(
+                                [
+                                    'type' => 'test',
+                                    'path' => 'Test/firefox-open-index.yml',
+                                    'config' => [
+                                        'browser' => 'firefox',
+                                        'url' => 'http://nginx-html/index.html',
+                                    ],
                                 ],
-                            ],
-                            0
-                        )),
-                        new Document(
-                            'type: step' . "\n" .
-                            'name: \'verify page is open\'' . "\n" .
-                            'status: passed' . "\n" .
-                            'statements:' . "\n" .
-                            '  -' . "\n" .
-                            '    type: assertion' . "\n" .
-                            '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
-                            '    status: passed' . "\n"
-                        ),
-                    ],
-                ],
+                                0
+                            ));
+
+                            if ($event instanceof TestStartedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
+
+                            $expectedDocument = new Document(
+                                'type: step' . "\n" .
+                                'name: \'verify page is open\'' . "\n" .
+                                'status: passed' . "\n" .
+                                'statements:' . "\n" .
+                                '  -' . "\n" .
+                                '    type: assertion' . "\n" .
+                                '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
+                                '    status: passed' . "\n"
+                            );
+
+                            if ($event instanceof TestStepPassedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                ]),
             ],
             'Test/chrome-firefox-open-index.yml: multi-browser test' => [
                 'source' => 'Test/chrome-firefox-open-index.yml',
-                'expectedDispatchedEventDocuments' => [
-                    [
-                        new Document(Yaml::dump(
-                            [
-                                'type' => 'test',
-                                'path' => 'Test/chrome-firefox-open-index.yml',
-                                'config' => [
-                                    'browser' => 'chrome',
-                                    'url' => 'http://nginx-html/index.html',
+                'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStartedEvent::class, $event);
+
+                            $expectedDocument = new Document(Yaml::dump(
+                                [
+                                    'type' => 'test',
+                                    'path' => 'Test/chrome-firefox-open-index.yml',
+                                    'config' => [
+                                        'browser' => 'chrome',
+                                        'url' => 'http://nginx-html/index.html',
+                                    ],
                                 ],
-                            ],
-                            0
-                        )),
-                        new Document(
-                            'type: step' . "\n" .
-                            'name: \'verify page is open\'' . "\n" .
-                            'status: passed' . "\n" .
-                            'statements:' . "\n" .
-                            '  -' . "\n" .
-                            '    type: assertion' . "\n" .
-                            '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
-                            '    status: passed' . "\n"
-                        ),
-                    ],
-                    [
-                        new Document(Yaml::dump(
-                            [
-                                'type' => 'test',
-                                'path' => 'Test/chrome-firefox-open-index.yml',
-                                'config' => [
-                                    'browser' => 'firefox',
-                                    'url' => 'http://nginx-html/index.html',
+                                0
+                            ));
+
+                            if ($event instanceof TestStartedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
+
+                            $expectedDocument = new Document(
+                                'type: step' . "\n" .
+                                'name: \'verify page is open\'' . "\n" .
+                                'status: passed' . "\n" .
+                                'statements:' . "\n" .
+                                '  -' . "\n" .
+                                '    type: assertion' . "\n" .
+                                '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
+                                '    status: passed' . "\n"
+                            );
+
+                            if ($event instanceof TestStepPassedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStartedEvent::class, $event);
+
+                            $expectedDocument = new Document(Yaml::dump(
+                                [
+                                    'type' => 'test',
+                                    'path' => 'Test/chrome-firefox-open-index.yml',
+                                    'config' => [
+                                        'browser' => 'firefox',
+                                        'url' => 'http://nginx-html/index.html',
+                                    ],
                                 ],
-                            ],
-                            0
-                        )),
-                        new Document(
-                            'type: step' . "\n" .
-                            'name: \'verify page is open\'' . "\n" .
-                            'status: passed' . "\n" .
-                            'statements:' . "\n" .
-                            '  -' . "\n" .
-                            '    type: assertion' . "\n" .
-                            '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
-                            '    status: passed' . "\n"
-                        ),
-                    ],
-                ],
+                                0
+                            ));
+
+                            if ($event instanceof TestStartedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                    new ExpectedDispatchedEvent(
+                        function (Event $event): bool {
+                            self::assertInstanceOf(TestStepPassedEvent::class, $event);
+
+                            $expectedDocument = new Document(
+                                'type: step' . "\n" .
+                                'name: \'verify page is open\'' . "\n" .
+                                'status: passed' . "\n" .
+                                'statements:' . "\n" .
+                                '  -' . "\n" .
+                                '    type: assertion' . "\n" .
+                                '    source: \'$page.url is "http://nginx-html/index.html"\'' . "\n" .
+                                '    status: passed' . "\n"
+                            );
+
+                            if ($event instanceof TestStepPassedEvent) {
+                                self::assertEquals($event->getDocument(), $expectedDocument);
+                            }
+
+                            return true;
+                        }
+                    ),
+                ]),
             ],
         ];
     }

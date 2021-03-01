@@ -7,7 +7,9 @@ namespace App\Tests\Functional\Services;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
-use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
+use App\Event\TestStepFailedEvent;
+use App\Event\TestStepPassedEvent;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockCallback;
@@ -80,24 +82,44 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
                     $errorOutput
                 ),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILE_FAILURE)
+                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
                     ->withGetPayloadCall($errorOutputData)
                     ->getMock(),
             ],
-            TestExecuteDocumentReceivedEvent::class => [
-                'event' => new TestExecuteDocumentReceivedEvent(
+            TestStartedEvent::class => [
+                'event' => new TestStartedEvent(
                     (new MockTest())->getMock(),
                     $document
                 ),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED)
+                    ->withGetTypeCall(CallbackInterface::TYPE_TEST_STARTED)
+                    ->withGetPayloadCall($documentData)
+                    ->getMock(),
+            ],
+            TestStepPassedEvent::class => [
+                'event' => new TestStepPassedEvent(
+                    (new MockTest())->getMock(),
+                    $document
+                ),
+                'expectedCallback' => (new MockCallback())
+                    ->withGetTypeCall(CallbackInterface::TYPE_STEP_PASSED)
+                    ->withGetPayloadCall($documentData)
+                    ->getMock(),
+            ],
+            TestStepFailedEvent::class => [
+                'event' => new TestStepFailedEvent(
+                    (new MockTest())->getMock(),
+                    $document
+                ),
+                'expectedCallback' => (new MockCallback())
+                    ->withGetTypeCall(CallbackInterface::TYPE_STEP_FAILED)
                     ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],
             JobTimeoutEvent::class => [
                 'event' => new JobTimeoutEvent(150),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_TIMEOUT)
+                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_TIME_OUT)
                     ->withGetPayloadCall([
                         'maximum_duration_in_seconds' => 150,
                     ])
@@ -106,7 +128,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
             JobCompleteEvent::class => [
                 'event' => new JobCompleteEvent(),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_COMPLETE)
+                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_COMPLETED)
                     ->withGetPayloadCall([])
                     ->getMock(),
             ],
