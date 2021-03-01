@@ -9,6 +9,7 @@ use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
 use App\Message\SendCallbackMessage;
 use App\Model\Callback\StampedCallbackInterface;
 use App\Services\CallbackFactory;
@@ -44,6 +45,9 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForEvent', 0],
             ],
             JobCompleteEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            TestStartedEvent::class => [
                 ['dispatchForEvent', 0],
             ],
         ];

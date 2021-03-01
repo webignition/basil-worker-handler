@@ -8,6 +8,7 @@ use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockCallback;
@@ -82,6 +83,16 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
                 'expectedCallback' => (new MockCallback())
                     ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
                     ->withGetPayloadCall($errorOutputData)
+                    ->getMock(),
+            ],
+            TestStartedEvent::class => [
+                'event' => new TestStartedEvent(
+                    (new MockTest())->getMock(),
+                    $document
+                ),
+                'expectedCallback' => (new MockCallback())
+                    ->withGetTypeCall(CallbackInterface::TYPE_TEST_STARTED)
+                    ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],
             TestExecuteDocumentReceivedEvent::class => [

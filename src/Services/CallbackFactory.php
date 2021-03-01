@@ -8,6 +8,7 @@ use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestExecuteDocumentReceivedEvent;
+use App\Event\TestStartedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\Factory\CallbackFactory as PersistenceBundleCallbackFactory;
@@ -36,6 +37,18 @@ class CallbackFactory
 
             return $this->persistenceBundleCallbackFactory->create(
                 CallbackInterface::TYPE_EXECUTE_DOCUMENT_RECEIVED,
+                $documentData
+            );
+        }
+
+        if ($event instanceof TestStartedEvent) {
+            $document = $event->getDocument();
+
+            $documentData = $document->parse();
+            $documentData = is_array($documentData) ? $documentData : [];
+
+            return $this->persistenceBundleCallbackFactory->create(
+                CallbackInterface::TYPE_TEST_STARTED,
                 $documentData
             );
         }
