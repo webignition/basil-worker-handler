@@ -106,7 +106,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
             JobCompleteEvent::class => [
                 'event' => new JobCompleteEvent(),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_COMPLETE)
+                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_COMPLETED)
                     ->withGetPayloadCall([])
                     ->getMock(),
             ],

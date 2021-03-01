@@ -50,7 +50,7 @@ class CallbackFactory
         }
 
         if ($event instanceof JobCompleteEvent) {
-            return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETE, []);
+            return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETED, []);
         }
 
         return null;

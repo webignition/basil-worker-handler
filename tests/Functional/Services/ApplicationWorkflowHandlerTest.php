@@ -137,7 +137,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $latestCallback = array_pop($callbacks);
 
         self::assertInstanceOf(CallbackInterface::class, $latestCallback);
-        self::assertSame(CallbackInterface::TYPE_JOB_COMPLETE, $latestCallback->getType());
+        self::assertSame(CallbackInterface::TYPE_JOB_COMPLETED, $latestCallback->getType());
 
         $this->messengerAsserter->assertMessageAtPositionEquals(
             0,

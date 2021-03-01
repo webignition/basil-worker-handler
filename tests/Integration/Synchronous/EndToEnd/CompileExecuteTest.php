@@ -16,6 +16,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 use webignition\BasilWorker\StateBundle\Services\CompilationState;
@@ -190,7 +191,12 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 new Response()
                             ),
                             $this->createHttpTransaction(
-                                $this->createExpectedRequest($label, $callbackUrl, 'job-complete', []),
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_JOB_COMPLETED,
+                                    []
+                                ),
                                 new Response()
                             ),
                         ]),
@@ -280,7 +286,12 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     new Response()
                                 ),
                                 $this->createHttpTransaction(
-                                    $this->createExpectedRequest($label, $callbackUrl, 'job-complete', []),
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_JOB_COMPLETED,
+                                        []
+                                    ),
                                     new Response()
                                 ),
                             ]),
@@ -409,6 +420,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
 
     /**
      * @param array<mixed> $payload
+     * @param CallbackInterface::TYPE_* $type
      *
      * @return RequestInterface
      */

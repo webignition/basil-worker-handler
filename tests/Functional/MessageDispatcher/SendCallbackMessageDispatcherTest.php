@@ -123,7 +123,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             ],
             JobCompleteEvent::class => [
                 'event' => new JobCompleteEvent(),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETE,
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
                 'expectedCallbackPayload' => [],
             ],
             JobTimeoutEvent::class => [
