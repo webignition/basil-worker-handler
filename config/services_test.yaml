@@ -54,6 +54,9 @@ services:
 
     App\Services\CallbackFactory:
         public: true
+        arguments:
+            $eventCallbackFactories:
+                - '@App\Services\EventCallbackFactory\CompilationFailedEventCallbackFactory'
 
     App\MessageHandler\TimeoutCheckHandler:
         public: true

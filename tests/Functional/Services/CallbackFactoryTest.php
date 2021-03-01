@@ -6,17 +6,16 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
-use App\Event\SourceCompile\SourceCompileFailureEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
+use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationFailedEventDataProviderTrait;
 use App\Tests\Mock\Entity\MockCallback;
 use App\Tests\Mock\Entity\MockTest;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Contracts\EventDispatcher\Event;
-use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
@@ -25,6 +24,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
 {
     use MockeryPHPUnitIntegration;
     use TestClassServicePropertyInjectorTrait;
+    use CreateFromCompilationFailedEventDataProviderTrait;
 
     private CallbackFactory $callbackFactory;
 
@@ -41,6 +41,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
 
     /**
      * @dataProvider createForEventDataProvider
+     * @dataProvider createFromCompilationFailedEventDataProvider
      */
     public function testCreateForEvent(Event $event, CallbackInterface $expectedCallback): void
     {
@@ -60,15 +61,6 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
      */
     public function createForEventDataProvider(): array
     {
-        $errorOutputData = [
-            'error-output-key' => 'error-output-value',
-        ];
-
-        $errorOutput = \Mockery::mock(ErrorOutputInterface::class);
-        $errorOutput
-            ->shouldReceive('getData')
-            ->andReturn($errorOutputData);
-
         $documentData = [
             'document-key' => 'document-value',
         ];
@@ -76,16 +68,6 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
         $document = new Document((string) json_encode($documentData));
 
         return [
-            SourceCompileFailureEvent::class => [
-                'event' => new SourceCompileFailureEvent(
-                    '/app/source/test.yml',
-                    $errorOutput
-                ),
-                'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
-                    ->withGetPayloadCall($errorOutputData)
-                    ->getMock(),
-            ],
             TestStartedEvent::class => [
                 'event' => new TestStartedEvent(
                     (new MockTest())->getMock(),

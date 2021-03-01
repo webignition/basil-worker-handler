@@ -7,7 +7,7 @@ namespace App\MessageDispatcher;
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompleteEvent;
 use App\Event\JobTimeoutEvent;
-use App\Event\SourceCompile\SourceCompileFailureEvent;
+use App\Event\SourceCompile\CompilationFailedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -36,7 +36,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
             CallbackHttpErrorEvent::class => [
                 ['dispatchForCallbackHttpErrorEvent', 0],
             ],
-            SourceCompileFailureEvent::class => [
+            CompilationFailedEvent::class => [
                 ['dispatchForEvent', 0],
             ],
             JobTimeoutEvent::class => [
