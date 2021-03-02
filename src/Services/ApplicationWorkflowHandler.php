@@ -9,11 +9,13 @@ use App\Event\TestExecuteCompleteEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
+use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ApplicationWorkflowHandler implements EventSubscriberInterface
 {
     public function __construct(
         private ApplicationState $applicationState,
+        private ExecutionState $executionState,
         private EventDispatcherInterface $eventDispatcher,
     ) {
     }
@@ -32,7 +34,10 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
 
     public function dispatchJobCompleteEvent(): void
     {
-        if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
+        if (
+            $this->applicationState->is(ApplicationState::STATE_COMPLETE) ||
+            $this->executionState->is(ExecutionState::STATE_COMPLETE)
+        ) {
             $this->eventDispatcher->dispatch(new JobCompletedEvent());
         }
     }
