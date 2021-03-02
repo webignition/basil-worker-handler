@@ -8,6 +8,7 @@ use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationFailedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobCompletedEventDataProviderTrait;
+use App\Tests\DataProvider\CallbackFactory\CreateFromJobReadyEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobTimeoutEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromTestEventDataProviderTrait;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -23,6 +24,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
     use CreateFromTestEventDataProviderTrait;
     use CreateFromJobTimeoutEventDataProviderTrait;
     use CreateFromJobCompletedEventDataProviderTrait;
+    use CreateFromJobReadyEventDataProviderTrait;
 
     private CallbackFactory $callbackFactory;
 
@@ -42,6 +44,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
      * @dataProvider createFromTestEventEventDataProvider
      * @dataProvider createFromJobTimeoutEventDataProvider
      * @dataProvider createFromJobCompletedEventDataProvider
+     * @dataProvider createFromJobReadyEventDataProvider
      */
     public function testCreateForEvent(Event $event, CallbackInterface $expectedCallback): void
     {
