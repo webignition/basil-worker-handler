@@ -35,7 +35,7 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         return [
             JobReadyEvent::class => [
-                ['dispatchForEvent', 0],
+                ['dispatchForEvent', 500],
             ],
             CallbackHttpErrorEvent::class => [
                 ['dispatchForCallbackHttpErrorEvent', 0],
