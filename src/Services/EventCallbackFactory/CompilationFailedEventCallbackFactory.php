@@ -8,7 +8,7 @@ use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
-class CompilationFailedEventCallbackFactory extends AbstractEventCallbackFactory
+class CompilationFailedEventCallbackFactory extends AbstractCompilationEventCallbackFactory
 {
     public function handles(Event $event): bool
     {
@@ -20,10 +20,9 @@ class CompilationFailedEventCallbackFactory extends AbstractEventCallbackFactory
         if ($event instanceof SourceCompilationFailedEvent) {
             return $this->create(
                 CallbackInterface::TYPE_COMPILATION_FAILED,
-                [
-                    'source' => $event->getSource(),
+                $this->createPayload($event, [
                     'output' => $event->getOutput()->getData(),
-                ]
+                ])
             );
         }
 

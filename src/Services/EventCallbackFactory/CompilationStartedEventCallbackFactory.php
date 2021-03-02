@@ -8,7 +8,7 @@ use App\Event\SourceCompilation\SourceCompilationStartedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
-class CompilationStartedEventCallbackFactory extends AbstractEventCallbackFactory
+class CompilationStartedEventCallbackFactory extends AbstractCompilationEventCallbackFactory
 {
     public function handles(Event $event): bool
     {
@@ -20,9 +20,7 @@ class CompilationStartedEventCallbackFactory extends AbstractEventCallbackFactor
         if ($event instanceof SourceCompilationStartedEvent) {
             return $this->create(
                 CallbackInterface::TYPE_COMPILATION_STARTED,
-                [
-                    'source' => $event->getSource(),
-                ]
+                $this->createPayload($event)
             );
         }
 
