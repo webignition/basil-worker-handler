@@ -6,7 +6,7 @@ namespace App\Event\SourceCompilation;
 
 use webignition\BasilCompilerModels\SuiteManifest;
 
-class SourceCompilationPassedEvent extends AbstractSourceCompilationEvent
+class SourceCompilationPassedEvent extends AbstractSourceCompilationOutcomeEvent
 {
     public function __construct(string $source, private SuiteManifest $suiteManifest)
     {

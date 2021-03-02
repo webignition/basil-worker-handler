@@ -7,7 +7,7 @@ namespace App\Event\SourceCompilation;
 use Psr\EventDispatcher\StoppableEventInterface;
 use webignition\BasilCompilerModels\OutputInterface;
 
-interface SourceCompilationEventInterface extends StoppableEventInterface
+interface SourceCompilationOutcomeEventInterface extends StoppableEventInterface
 {
     public function getSource(): string;
     public function getOutput(): OutputInterface;
