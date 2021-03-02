@@ -6,7 +6,7 @@ namespace App\Event\SourceCompilation;
 
 use Symfony\Contracts\EventDispatcher\Event;
 
-abstract class AbstractSourceCompilationOutcomeEvent extends Event implements SourceCompilationOutcomeEventInterface
+abstract class AbstractSourceCompilationEvent extends Event implements SourceCompilationEventInterface
 {
     public function __construct(private string $source)
     {
