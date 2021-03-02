@@ -6,6 +6,7 @@ namespace App\Tests\Functional\MessageHandler;
 
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
+use App\Event\SourceCompilation\SourceCompilationStartedEvent;
 use App\Message\CompileSourceMessage;
 use App\MessageHandler\CompileSourceHandler;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -106,6 +107,13 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
         $eventDispatcher = (new MockEventDispatcher())
             ->withDispatchCalls(new ExpectedDispatchedEventCollection([
                 new ExpectedDispatchedEvent(
+                    function (SourceCompilationStartedEvent $actualEvent) use ($sourcePath) {
+                        self::assertSame($sourcePath, $actualEvent->getSource());
+
+                        return true;
+                    },
+                ),
+                new ExpectedDispatchedEvent(
                     function (SourceCompilationPassedEvent $actualEvent) use ($sourcePath, $suiteManifest) {
                         self::assertSame($sourcePath, $actualEvent->getSource());
                         self::assertSame($suiteManifest, $actualEvent->getOutput());
@@ -153,6 +161,13 @@ class CompileSourceHandlerTest extends AbstractBaseFunctionalTest
 
         $eventDispatcher = (new MockEventDispatcher())
             ->withDispatchCalls(new ExpectedDispatchedEventCollection([
+                new ExpectedDispatchedEvent(
+                    function (SourceCompilationStartedEvent $actualEvent) use ($sourcePath) {
+                        self::assertSame($sourcePath, $actualEvent->getSource());
+
+                        return true;
+                    },
+                ),
                 new ExpectedDispatchedEvent(
                     function (SourceCompilationFailedEvent $actualEvent) use ($sourcePath, $errorOutput) {
                         self::assertSame($sourcePath, $actualEvent->getSource());

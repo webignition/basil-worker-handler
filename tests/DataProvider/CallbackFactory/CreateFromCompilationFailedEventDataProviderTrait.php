@@ -33,7 +33,10 @@ trait CreateFromCompilationFailedEventDataProviderTrait
                 ),
                 'expectedCallback' => (new MockCallback())
                     ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
-                    ->withGetPayloadCall($errorOutputData)
+                    ->withGetPayloadCall([
+                        'source' => '/app/source/test.yml',
+                        'output' => $errorOutputData,
+                    ])
                     ->getMock(),
             ],
         ];
