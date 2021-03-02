@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Services;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationFailedEventDataProviderTrait;
+use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationStartedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobReadyEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobTimeoutEventDataProviderTrait;
@@ -20,6 +21,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
 {
     use MockeryPHPUnitIntegration;
     use TestClassServicePropertyInjectorTrait;
+    use CreateFromCompilationStartedEventDataProviderTrait;
     use CreateFromCompilationFailedEventDataProviderTrait;
     use CreateFromTestEventDataProviderTrait;
     use CreateFromJobTimeoutEventDataProviderTrait;
@@ -40,6 +42,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
     }
 
     /**
+     * @dataProvider createFromCompilationStartedEventDataProvider
      * @dataProvider createFromCompilationFailedEventDataProvider
      * @dataProvider createFromTestEventEventDataProvider
      * @dataProvider createFromJobTimeoutEventDataProvider
