@@ -8,15 +8,18 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompletedEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\SourceCompilation\SourceCompilationStartedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\Services\TestFactory;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
+use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Services\Asserter\MessengerAsserter;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Response;
@@ -55,6 +58,17 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'setFailedFromTestStepFailedEvent'
             ]
         );
+
+        $testFactory = self::$container->get(TestFactory::class);
+        if ($testFactory instanceof TestFactory) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $testFactory,
+                    'createFromSourceCompileSuccessEvent'
+                ]
+            );
+        }
     }
 
     /**
@@ -118,6 +132,16 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             SourceCompilationStartedEvent::class => [
                 'event' => new SourceCompilationStartedEvent('/app/source/Test/test.yml'),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_STARTED,
+                'expectedCallbackPayload' => [
+                    'source' => '/app/source/Test/test.yml',
+                ],
+            ],
+            SourceCompilationPassedEvent::class => [
+                'event' => new SourceCompilationPassedEvent(
+                    '/app/source/Test/test.yml',
+                    (new MockSuiteManifest())->getMock()
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_PASSED,
                 'expectedCallbackPayload' => [
                     'source' => '/app/source/Test/test.yml',
                 ],
