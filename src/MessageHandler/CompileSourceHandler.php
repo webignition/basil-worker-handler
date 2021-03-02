@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Event\SourceCompilation\CompilationFailedEvent;
-use App\Event\SourceCompilation\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
 use App\Services\Compiler;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -38,8 +38,8 @@ class CompileSourceHandler implements MessageHandlerInterface
         $output = $this->compiler->compile($sourcePath);
 
         $event = $output instanceof ErrorOutputInterface
-            ? new CompilationFailedEvent($sourcePath, $output)
-            : new SourceCompileSuccessEvent($sourcePath, $output);
+            ? new SourceCompilationFailedEvent($sourcePath, $output)
+            : new SourceCompilationPassedEvent($sourcePath, $output);
 
         $this->eventDispatcher->dispatch($event);
     }

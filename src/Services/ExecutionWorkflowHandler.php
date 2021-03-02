@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\SourceCompilation\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,7 +27,7 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            SourceCompileSuccessEvent::class => [
+            SourceCompilationPassedEvent::class => [
                 ['dispatchNextExecuteTestMessage', 0],
             ],
             TestExecuteCompleteEvent::class => [

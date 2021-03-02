@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Services;
 
 use App\Event\JobReadyEvent;
-use App\Event\SourceCompilation\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
 use App\Message\TimeoutCheckMessage;
 use App\Services\CompilationWorkflowHandler;
@@ -157,8 +157,8 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     public function subscribesToEventsDataProvider(): array
     {
         return [
-            SourceCompileSuccessEvent::class => [
-                'event' => new SourceCompileSuccessEvent(
+            SourceCompilationPassedEvent::class => [
+                'event' => new SourceCompilationPassedEvent(
                     '/app/source/Test/test1.yml',
                     (new MockSuiteManifest())
                         ->withGetTestManifestsCall([])

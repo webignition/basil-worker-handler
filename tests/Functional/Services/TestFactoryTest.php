@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\SourceCompilation\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Services\TestFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
@@ -127,7 +127,7 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
     public function testCreateFromSourceCompileSuccessEvent(): void
     {
         $this->doSourceCompileSuccessEventDrivenTest(function (SuiteManifest $suiteManifest) {
-            $event = new SourceCompileSuccessEvent('/app/source/Test/test.yml', $suiteManifest);
+            $event = new SourceCompilationPassedEvent('/app/source/Test/test.yml', $suiteManifest);
 
             return $this->factory->createFromSourceCompileSuccessEvent($event);
         });
@@ -136,7 +136,7 @@ class TestFactoryTest extends AbstractBaseFunctionalTest
     public function testSubscribesToSourceCompileSuccessEvent(): void
     {
         $this->doSourceCompileSuccessEventDrivenTest(function (SuiteManifest $suiteManifest) {
-            $event = new SourceCompileSuccessEvent('/app/source/Test/test.yml', $suiteManifest);
+            $event = new SourceCompilationPassedEvent('/app/source/Test/test.yml', $suiteManifest);
             $this->eventDispatcher->dispatch($event);
 
             return $this->invokableHandler->invoke(TestGetterFactory::getAll());

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\SourceCompilation\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
 use App\Services\ExecutionWorkflowHandler;
@@ -123,7 +123,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
             ]),
             function () {
                 $this->eventDispatcher->dispatch(
-                    new SourceCompileSuccessEvent(
+                    new SourceCompilationPassedEvent(
                         '/app/source/Test/test1.yml',
                         (new MockSuiteManifest())
                             ->withGetTestManifestsCall([])
