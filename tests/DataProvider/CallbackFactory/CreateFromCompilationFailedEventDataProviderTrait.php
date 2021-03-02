@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\DataProvider\CallbackFactory;
 
-use App\Event\SourceCompile\CompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use App\Tests\Mock\Entity\MockCallback;
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
@@ -26,8 +26,8 @@ trait CreateFromCompilationFailedEventDataProviderTrait
             ->andReturn($errorOutputData);
 
         return [
-            CompilationFailedEvent::class => [
-                'event' => new CompilationFailedEvent(
+            SourceCompilationFailedEvent::class => [
+                'event' => new SourceCompilationFailedEvent(
                     '/app/source/test.yml',
                     $errorOutput
                 ),

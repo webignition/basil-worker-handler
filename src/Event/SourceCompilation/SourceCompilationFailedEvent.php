@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Event\SourceCompile;
+namespace App\Event\SourceCompilation;
 
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 
-class CompilationFailedEvent extends AbstractSourceCompileEvent
+class SourceCompilationFailedEvent extends AbstractSourceCompilationEvent
 {
     public function __construct(string $source, private ErrorOutputInterface $errorOutput)
     {

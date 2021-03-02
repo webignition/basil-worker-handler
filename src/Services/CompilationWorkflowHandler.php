@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Event\JobReadyEvent;
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -24,7 +24,7 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SourceCompileSuccessEvent::class => [
+            SourceCompilationPassedEvent::class => [
                 ['dispatchNextCompileSourceMessage', 50],
             ],
             JobReadyEvent::class => [

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilCompilerModels\TestManifest;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
@@ -20,18 +20,18 @@ class TestFactory implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            SourceCompileSuccessEvent::class => [
+            SourceCompilationPassedEvent::class => [
                 ['createFromSourceCompileSuccessEvent', 100],
             ],
         ];
     }
 
     /**
-     * @param SourceCompileSuccessEvent $event
+     * @param SourceCompilationPassedEvent $event
      *
      * @return Test[]
      */
-    public function createFromSourceCompileSuccessEvent(SourceCompileSuccessEvent $event): array
+    public function createFromSourceCompileSuccessEvent(SourceCompilationPassedEvent $event): array
     {
         $suiteManifest = $event->getOutput();
 
