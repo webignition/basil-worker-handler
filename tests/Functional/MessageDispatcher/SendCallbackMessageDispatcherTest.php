@@ -121,7 +121,10 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
-                    'compile-failure-key' => 'value',
+                    'source' => '/app/source/Test/test.yml',
+                    'output' => [
+                        'compile-failure-key' => 'value',
+                    ],
                 ],
             ],
             JobCompletedEvent::class => [
