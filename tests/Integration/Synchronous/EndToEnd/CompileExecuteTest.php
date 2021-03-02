@@ -365,15 +365,6 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     ),
                                     new Response()
                                 ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_JOB_COMPLETED,
-                                        []
-                                    ),
-                                    new Response()
-                                ),
                             ]),
                             new ServiceReference(HttpLogReader::class),
                         ]
