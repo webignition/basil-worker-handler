@@ -7,6 +7,7 @@ namespace App\Tests\Functional\Services;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
@@ -17,7 +18,7 @@ use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
@@ -36,6 +37,17 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
 
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
     }
 
     public function testDispatchNextExecuteTestMessageNoMessageDispatched(): void
