@@ -33,6 +33,9 @@ jobs:
         with:
           args: --ignore-platform-reqs --quiet
 
+      - name: Setup integration environment
+        run: composer integration-setup
+
       - name: Setup container integration environment
         run: composer image-integration-setup
 
