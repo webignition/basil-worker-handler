@@ -6,6 +6,7 @@ namespace App\MessageHandler;
 
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
+use App\Event\SourceCompilation\SourceCompilationStartedEvent;
 use App\Message\CompileSourceMessage;
 use App\Services\Compiler;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -35,6 +36,9 @@ class CompileSourceHandler implements MessageHandlerInterface
         }
 
         $sourcePath = $message->getPath();
+
+        $this->eventDispatcher->dispatch(new SourceCompilationStartedEvent($sourcePath));
+
         $output = $this->compiler->compile($sourcePath);
 
         $event = $output instanceof ErrorOutputInterface
