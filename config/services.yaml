@@ -98,3 +98,11 @@ services:
     webignition\BasilWorker\StateBundle\Services\SourcePathFinder:
         calls:
             - setCompilerSourcePathPrefixRemover: ['@app.services.path-prefix-remover.compiler-source']
+
+    App\Services\CallbackFactory:
+        arguments:
+            $eventCallbackFactories:
+                - '@App\Services\EventCallbackFactory\CompilationFailedEventCallbackFactory'
+                - '@App\Services\EventCallbackFactory\TestEventCallbackFactory'
+                - '@App\Services\EventCallbackFactory\JobTimeoutEventCallbackFactory'
+                - '@App\Services\EventCallbackFactory\NoPayloadEventCallbackFactory'

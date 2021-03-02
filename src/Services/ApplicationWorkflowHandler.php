@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\JobCompleteEvent;
+use App\Event\JobCompletedEvent;
 use App\Event\TestExecuteCompleteEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -33,7 +33,7 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     public function dispatchJobCompleteEvent(): void
     {
         if (ApplicationState::STATE_COMPLETE === $this->applicationState->get()) {
-            $this->eventDispatcher->dispatch(new JobCompleteEvent());
+            $this->eventDispatcher->dispatch(new JobCompletedEvent());
         }
     }
 }

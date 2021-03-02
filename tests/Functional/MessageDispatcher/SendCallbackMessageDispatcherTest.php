@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageDispatcher;
 
 use App\Event\CallbackHttpErrorEvent;
-use App\Event\JobCompleteEvent;
+use App\Event\JobCompletedEvent;
 use App\Event\JobTimeoutEvent;
-use App\Event\SourceCompile\SourceCompileFailureEvent;
+use App\Event\SourceCompile\CompilationFailedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -114,8 +114,8 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     'http-exception-event-key' => 'value',
                 ],
             ],
-            SourceCompileFailureEvent::class => [
-                'event' => new SourceCompileFailureEvent(
+            CompilationFailedEvent::class => [
+                'event' => new CompilationFailedEvent(
                     '/app/source/Test/test.yml',
                     $sourceCompileFailureEventOutput
                 ),
@@ -124,8 +124,8 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     'compile-failure-key' => 'value',
                 ],
             ],
-            JobCompleteEvent::class => [
-                'event' => new JobCompleteEvent(),
+            JobCompletedEvent::class => [
+                'event' => new JobCompletedEvent(),
                 'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
                 'expectedCallbackPayload' => [],
             ],
