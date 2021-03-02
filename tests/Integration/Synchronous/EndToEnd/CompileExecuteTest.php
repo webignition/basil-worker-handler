@@ -94,6 +94,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
+                                    CallbackInterface::TYPE_JOB_STARTED,
+                                    []
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
                                     CallbackInterface::TYPE_TEST_STARTED,
                                     [
                                         'type' => 'test',
@@ -274,6 +283,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                         },
                         [
                             $this->createHttpTransactionCollection([
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_JOB_STARTED,
+                                        []
+                                    ),
+                                    new Response()
+                                ),
                                 $this->createHttpTransaction(
                                     $this->createExpectedRequest(
                                         $label,
