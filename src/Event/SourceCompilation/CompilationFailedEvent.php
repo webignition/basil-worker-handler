@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Event\SourceCompile;
+namespace App\Event\SourceCompilation;
 
 use webignition\BasilCompilerModels\ErrorOutputInterface;
 

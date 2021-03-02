@@ -7,7 +7,7 @@ namespace App\Tests\Functional\MessageDispatcher;
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompletedEvent;
 use App\Event\JobTimeoutEvent;
-use App\Event\SourceCompile\CompilationFailedEvent;
+use App\Event\SourceCompilation\CompilationFailedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;

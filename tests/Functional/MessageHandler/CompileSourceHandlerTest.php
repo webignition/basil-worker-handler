@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
-use App\Event\SourceCompile\CompilationFailedEvent;
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\CompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompileSuccessEvent;
 use App\Message\CompileSourceMessage;
 use App\MessageHandler\CompileSourceHandler;
 use App\Tests\AbstractBaseFunctionalTest;

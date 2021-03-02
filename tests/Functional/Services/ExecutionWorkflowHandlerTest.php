@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompileSuccessEvent;
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
 use App\Services\ExecutionWorkflowHandler;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompileSuccessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilCompilerModels\TestManifest;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;

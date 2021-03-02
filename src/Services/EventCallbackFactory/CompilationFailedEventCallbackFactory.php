@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\EventCallbackFactory;
 
-use App\Event\SourceCompile\CompilationFailedEvent;
+use App\Event\SourceCompilation\CompilationFailedEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 

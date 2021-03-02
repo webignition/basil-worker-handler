@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\SourceCompile\SourceCompileSuccessEvent;
+use App\Event\SourceCompilation\SourceCompileSuccessEvent;
 use App\Services\TestFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
