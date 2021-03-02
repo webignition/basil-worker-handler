@@ -114,6 +114,17 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
+                                    CallbackInterface::TYPE_COMPILATION_PASSED,
+                                    [
+                                        'source' => 'Test/chrome-open-index.yml',
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
                                     CallbackInterface::TYPE_COMPILATION_STARTED,
                                     [
                                         'source' => 'Test/chrome-firefox-open-index.yml',
@@ -125,7 +136,29 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
+                                    CallbackInterface::TYPE_COMPILATION_PASSED,
+                                    [
+                                        'source' => 'Test/chrome-firefox-open-index.yml',
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
                                     CallbackInterface::TYPE_COMPILATION_STARTED,
+                                    [
+                                        'source' => 'Test/chrome-open-form.yml',
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_COMPILATION_PASSED,
                                     [
                                         'source' => 'Test/chrome-open-form.yml',
                                     ]
@@ -329,9 +362,31 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     $this->createExpectedRequest(
                                         $label,
                                         $callbackUrl,
+                                        CallbackInterface::TYPE_COMPILATION_PASSED,
+                                        [
+                                            'source' => 'Test/chrome-open-index-with-step-failure.yml',
+                                        ]
+                                    ),
+                                    new Response()
+                                ),
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
                                         CallbackInterface::TYPE_COMPILATION_STARTED,
                                         [
                                             'source' => 'Test/chrome-open-index-with-step-failure.yml',
+                                        ]
+                                    ),
+                                    new Response()
+                                ),
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_COMPILATION_PASSED,
+                                        [
+                                            'source' => 'Test/chrome-open-index.yml',
                                         ]
                                     ),
                                     new Response()
