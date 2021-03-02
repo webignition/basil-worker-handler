@@ -49,6 +49,14 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     'dispatchForEvent'
                 ]
             );
+
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
         }
     }
 
