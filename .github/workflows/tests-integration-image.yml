@@ -1,0 +1,43 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  integration:
+    name: Integration tests - PHP ${{ matrix.php-versions }} ${{ matrix.operating-system }}
+    strategy:
+      matrix:
+        operating-system: [ubuntu-latest]
+        php-versions: ['8']
+    runs-on: ${{ matrix.operating-system }}
+
+    env:
+      DATABASE_URL: postgres://postgres:password!@127.0.0.1:5432/basil-worker-db?charset=UTF-8
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: amqp, pgsql
+
+      - name: Download dependencies
+        uses: php-actions/composer@v2
+        with:
+          args: --ignore-platform-reqs --quiet
+
+      - name: Setup integration environment
+        run: composer integration-setup
+
+      - name: Setup container integration environment
+        run: composer image-integration-setup
+
+      - name: Run container asychronous tests
+        run: composer test-integration-image
