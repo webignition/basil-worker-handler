@@ -8,6 +8,7 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\JobCompletedEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationStartedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -112,6 +113,13 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
                     'http-exception-event-key' => 'value',
+                ],
+            ],
+            SourceCompilationStartedEvent::class => [
+                'event' => new SourceCompilationStartedEvent('/app/source/Test/test.yml'),
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_STARTED,
+                'expectedCallbackPayload' => [
+                    'source' => '/app/source/Test/test.yml',
                 ],
             ],
             SourceCompilationFailedEvent::class => [
