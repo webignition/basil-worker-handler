@@ -38,15 +38,6 @@ class CallbackFactory
             }
         }
 
-        if ($event instanceof JobTimeoutEvent) {
-            return $this->persistenceBundleCallbackFactory->create(
-                CallbackInterface::TYPE_JOB_TIME_OUT,
-                [
-                    'maximum_duration_in_seconds' => $event->getJobMaximumDuration(),
-                ]
-            );
-        }
-
         if ($event instanceof JobCompleteEvent) {
             return $this->persistenceBundleCallbackFactory->create(CallbackInterface::TYPE_JOB_COMPLETED, []);
         }

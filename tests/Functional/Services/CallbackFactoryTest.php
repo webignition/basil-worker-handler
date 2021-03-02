@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Services;
 
 use App\Event\JobCompleteEvent;
-use App\Event\JobTimeoutEvent;
 use App\Services\CallbackFactory;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationFailedEventDataProviderTrait;
+use App\Tests\DataProvider\CallbackFactory\CreateFromJobTimeoutEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromTestEventDataProviderTrait;
 use App\Tests\Mock\Entity\MockCallback;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
@@ -22,6 +22,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
     use TestClassServicePropertyInjectorTrait;
     use CreateFromCompilationFailedEventDataProviderTrait;
     use CreateFromTestEventDataProviderTrait;
+    use CreateFromJobTimeoutEventDataProviderTrait;
 
     private CallbackFactory $callbackFactory;
 
@@ -40,6 +41,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
      * @dataProvider createForEventDataProvider
      * @dataProvider createFromCompilationFailedEventDataProvider
      * @dataProvider createFromTestEventEventDataProvider
+     * @dataProvider createFromJobTimeoutEventDataProvider
      */
     public function testCreateForEvent(Event $event, CallbackInterface $expectedCallback): void
     {
@@ -60,15 +62,6 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
     public function createForEventDataProvider(): array
     {
         return [
-            JobTimeoutEvent::class => [
-                'event' => new JobTimeoutEvent(150),
-                'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_JOB_TIME_OUT)
-                    ->withGetPayloadCall([
-                        'maximum_duration_in_seconds' => 150,
-                    ])
-                    ->getMock(),
-            ],
             JobCompleteEvent::class => [
                 'event' => new JobCompleteEvent(),
                 'expectedCallback' => (new MockCallback())

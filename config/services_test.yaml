@@ -58,6 +58,7 @@ services:
             $eventCallbackFactories:
                 - '@App\Services\EventCallbackFactory\CompilationFailedEventCallbackFactory'
                 - '@App\Services\EventCallbackFactory\TestEventCallbackFactory'
+                - '@App\Services\EventCallbackFactory\JobTimeoutEventCallbackFactory'
 
     App\MessageHandler\TimeoutCheckHandler:
         public: true
