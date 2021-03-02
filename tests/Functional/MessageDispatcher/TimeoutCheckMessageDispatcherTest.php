@@ -6,11 +6,12 @@ namespace App\Tests\Functional\MessageDispatcher;
 
 use App\Event\JobReadyEvent;
 use App\Message\TimeoutCheckMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\Asserter\MessengerAsserter;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
@@ -27,6 +28,17 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                JobReadyEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
     }
 
 
