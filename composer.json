@@ -118,6 +118,7 @@
             "@test-unit",
             "@test-functional"
         ],
+        "integration-pull": "docker-compose -f tests/docker/services-compose.yml pull",
         "integration-start": "docker-compose -f tests/docker/services-compose.yml up -d",
         "integration-status": "docker-compose -f tests/docker/services-compose.yml ps",
         "integration-stop": "docker-compose -f tests/docker/services-compose.yml stop",
