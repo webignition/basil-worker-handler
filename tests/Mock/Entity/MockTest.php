@@ -21,6 +21,9 @@ class MockTest
         return $this->mock;
     }
 
+    /**
+     * @param Test::STATE_* $state
+     */
     public function withGetStateCall(string $state): self
     {
         if (false === $this->mock instanceof MockInterface) {

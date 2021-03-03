@@ -57,6 +57,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     'dispatchForEvent'
                 ]
             );
+
+            $this->eventDispatcher->removeListener(
+                TestFinishedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
         }
     }
 

@@ -6,12 +6,13 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\TestFinishedEvent;
 use App\Event\TestStepFailedEvent;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\InvokableFactory\TestMutatorFactory;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
@@ -31,6 +32,17 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
         $this->injectContainerServicesIntoClassProperties();
 
         $this->test = $this->invokableHandler->invoke(TestSetupInvokableFactory::setup());
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                TestFinishedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
     }
 
     /**
