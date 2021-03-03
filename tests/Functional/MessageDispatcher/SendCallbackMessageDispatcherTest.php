@@ -6,6 +6,7 @@ namespace App\Tests\Functional\MessageDispatcher;
 
 use App\Event\CallbackHttpErrorEvent;
 use App\Event\CompilationCompletedEvent;
+use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
@@ -16,6 +17,7 @@ use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\Services\ExecutionWorkflowHandler;
 use App\Services\TestFactory;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -67,6 +69,17 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 [
                     $testFactory,
                     'createFromSourceCompileSuccessEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionStartedEvent'
                 ]
             );
         }
@@ -163,6 +176,11 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             CompilationCompletedEvent::class => [
                 'event' => new CompilationCompletedEvent(),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
+                'expectedCallbackPayload' => [],
+            ],
+            ExecutionStartedEvent::class => [
+                'event' => new ExecutionStartedEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_EXECUTION_STARTED,
                 'expectedCallbackPayload' => [],
             ],
             JobCompletedEvent::class => [

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\EventCallbackFactory;
 
 use App\Event\CompilationCompletedEvent;
+use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
 use App\Event\JobReadyEvent;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -18,6 +19,7 @@ class NoPayloadEventCallbackFactory extends AbstractEventCallbackFactory
     private const EVENT_TO_CALLBACK_TYPE_MAP = [
         JobReadyEvent::class => CallbackInterface::TYPE_JOB_STARTED,
         CompilationCompletedEvent::class => CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
+        ExecutionStartedEvent::class => CallbackInterface::TYPE_EXECUTION_STARTED,
         JobCompletedEvent::class => CallbackInterface::TYPE_JOB_COMPLETED,
     ];
 
@@ -26,6 +28,7 @@ class NoPayloadEventCallbackFactory extends AbstractEventCallbackFactory
         return
             $event instanceof JobReadyEvent ||
             $event instanceof CompilationCompletedEvent ||
+            $event instanceof ExecutionStartedEvent ||
             $event instanceof JobCompletedEvent
             ;
     }
