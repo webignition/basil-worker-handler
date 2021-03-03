@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40f8563413b3c8f6d422b76b985565f2",
+    "content-hash": "42829351c92d7edcb4ae7b0670b8c6f5",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5184,16 +5184,16 @@
         },
         {
             "name": "webignition/basil-worker-persistence-bundle",
-            "version": "0.15",
+            "version": "0.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-worker-persistence-bundle.git",
-                "reference": "6a7e2e7174a17e37a3cf3752304dd445675943cc"
+                "reference": "728df43c81b651bdd20d4d4b8a8d6a30cb18e32c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-worker-persistence-bundle/zipball/6a7e2e7174a17e37a3cf3752304dd445675943cc",
-                "reference": "6a7e2e7174a17e37a3cf3752304dd445675943cc",
+                "url": "https://api.github.com/repos/webignition/basil-worker-persistence-bundle/zipball/728df43c81b651bdd20d4d4b8a8d6a30cb18e32c",
+                "reference": "728df43c81b651bdd20d4d4b8a8d6a30cb18e32c",
                 "shasum": ""
             },
             "require": {
@@ -5239,9 +5239,9 @@
             "homepage": "https://github.com/webignition/basil-worker-persistence-bundle",
             "support": {
                 "issues": "https://github.com/webignition/basil-worker-persistence-bundle/issues",
-                "source": "https://github.com/webignition/basil-worker-persistence-bundle/tree/0.15"
+                "source": "https://github.com/webignition/basil-worker-persistence-bundle/tree/0.16"
             },
-            "time": "2021-03-02T16:09:32+00:00"
+            "time": "2021-03-03T15:39:15+00:00"
         },
         {
             "name": "webignition/basil-worker-state-bundle",
