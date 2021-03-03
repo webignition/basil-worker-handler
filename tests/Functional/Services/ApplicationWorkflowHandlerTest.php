@@ -6,6 +6,7 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\TestFinishedEvent;
 use App\Message\SendCallbackMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -21,7 +22,7 @@ use App\Tests\Services\InvokableFactory\TestGetterFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
@@ -40,6 +41,17 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                TestFinishedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
     }
 
     public function testDispatchJobCompleteEventNoMessageIsDispatched(): void

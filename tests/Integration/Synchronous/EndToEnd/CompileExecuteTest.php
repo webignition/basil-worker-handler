@@ -90,7 +90,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                     },
                     [
                         $this->createHttpTransactionCollection([
-                            $this->createHttpTransaction(
+                            'job/started' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -99,7 +99,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -110,7 +110,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -121,7 +121,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome-firefox-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -132,7 +132,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome-firefox-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -143,7 +143,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome--open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -154,7 +154,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome--open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -165,7 +165,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/completed' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -174,7 +174,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'execution/started' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -183,7 +183,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/started: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -199,7 +199,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-open-index: open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -219,7 +219,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-open-index' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -235,7 +251,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-firefox-open-index: chrome, open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -255,7 +271,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -271,7 +303,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-firefox-open-index: firefox open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -291,7 +323,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'firefox',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -307,7 +355,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-open-form: open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -327,7 +375,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-open-form' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-form.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/form.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'job/completed' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
