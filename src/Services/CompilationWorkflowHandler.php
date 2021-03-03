@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Event\CompilationCompletedEvent;
 use App\Event\JobReadyEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\StateBundle\Services\CompilationState;
@@ -15,6 +17,7 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
 {
     public function __construct(
         private CompilationState $compilationState,
+        private EventDispatcherInterface $eventDispatcher,
         private MessageBusInterface $messageBus,
         private SourcePathFinder $sourcePathFinder
     ) {
@@ -28,6 +31,7 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
         return [
             SourceCompilationPassedEvent::class => [
                 ['dispatchNextCompileSourceMessage', 50],
+                ['dispatchCompilationCompletedEvent', 60],
             ],
             JobReadyEvent::class => [
                 ['dispatchNextCompileSourceMessage', 50],
@@ -43,6 +47,13 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
             if (is_string($sourcePath)) {
                 $this->messageBus->dispatch(new CompileSourceMessage($sourcePath));
             }
+        }
+    }
+
+    public function dispatchCompilationCompletedEvent(): void
+    {
+        if (CompilationState::STATE_COMPLETE === (string) $this->compilationState) {
+            $this->eventDispatcher->dispatch(new CompilationCompletedEvent());
         }
     }
 }
