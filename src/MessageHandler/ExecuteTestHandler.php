@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
 use App\Services\TestDocumentFactory;
@@ -66,6 +66,6 @@ class ExecuteTestHandler implements MessageHandlerInterface
         $this->testExecutor->execute($test);
         $this->testStateMutator->setComplete($test);
 
-        $this->eventDispatcher->dispatch(new TestExecuteCompleteEvent($test));
+        $this->eventDispatcher->dispatch(new TestFinishedEvent($test));
     }
 }

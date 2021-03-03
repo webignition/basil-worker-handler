@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Event\JobCompletedEvent;
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
@@ -26,7 +26,7 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            TestExecuteCompleteEvent::class => [
+            TestFinishedEvent::class => [
                 ['dispatchJobCompleteEvent', 0],
             ],
         ];
