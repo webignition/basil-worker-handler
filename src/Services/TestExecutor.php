@@ -8,13 +8,11 @@ use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Model\Document\Step;
-use App\Model\RunnerTest\TestProxy;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\TcpCliProxyClient\Client;
 use webignition\TcpCliProxyClient\Handler;
 use webignition\YamlDocument\Document;
-use webignition\YamlDocumentGenerator\YamlGenerator;
 
 class TestExecutor
 {
@@ -22,8 +20,7 @@ class TestExecutor
         private Client $delegatorClient,
         private YamlDocumentFactory $yamlDocumentFactory,
         private EventDispatcherInterface $eventDispatcher,
-        private YamlGenerator $yamlGenerator,
-        private TestDocumentMutator $testDocumentMutator
+        private TestDocumentFactory $testDocumentFactory
     ) {
     }
 
@@ -37,15 +34,10 @@ class TestExecutor
                 }
             });
 
-        $runnerTest = new TestProxy($test);
-        $runnerTestString = $this->yamlGenerator->generate($runnerTest);
-
-        $this->eventDispatcher->dispatch(
-            new TestStartedEvent(
-                $test,
-                $this->testDocumentMutator->removeCompilerSourceDirectoryFromSource(new Document($runnerTestString))
-            )
-        );
+        $this->eventDispatcher->dispatch(new TestStartedEvent(
+            $test,
+            $this->testDocumentFactory->create($test)
+        ));
 
         $this->yamlDocumentFactory->setOnDocumentCreated(function (Document $document) use ($test) {
             $this->dispatchStepProgressEvent($test, $document);
