@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Model\Document\Step;
@@ -20,7 +19,6 @@ class TestExecutor
         private Client $delegatorClient,
         private YamlDocumentFactory $yamlDocumentFactory,
         private EventDispatcherInterface $eventDispatcher,
-        private TestDocumentFactory $testDocumentFactory
     ) {
     }
 
@@ -33,11 +31,6 @@ class TestExecutor
                     $this->yamlDocumentFactory->process($buffer);
                 }
             });
-
-        $this->eventDispatcher->dispatch(new TestStartedEvent(
-            $test,
-            $this->testDocumentFactory->create($test)
-        ));
 
         $this->yamlDocumentFactory->setOnDocumentCreated(function (Document $document) use ($test) {
             $this->dispatchStepProgressEvent($test, $document);
