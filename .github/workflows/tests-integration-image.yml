@@ -38,8 +38,6 @@ jobs:
 
       - name: Docker layer caching
         uses: satackey/action-docker-layer-caching@v0.0.11
-        with:
-          continue-on-error: true
 
       - name: Setup integration environment
         run: composer integration-setup
