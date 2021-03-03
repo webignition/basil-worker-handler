@@ -9,10 +9,12 @@ use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use webignition\BasilWorker\StateBundle\Services\CompilationState;
 
 class CompilationWorkflowHandler implements EventSubscriberInterface
 {
     public function __construct(
+        private CompilationState $compilationState,
         private MessageBusInterface $messageBus,
         private SourcePathFinder $sourcePathFinder
     ) {
@@ -35,11 +37,10 @@ class CompilationWorkflowHandler implements EventSubscriberInterface
 
     public function dispatchNextCompileSourceMessage(): void
     {
-        $nextNonCompiledSource = $this->sourcePathFinder->findNextNonCompiledPath();
-
-        if (is_string($nextNonCompiledSource)) {
-            $message = new CompileSourceMessage($nextNonCompiledSource);
-            $this->messageBus->dispatch($message);
+        if (!in_array($this->compilationState, CompilationState::FINISHED_STATES)) {
+            $this->messageBus->dispatch(
+                new CompileSourceMessage((string) $this->sourcePathFinder->findNextNonCompiledPath())
+            );
         }
     }
 }
