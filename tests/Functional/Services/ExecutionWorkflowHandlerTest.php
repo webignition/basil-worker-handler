@@ -187,19 +187,19 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     }
 
     /**
-     * @dataProvider dispatchNextExecuteTestMessageFromTestExecuteCompleteEventDataProvider
+     * @dataProvider dispatchNextExecuteTestMessageFromTestFinishedEventDataProvider
      */
-    public function testDispatchNextExecuteTestMessageFromTestExecuteCompleteEvent(
+    public function testDispatchNextExecuteTestMessageFromTestFinishedEvent(
         InvokableInterface $setup,
         int $eventTestIndex,
         int $expectedQueuedMessageCount,
         ?int $expectedNextTestIndex
     ): void {
-        $this->doTestExecuteCompleteEventDrivenTest(
+        $this->doTestFinishedEventDrivenTest(
             $setup,
             $eventTestIndex,
             function (TestFinishedEvent $event) {
-                $this->handler->dispatchNextExecuteTestMessageFromTestExecuteCompleteEvent($event);
+                $this->handler->dispatchNextExecuteTestMessageFromTestFinishedEvent($event);
             },
             $expectedQueuedMessageCount,
             $expectedNextTestIndex
@@ -209,7 +209,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     /**
      * @return array[]
      */
-    public function dispatchNextExecuteTestMessageFromTestExecuteCompleteEventDataProvider(): array
+    public function dispatchNextExecuteTestMessageFromTestFinishedEventDataProvider(): array
     {
         return [
             'single test, not complete' => [
@@ -269,9 +269,9 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent(): void
+    public function testSubscribesToTestFinishedEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(
+        $this->doTestFinishedEventDrivenTest(
             new InvokableCollection([
                 TestSetupInvokableFactory::setupCollection([
                     (new TestSetup())
@@ -291,7 +291,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         );
     }
 
-    private function doTestExecuteCompleteEventDrivenTest(
+    private function doTestFinishedEventDrivenTest(
         InvokableInterface $setup,
         int $eventTestIndex,
         callable $execute,

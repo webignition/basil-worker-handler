@@ -103,7 +103,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent(): void
+    public function testSubscribesToTestFinishedEvent(): void
     {
         $jobSetup = (new JobSetup())
             ->withLabel('label')
