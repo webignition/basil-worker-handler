@@ -15,7 +15,7 @@ class ApplicationStateGetterFactory
     {
         return new Invokable(
             function (ApplicationState $applicationState): string {
-                return $applicationState->get();
+                return (string) $applicationState;
             },
             [
                 new ServiceReference(ApplicationState::class),

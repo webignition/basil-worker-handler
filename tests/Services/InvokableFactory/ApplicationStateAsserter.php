@@ -16,7 +16,7 @@ class ApplicationStateAsserter
     {
         return new Invokable(
             function (ApplicationState $applicationState, string $expectedState): void {
-                TestCase::assertSame($expectedState, $applicationState->get());
+                TestCase::assertSame($expectedState, (string) $applicationState);
             },
             [
                 new ServiceReference(ApplicationState::class),

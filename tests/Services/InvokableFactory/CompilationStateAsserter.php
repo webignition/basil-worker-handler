@@ -19,7 +19,7 @@ class CompilationStateAsserter
     {
         return new Invokable(
             function (CompilationState $compilationState, string $expectedState): void {
-                TestCase::assertSame($expectedState, $compilationState->get());
+                TestCase::assertSame($expectedState, (string) $compilationState);
             },
             [
                 new ServiceReference(CompilationState::class),

@@ -30,7 +30,7 @@ class CompileSourceHandler implements MessageHandlerInterface
             return;
         }
 
-        if (false === in_array($this->compilationState->get(), [CompilationState::STATE_RUNNING])) {
+        if (false === in_array($this->compilationState, [CompilationState::STATE_RUNNING])) {
             return;
         }
 

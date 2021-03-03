@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b0ddab2b9e4b509a130da1eabede1773",
+    "content-hash": "40f8563413b3c8f6d422b76b985565f2",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5245,16 +5245,16 @@
         },
         {
             "name": "webignition/basil-worker-state-bundle",
-            "version": "0.5",
+            "version": "0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-worker-state-bundle.git",
-                "reference": "6a549bbeedd9be542c4e4c133cfb886ac0a8c508"
+                "reference": "5d99b07b04f1076f3f1a74c615dd0140c85a1c4a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/6a549bbeedd9be542c4e4c133cfb886ac0a8c508",
-                "reference": "6a549bbeedd9be542c4e4c133cfb886ac0a8c508",
+                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/5d99b07b04f1076f3f1a74c615dd0140c85a1c4a",
+                "reference": "5d99b07b04f1076f3f1a74c615dd0140c85a1c4a",
                 "shasum": ""
             },
             "require": {
@@ -5270,7 +5270,7 @@
                 "phpstan/phpstan-symfony": "^0.12.11",
                 "phpunit/phpunit": "^9.4",
                 "squizlabs/php_codesniffer": "dev-master",
-                "symplify/easy-coding-standard": "^8.3",
+                "symplify/easy-coding-standard": "9.*",
                 "webignition/symfony-test-service-injector-trait": "^0.2.0"
             },
             "type": "symfony-bundle",
@@ -5295,9 +5295,9 @@
             "homepage": "https://github.com/webignition/basil-worker-state-bundle",
             "support": {
                 "issues": "https://github.com/webignition/basil-worker-state-bundle/issues",
-                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.5"
+                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.6"
             },
-            "time": "2021-03-01T17:04:54+00:00"
+            "time": "2021-03-03T10:43:43+00:00"
         },
         {
             "name": "webignition/error-handler",
