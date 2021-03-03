@@ -96,7 +96,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, Test::STATE_RUNNING));
 
-        $event = new TestFinishedEvent($this->test);
+        $event = new TestFinishedEvent($this->test, \Mockery::mock(Document::class));
 
         $callable($event);
 

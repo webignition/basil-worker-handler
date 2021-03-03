@@ -22,6 +22,7 @@ use App\Tests\Services\InvokableHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
+use webignition\YamlDocument\Document;
 
 class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 {
@@ -293,7 +294,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueIsEmpty();
 
         $test = $tests[$eventTestIndex];
-        $event = new TestFinishedEvent($test);
+        $event = new TestFinishedEvent($test, \Mockery::mock(Document::class));
 
         $execute($event);
 
