@@ -90,21 +90,21 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSetCompleteFromTestExecuteCompleteEvent(): void
+    public function testSetCompleteFromTestFinishedEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestFinishedEvent $event) {
-            $this->mutator->setCompleteFromTestExecuteCompleteEvent($event);
+        $this->doTestFinishedEventDrivenTest(function (TestFinishedEvent $event) {
+            $this->mutator->setCompleteFromTestFinishedEvent($event);
         });
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent(): void
+    public function testSubscribesToTestFinishedEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestFinishedEvent $event) {
+        $this->doTestFinishedEventDrivenTest(function (TestFinishedEvent $event) {
             $this->eventDispatcher->dispatch($event);
         });
     }
 
-    private function doTestExecuteCompleteEventDrivenTest(callable $callable): void
+    private function doTestFinishedEventDrivenTest(callable $callable): void
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, Test::STATE_RUNNING));
 

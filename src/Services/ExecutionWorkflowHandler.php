@@ -38,12 +38,12 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
                 ['dispatchExecutionStartedEvent', 50],
             ],
             TestFinishedEvent::class => [
-                ['dispatchNextExecuteTestMessageFromTestExecuteCompleteEvent', 0],
+                ['dispatchNextExecuteTestMessageFromTestFinishedEvent', 0],
             ],
         ];
     }
 
-    public function dispatchNextExecuteTestMessageFromTestExecuteCompleteEvent(TestFinishedEvent $event): void
+    public function dispatchNextExecuteTestMessageFromTestFinishedEvent(TestFinishedEvent $event): void
     {
         $test = $event->getTest();
 

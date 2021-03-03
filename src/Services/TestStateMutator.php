@@ -23,7 +23,7 @@ class TestStateMutator implements EventSubscriberInterface
     {
         return [
             TestFinishedEvent::class => [
-                ['setCompleteFromTestExecuteCompleteEvent', 100],
+                ['setCompleteFromTestFinishedEvent', 100],
             ],
             TestStepFailedEvent::class => [
                 ['setFailedFromTestStepFailedEvent', 50],
@@ -31,7 +31,7 @@ class TestStateMutator implements EventSubscriberInterface
         ];
     }
 
-    public function setCompleteFromTestExecuteCompleteEvent(TestFinishedEvent $event): void
+    public function setCompleteFromTestFinishedEvent(TestFinishedEvent $event): void
     {
         $this->setComplete($event->getTest());
     }
