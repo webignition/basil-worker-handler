@@ -10,6 +10,7 @@ use App\Message\CompileSourceMessage;
 use App\Message\TimeoutCheckMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\CompilationWorkflowHandler;
+use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Model\EndToEndJob\Invokable;
@@ -55,6 +56,17 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 [
                     $sendCallbackMessageDispatcher,
                     'dispatchForEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionStartedEvent'
                 ]
             );
         }
