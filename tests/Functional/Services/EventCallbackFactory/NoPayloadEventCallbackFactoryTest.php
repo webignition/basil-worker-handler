@@ -6,13 +6,15 @@ namespace App\Tests\Functional\Services\EventCallbackFactory;
 
 use App\Services\EventCallbackFactory\EventCallbackFactoryInterface;
 use App\Services\EventCallbackFactory\NoPayloadEventCallbackFactory;
+use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobReadyEventDataProviderTrait;
 
 class NoPayloadEventCallbackFactoryTest extends AbstractEventCallbackFactoryTest
 {
-    use CreateFromJobCompletedEventDataProviderTrait;
     use CreateFromJobReadyEventDataProviderTrait;
+    use CreateFromCompilationCompletedEventDataProviderTrait;
+    use CreateFromJobCompletedEventDataProviderTrait;
 
     protected function getCallbackFactory(): ?EventCallbackFactoryInterface
     {
@@ -26,8 +28,9 @@ class NoPayloadEventCallbackFactoryTest extends AbstractEventCallbackFactoryTest
     public function createDataProvider(): array
     {
         return array_merge(
-            $this->createFromJobCompletedEventDataProvider(),
+            $this->createFromCompilationCompletedEventDataProvider(),
             $this->createFromJobReadyEventDataProvider(),
+            $this->createFromJobCompletedEventDataProvider(),
         );
     }
 }
