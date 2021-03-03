@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
+use App\Event\CompilationCompletedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestExecuteCompleteEvent;
 use App\Message\ExecuteTestMessage;
@@ -42,6 +43,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
             $this->eventDispatcher->removeListener(
                 SourceCompilationPassedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+
+            $this->eventDispatcher->removeListener(
+                CompilationCompletedEvent::class,
                 [
                     $sendCallbackMessageDispatcher,
                     'dispatchForEvent'
