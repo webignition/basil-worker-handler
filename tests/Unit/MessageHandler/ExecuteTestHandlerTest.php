@@ -6,6 +6,7 @@ namespace App\Tests\Unit\MessageHandler;
 
 use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
+use App\Services\TestDocumentFactory;
 use App\Services\TestStateMutator;
 use App\Tests\Mock\Entity\MockJob;
 use App\Tests\Mock\Entity\MockTest;
@@ -46,7 +47,8 @@ class ExecuteTestHandlerTest extends TestCase
             \Mockery::mock(EventDispatcherInterface::class),
             \Mockery::mock(TestStateMutator::class),
             $testRepository,
-            $executionState
+            $executionState,
+            \Mockery::mock(TestDocumentFactory::class)
         );
 
         $handler($message);
