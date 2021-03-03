@@ -25,6 +25,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
+use webignition\YamlDocument\Document;
 
 class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 {
@@ -125,7 +126,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $tests = $this->invokableHandler->invoke(TestGetterFactory::getAll());
         $test = array_pop($tests);
-        $testCompleteEvent = new TestFinishedEvent($test);
+        $testCompleteEvent = new TestFinishedEvent($test, \Mockery::mock(Document::class));
 
         $execute($testCompleteEvent);
 

@@ -57,15 +57,14 @@ class ExecuteTestHandler implements MessageHandlerInterface
             $this->entityPersister->persist($job);
         }
 
-        $this->eventDispatcher->dispatch(new TestStartedEvent(
-            $test,
-            $this->testDocumentFactory->create($test)
-        ));
+        $testDocument = $this->testDocumentFactory->create($test);
+
+        $this->eventDispatcher->dispatch(new TestStartedEvent($test, $testDocument));
 
         $this->testStateMutator->setRunning($test);
         $this->testExecutor->execute($test);
         $this->testStateMutator->setComplete($test);
 
-        $this->eventDispatcher->dispatch(new TestFinishedEvent($test));
+        $this->eventDispatcher->dispatch(new TestFinishedEvent($test, $testDocument));
     }
 }
