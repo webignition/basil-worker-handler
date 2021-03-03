@@ -174,6 +174,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
+                                    CallbackInterface::TYPE_EXECUTION_STARTED,
+                                    []
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
                                     CallbackInterface::TYPE_TEST_STARTED,
                                     [
                                         'type' => 'test',
