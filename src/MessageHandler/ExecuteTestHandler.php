@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
+use App\Services\TestDocumentFactory;
 use App\Services\TestExecutor;
 use App\Services\TestStateMutator;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -25,7 +27,8 @@ class ExecuteTestHandler implements MessageHandlerInterface
         private EventDispatcherInterface $eventDispatcher,
         private TestStateMutator $testStateMutator,
         private TestRepository $testRepository,
-        private ExecutionState $executionState
+        private ExecutionState $executionState,
+        private TestDocumentFactory $testDocumentFactory
     ) {
     }
 
@@ -53,6 +56,11 @@ class ExecuteTestHandler implements MessageHandlerInterface
             $job->setStartDateTime();
             $this->entityPersister->persist($job);
         }
+
+        $this->eventDispatcher->dispatch(new TestStartedEvent(
+            $test,
+            $this->testDocumentFactory->create($test)
+        ));
 
         $this->testStateMutator->setRunning($test);
         $this->testExecutor->execute($test);
