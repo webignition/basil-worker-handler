@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\CompilationCompletedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Message\ExecuteTestMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
@@ -189,7 +189,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->doTestExecuteCompleteEventDrivenTest(
             $setup,
             $eventTestIndex,
-            function (TestExecuteCompleteEvent $event) {
+            function (TestFinishedEvent $event) {
                 $this->handler->dispatchNextExecuteTestMessageFromTestExecuteCompleteEvent($event);
             },
             $expectedQueuedMessageCount,
@@ -274,7 +274,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 ])
             ]),
             0,
-            function (TestExecuteCompleteEvent $event) {
+            function (TestFinishedEvent $event) {
                 $this->eventDispatcher->dispatch($event);
             },
             1,
@@ -293,7 +293,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueIsEmpty();
 
         $test = $tests[$eventTestIndex];
-        $event = new TestExecuteCompleteEvent($test);
+        $event = new TestFinishedEvent($test);
 
         $execute($event);
 

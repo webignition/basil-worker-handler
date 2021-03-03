@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -80,14 +80,14 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
 
     public function testSetCompleteFromTestExecuteCompleteEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
+        $this->doTestExecuteCompleteEventDrivenTest(function (TestFinishedEvent $event) {
             $this->mutator->setCompleteFromTestExecuteCompleteEvent($event);
         });
     }
 
     public function testSubscribesToTestExecuteCompleteEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
+        $this->doTestExecuteCompleteEventDrivenTest(function (TestFinishedEvent $event) {
             $this->eventDispatcher->dispatch($event);
         });
     }
@@ -96,7 +96,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, Test::STATE_RUNNING));
 
-        $event = new TestExecuteCompleteEvent($this->test);
+        $event = new TestFinishedEvent($this->test);
 
         $callable($event);
 

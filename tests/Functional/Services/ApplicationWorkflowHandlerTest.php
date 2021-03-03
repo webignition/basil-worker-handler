@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Message\SendCallbackMessage;
 use App\Services\ApplicationWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -112,7 +112,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                         ->withState(CallbackInterface::STATE_COMPLETE)
                 ),
             ]),
-            function (TestExecuteCompleteEvent $event) {
+            function (TestFinishedEvent $event) {
                 $this->eventDispatcher->dispatch($event);
             }
         );
@@ -125,7 +125,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $tests = $this->invokableHandler->invoke(TestGetterFactory::getAll());
         $test = array_pop($tests);
-        $testCompleteEvent = new TestExecuteCompleteEvent($test);
+        $testCompleteEvent = new TestFinishedEvent($test);
 
         $execute($testCompleteEvent);
 
