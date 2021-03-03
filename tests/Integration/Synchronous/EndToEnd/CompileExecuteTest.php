@@ -165,6 +165,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
+                                    CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
+                                    []
+                                ),
+                                new Response()
+                            ),
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
                                     CallbackInterface::TYPE_TEST_STARTED,
                                     [
                                         'type' => 'test',
@@ -392,6 +401,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                         [
                                             'source' => 'Test/chrome-open-index.yml',
                                         ]
+                                    ),
+                                    new Response()
+                                ),
+                                $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
+                                        []
                                     ),
                                     new Response()
                                 ),
