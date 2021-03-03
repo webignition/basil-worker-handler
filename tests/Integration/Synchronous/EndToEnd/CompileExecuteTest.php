@@ -341,152 +341,56 @@ class CompileExecuteTest extends AbstractEndToEndTest
                 'expectedExecutionEndState' => ExecutionState::STATE_CANCELLED,
                 'expectedApplicationEndState' => ApplicationState::STATE_COMPLETE,
                 'postAssertions' => new InvokableCollection([
-                    'verify http transactions' => new Invokable(
-                        function (HttpTransactionCollection $expectedHttpTransactions, HttpLogReader $httpLogReader) {
+                    'verify final http transaction' => new Invokable(
+                        function (HttpTransactionInterface $expectedTransaction, HttpLogReader $httpLogReader) {
                             $transactions = $httpLogReader->getTransactions();
                             $httpLogReader->reset();
 
-                            self::assertCount(count($expectedHttpTransactions), $transactions);
-                            $this->assertTransactionCollectionsAreEquivalent($expectedHttpTransactions, $transactions);
+                            $finalTransaction = $transactions->get($transactions->count() - 1);
+                            self::assertInstanceOf(HttpTransactionInterface::class, $finalTransaction);
+
+                            if ($finalTransaction instanceof HttpTransactionInterface) {
+                                $this->assertTransactionsAreEquivalent($expectedTransaction, $finalTransaction);
+                            }
                         },
                         [
-                            $this->createHttpTransactionCollection([
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_JOB_STARTED,
-                                        []
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_COMPILATION_STARTED,
-                                        [
-                                            'source' => 'Test/chrome-open-index-with-step-failure.yml',
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_COMPILATION_PASSED,
-                                        [
-                                            'source' => 'Test/chrome-open-index-with-step-failure.yml',
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_COMPILATION_STARTED,
-                                        [
-                                            'source' => 'Test/chrome-open-index.yml',
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_COMPILATION_PASSED,
-                                        [
-                                            'source' => 'Test/chrome-open-index.yml',
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
-                                        []
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_TEST_STARTED,
-                                        [
-                                            'type' => 'test',
-                                            'path' => 'Test/chrome-open-index-with-step-failure.yml',
-                                            'config' => [
-                                                'browser' => 'chrome',
-                                                'url' => 'http://nginx-html/index.html',
-                                            ],
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_STEP_PASSED,
-                                        [
-                                            'type' => 'step',
-                                            'name' => 'verify page is open',
-                                            'status' => 'passed',
-                                            'statements' => [
-                                                [
-                                                    'type' => 'assertion',
-                                                    'source' => '$page.url is "http://nginx-html/index.html"',
-                                                    'status' => 'passed',
-                                                ],
-                                            ],
-                                        ]
-                                    ),
-                                    new Response()
-                                ),
-                                $this->createHttpTransaction(
-                                    $this->createExpectedRequest(
-                                        $label,
-                                        $callbackUrl,
-                                        CallbackInterface::TYPE_STEP_FAILED,
-                                        [
-                                            'type' => 'step',
-                                            'name' => 'fail on intentionally-missing element',
-                                            'status' => 'failed',
-                                            'statements' => [
-                                                [
-                                                    'type' => 'assertion',
-                                                    'source' => '$".non-existent" exists',
-                                                    'status' => 'failed',
-                                                    'summary' => [
-                                                        'operator' => 'exists',
-                                                        'source' => [
-                                                            'type' => 'node',
-                                                            'body' => [
-                                                                'type' => 'element',
-                                                                'identifier' => [
-                                                                    'source' => '$".non-existent"',
-                                                                    'properties' => [
-                                                                        'type' => 'css',
-                                                                        'locator' => '.non-existent',
-                                                                        'position' => 1,
-                                                                    ],
+                            $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_STEP_FAILED,
+                                    [
+                                        'type' => 'step',
+                                        'name' => 'fail on intentionally-missing element',
+                                        'status' => 'failed',
+                                        'statements' => [
+                                            [
+                                                'type' => 'assertion',
+                                                'source' => '$".non-existent" exists',
+                                                'status' => 'failed',
+                                                'summary' => [
+                                                    'operator' => 'exists',
+                                                    'source' => [
+                                                        'type' => 'node',
+                                                        'body' => [
+                                                            'type' => 'element',
+                                                            'identifier' => [
+                                                                'source' => '$".non-existent"',
+                                                                'properties' => [
+                                                                    'type' => 'css',
+                                                                    'locator' => '.non-existent',
+                                                                    'position' => 1,
                                                                 ],
                                                             ],
                                                         ],
                                                     ],
                                                 ],
                                             ],
-                                        ]
-                                    ),
-                                    new Response()
+                                        ],
+                                    ]
                                 ),
-                            ]),
+                                new Response()
+                            ),
                             new ServiceReference(HttpLogReader::class),
                         ]
                     ),
@@ -524,7 +428,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
     private function assertTransactionsAreEquivalent(
         HttpTransactionInterface $expected,
         HttpTransactionInterface $actual,
-        int $transactionIndex
+        int $transactionIndex = 0
     ): void {
         $this->assertRequestsAreEquivalent($expected->getRequest(), $actual->getRequest(), $transactionIndex);
 
