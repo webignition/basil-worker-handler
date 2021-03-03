@@ -35,7 +35,7 @@ class WaitUntilApplicationStateIs
                 $intervalInMicroseconds = 100000;
 
                 while (
-                    false === in_array($applicationState->get(), $expectedEndStates) &&
+                    false === in_array($applicationState, $expectedEndStates) &&
                     false === $maxDurationReached
                 ) {
                     usleep($intervalInMicroseconds);

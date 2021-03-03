@@ -35,7 +35,7 @@ class ExecuteTestHandler implements MessageHandlerInterface
             return;
         }
 
-        if (in_array($this->executionState->get(), ExecutionState::FINISHED_STATES)) {
+        if (in_array($this->executionState, ExecutionState::FINISHED_STATES)) {
             return;
         }
 

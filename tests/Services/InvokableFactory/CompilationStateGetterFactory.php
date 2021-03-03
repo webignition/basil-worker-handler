@@ -15,7 +15,7 @@ class CompilationStateGetterFactory
     {
         return new Invokable(
             function (CompilationState $compilationState): string {
-                return $compilationState->get();
+                return (string) $compilationState;
             },
             [
                 new ServiceReference(CompilationState::class),

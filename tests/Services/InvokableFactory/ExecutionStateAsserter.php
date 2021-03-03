@@ -19,7 +19,7 @@ class ExecutionStateAsserter
     {
         return new Invokable(
             function (ExecutionState $executionState, string $expectedState): void {
-                TestCase::assertSame($expectedState, $executionState->get());
+                TestCase::assertSame($expectedState, (string) $executionState);
             },
             [
                 new ServiceReference(ExecutionState::class),

@@ -15,7 +15,7 @@ class ExecutionStateGetterFactory
     {
         return new Invokable(
             function (ExecutionState $executionState): string {
-                return $executionState->get();
+                return (string) $executionState;
             },
             [
                 new ServiceReference(ExecutionState::class),
