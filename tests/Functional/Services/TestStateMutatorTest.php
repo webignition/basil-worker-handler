@@ -33,17 +33,17 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     }
 
     /**
-     * @dataProvider setCompleteDataProvider
+     * @dataProvider setCompleteIfRunningDataProvider
      *
      * @param Test::STATE_* $initialState
      * @param Test::STATE_* $expectedState
      */
-    public function testSetComplete(string $initialState, string $expectedState): void
+    public function testSetCompleteIfRunning(string $initialState, string $expectedState): void
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, $initialState));
         self::assertSame($initialState, $this->test->getState());
 
-        $this->mutator->setComplete($this->test);
+        $this->mutator->setCompleteIfRunning($this->test);
 
         self::assertSame($expectedState, $this->test->getState());
     }
@@ -51,7 +51,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     /**
      * @return array[]
      */
-    public function setCompleteDataProvider(): array
+    public function setCompleteIfRunningDataProvider(): array
     {
         return [
             Test::STATE_AWAITING => [
