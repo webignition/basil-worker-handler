@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Event\ExecutionStartedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
-use App\Event\TestFinishedEvent;
+use App\Event\TestPassedEvent;
 use App\Message\ExecuteTestMessage;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -37,13 +37,13 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
                 ['dispatchNextExecuteTestMessage', 0],
                 ['dispatchExecutionStartedEvent', 50],
             ],
-            TestFinishedEvent::class => [
-                ['dispatchNextExecuteTestMessageFromTestFinishedEvent', 0],
+            TestPassedEvent::class => [
+                ['dispatchNextExecuteTestMessageFromTestPassedEvent', 0],
             ],
         ];
     }
 
-    public function dispatchNextExecuteTestMessageFromTestFinishedEvent(TestFinishedEvent $event): void
+    public function dispatchNextExecuteTestMessageFromTestPassedEvent(TestPassedEvent $event): void
     {
         $test = $event->getTest();
 
