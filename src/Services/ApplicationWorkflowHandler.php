@@ -32,7 +32,7 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
 
     public function dispatchJobCompleteEvent(): void
     {
-        if (ApplicationState::STATE_COMPLETE === (string) $this->applicationState) {
+        if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
             $this->eventDispatcher->dispatch(new JobCompletedEvent());
         }
     }

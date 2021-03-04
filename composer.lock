@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00b099cca177c4aefa1b8106363ae9d3",
+    "content-hash": "d4638fcc5fae7989393ac3c02fb44353",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5245,16 +5245,16 @@
         },
         {
             "name": "webignition/basil-worker-state-bundle",
-            "version": "0.6",
+            "version": "0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-worker-state-bundle.git",
-                "reference": "5d99b07b04f1076f3f1a74c615dd0140c85a1c4a"
+                "reference": "41e4a6e750b931991215eae1514d39ffce227702"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/5d99b07b04f1076f3f1a74c615dd0140c85a1c4a",
-                "reference": "5d99b07b04f1076f3f1a74c615dd0140c85a1c4a",
+                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/41e4a6e750b931991215eae1514d39ffce227702",
+                "reference": "41e4a6e750b931991215eae1514d39ffce227702",
                 "shasum": ""
             },
             "require": {
@@ -5295,9 +5295,9 @@
             "homepage": "https://github.com/webignition/basil-worker-state-bundle",
             "support": {
                 "issues": "https://github.com/webignition/basil-worker-state-bundle/issues",
-                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.6"
+                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.7"
             },
-            "time": "2021-03-03T10:43:43+00:00"
+            "time": "2021-03-04T14:32:46+00:00"
         },
         {
             "name": "webignition/error-handler",

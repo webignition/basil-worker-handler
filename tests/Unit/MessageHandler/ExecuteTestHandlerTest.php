@@ -79,7 +79,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withGetCall(ExecutionState::STATE_COMPLETE)
+                    ->withIsCall(true, ...ExecutionState::FINISHED_STATES)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
@@ -92,7 +92,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withGetCall(ExecutionState::STATE_AWAITING)
+                    ->withIsCall(false, ...ExecutionState::FINISHED_STATES)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
@@ -105,7 +105,7 @@ class ExecuteTestHandlerTest extends TestCase
                     ->withGetCall((new MockJob())->getMock())
                     ->getMock(),
                 'executionState' => (new MockExecutionState())
-                    ->withGetCall(ExecutionState::STATE_AWAITING)
+                    ->withIsCall(false, ...ExecutionState::FINISHED_STATES)
                     ->getMock(),
                 'message' => new ExecuteTestMessage(1),
                 'testRepository' => (new MockTestRepository())
