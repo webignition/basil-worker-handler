@@ -231,7 +231,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             TestFinishedEvent::class => [
                 'event' => new TestFinishedEvent(
                     (new MockTest())
-                        ->withGetStateCall(Test::STATE_COMPLETE)
+                        ->withHasStateCall(Test::STATE_COMPLETE, false)
                         ->getMock(),
                     new Document('document-key: value')
                 ),
