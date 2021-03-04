@@ -219,11 +219,11 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            'test/finished: chrome-open-index' => $this->createHttpTransaction(
+                            'test/passed: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
-                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    CallbackInterface::TYPE_TEST_PASSED,
                                     [
                                         'type' => 'test',
                                         'path' => 'Test/chrome-open-index.yml',
@@ -271,11 +271,11 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            'test/finished: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
+                            'test/passed: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
-                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    CallbackInterface::TYPE_TEST_PASSED,
                                     [
                                         'type' => 'test',
                                         'path' => 'Test/chrome-firefox-open-index.yml',
@@ -323,11 +323,11 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            'test/finished: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
+                            'test/passed: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
-                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    CallbackInterface::TYPE_TEST_PASSED,
                                     [
                                         'type' => 'test',
                                         'path' => 'Test/chrome-firefox-open-index.yml',
@@ -375,11 +375,11 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            'test/finished: chrome-open-form' => $this->createHttpTransaction(
+                            'test/passed: chrome-open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
-                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    CallbackInterface::TYPE_TEST_PASSED,
                                     [
                                         'type' => 'test',
                                         'path' => 'Test/chrome-open-form.yml',
@@ -473,11 +473,11 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     ),
                                     new Response()
                                 ),
-                                'test/finished' => $this->createHttpTransaction(
+                                'test/failed' => $this->createHttpTransaction(
                                     $this->createExpectedRequest(
                                         $label,
                                         $callbackUrl,
-                                        CallbackInterface::TYPE_TEST_FINISHED,
+                                        CallbackInterface::TYPE_TEST_FAILED,
                                         [
                                             'type' => 'test',
                                             'path' => 'Test/chrome-open-index-with-step-failure.yml',
