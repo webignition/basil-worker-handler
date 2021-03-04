@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Services\Integration;
 
 use webignition\HttpHistoryContainer\Collection\HttpTransactionCollection;
+use webignition\HttpHistoryContainer\Collection\HttpTransactionCollectionInterface;
 use webignition\HttpHistoryContainer\Transaction\LoggableTransaction;
 
 class HttpLogReader
@@ -13,7 +14,7 @@ class HttpLogReader
     {
     }
 
-    public function getTransactions(): HttpTransactionCollection
+    public function getTransactions(): HttpTransactionCollectionInterface
     {
         $content = (string) file_get_contents($this->path);
         $lines = array_filter(explode("\n", $content));
