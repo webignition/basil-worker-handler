@@ -79,18 +79,18 @@ class CompileExecuteTest extends AbstractEndToEndTest
                 'expectedApplicationEndState' => ApplicationState::STATE_COMPLETE,
                 'postAssertions' => new Invokable(
                     function (
-                        HttpTransactionCollectionInterface $expectedHttpTransactions,
+                        HttpTransactionCollectionInterface $expectedTransactions,
                         HttpLogReader $httpLogReader
                     ) {
                         $transactions = $httpLogReader->getTransactions();
                         $httpLogReader->reset();
 
-                        self::assertCount(count($expectedHttpTransactions), $transactions);
-                        $this->assertTransactionCollectionsAreEquivalent($expectedHttpTransactions, $transactions);
+                        self::assertCount(count($expectedTransactions), $transactions);
+                        $this->assertTransactionCollectionsAreEquivalent($expectedTransactions, $transactions);
                     },
                     [
                         $this->createHttpTransactionCollection([
-                            $this->createHttpTransaction(
+                            'job/started' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -99,7 +99,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -110,7 +110,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -121,7 +121,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome-firefox-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -132,7 +132,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome-firefox-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -143,7 +143,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/started: chrome--open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -154,7 +154,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/passed: chrome--open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -165,7 +165,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'compilation/completed' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -174,7 +174,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'execution/started' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -183,7 +183,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/started: chrome-open-index' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -199,7 +199,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-open-index: open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -219,7 +219,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-open-index' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -235,7 +251,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-firefox-open-index: chrome, open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -255,7 +271,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-firefox-open-index: chrome' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -271,7 +303,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-firefox-open-index: firefox open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -291,7 +323,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-firefox-open-index: firefox' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-firefox-open-index.yml',
+                                        'config' => [
+                                            'browser' => 'firefox',
+                                            'url' => 'http://nginx-html/index.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'test/started: chrome-open-form' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -307,7 +355,7 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'step/passed: chrome-open-form: open' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -327,7 +375,23 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
-                            $this->createHttpTransaction(
+                            'test/finished: chrome-open-form' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_TEST_FINISHED,
+                                    [
+                                        'type' => 'test',
+                                        'path' => 'Test/chrome-open-form.yml',
+                                        'config' => [
+                                            'browser' => 'chrome',
+                                            'url' => 'http://nginx-html/form.html',
+                                        ],
+                                    ]
+                                ),
+                                new Response()
+                            ),
+                            'job/completed' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,
                                     $callbackUrl,
@@ -355,55 +419,77 @@ class CompileExecuteTest extends AbstractEndToEndTest
                 'expectedApplicationEndState' => ApplicationState::STATE_COMPLETE,
                 'postAssertions' => new InvokableCollection([
                     'verify final http transaction' => new Invokable(
-                        function (HttpTransactionInterface $expectedTransaction, HttpLogReader $httpLogReader) {
+                        function (
+                            HttpTransactionCollectionInterface $expectedTransactions,
+                            HttpLogReader $httpLogReader
+                        ) {
                             $transactions = $httpLogReader->getTransactions();
                             $httpLogReader->reset();
 
-                            $finalTransaction = $transactions->get($transactions->count() - 1);
-                            self::assertInstanceOf(HttpTransactionInterface::class, $finalTransaction);
+                            $transactions = $transactions->slice(
+                                -1 * $expectedTransactions->count(),
+                                null
+                            );
 
-                            if ($finalTransaction instanceof HttpTransactionInterface) {
-                                $this->assertTransactionsAreEquivalent($expectedTransaction, $finalTransaction);
-                            }
+                            self::assertCount(count($expectedTransactions), $transactions);
+                            $this->assertTransactionCollectionsAreEquivalent($expectedTransactions, $transactions);
                         },
                         [
-                            $this->createHttpTransaction(
-                                $this->createExpectedRequest(
-                                    $label,
-                                    $callbackUrl,
-                                    CallbackInterface::TYPE_STEP_FAILED,
-                                    [
-                                        'type' => 'step',
-                                        'name' => 'fail on intentionally-missing element',
-                                        'status' => 'failed',
-                                        'statements' => [
-                                            [
-                                                'type' => 'assertion',
-                                                'source' => '$".non-existent" exists',
-                                                'status' => 'failed',
-                                                'summary' => [
-                                                    'operator' => 'exists',
-                                                    'source' => [
-                                                        'type' => 'node',
-                                                        'body' => [
-                                                            'type' => 'element',
-                                                            'identifier' => [
-                                                                'source' => '$".non-existent"',
-                                                                'properties' => [
-                                                                    'type' => 'css',
-                                                                    'locator' => '.non-existent',
-                                                                    'position' => 1,
+                            $this->createHttpTransactionCollection([
+                                'step/failed' => $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_STEP_FAILED,
+                                        [
+                                            'type' => 'step',
+                                            'name' => 'fail on intentionally-missing element',
+                                            'status' => 'failed',
+                                            'statements' => [
+                                                [
+                                                    'type' => 'assertion',
+                                                    'source' => '$".non-existent" exists',
+                                                    'status' => 'failed',
+                                                    'summary' => [
+                                                        'operator' => 'exists',
+                                                        'source' => [
+                                                            'type' => 'node',
+                                                            'body' => [
+                                                                'type' => 'element',
+                                                                'identifier' => [
+                                                                    'source' => '$".non-existent"',
+                                                                    'properties' => [
+                                                                        'type' => 'css',
+                                                                        'locator' => '.non-existent',
+                                                                        'position' => 1,
+                                                                    ],
                                                                 ],
                                                             ],
                                                         ],
                                                     ],
                                                 ],
                                             ],
-                                        ],
-                                    ]
+                                        ]
+                                    ),
+                                    new Response()
                                 ),
-                                new Response()
-                            ),
+                                'test/finished' => $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_TEST_FINISHED,
+                                        [
+                                            'type' => 'test',
+                                            'path' => 'Test/chrome-open-index-with-step-failure.yml',
+                                            'config' => [
+                                                'browser' => 'chrome',
+                                                'url' => 'http://nginx-html/index.html',
+                                            ],
+                                        ]
+                                    ),
+                                    new Response()
+                                ),
+                            ]),
                             new ServiceReference(HttpLogReader::class),
                         ]
                     ),

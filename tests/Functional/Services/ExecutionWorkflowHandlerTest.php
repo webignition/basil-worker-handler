@@ -6,7 +6,7 @@ namespace App\Tests\Functional\Services;
 
 use App\Event\CompilationCompletedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Message\ExecuteTestMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
@@ -22,6 +22,7 @@ use App\Tests\Services\InvokableHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
+use webignition\YamlDocument\Document;
 
 class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 {
@@ -51,6 +52,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
             $this->eventDispatcher->removeListener(
                 CompilationCompletedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+
+            $this->eventDispatcher->removeListener(
+                TestFinishedEvent::class,
                 [
                     $sendCallbackMessageDispatcher,
                     'dispatchForEvent'
@@ -178,19 +187,19 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     }
 
     /**
-     * @dataProvider dispatchNextExecuteTestMessageFromTestExecuteCompleteEventDataProvider
+     * @dataProvider dispatchNextExecuteTestMessageFromTestFinishedEventDataProvider
      */
-    public function testDispatchNextExecuteTestMessageFromTestExecuteCompleteEvent(
+    public function testDispatchNextExecuteTestMessageFromTestFinishedEvent(
         InvokableInterface $setup,
         int $eventTestIndex,
         int $expectedQueuedMessageCount,
         ?int $expectedNextTestIndex
     ): void {
-        $this->doTestExecuteCompleteEventDrivenTest(
+        $this->doTestFinishedEventDrivenTest(
             $setup,
             $eventTestIndex,
-            function (TestExecuteCompleteEvent $event) {
-                $this->handler->dispatchNextExecuteTestMessageFromTestExecuteCompleteEvent($event);
+            function (TestFinishedEvent $event) {
+                $this->handler->dispatchNextExecuteTestMessageFromTestFinishedEvent($event);
             },
             $expectedQueuedMessageCount,
             $expectedNextTestIndex
@@ -200,7 +209,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     /**
      * @return array[]
      */
-    public function dispatchNextExecuteTestMessageFromTestExecuteCompleteEventDataProvider(): array
+    public function dispatchNextExecuteTestMessageFromTestFinishedEventDataProvider(): array
     {
         return [
             'single test, not complete' => [
@@ -260,9 +269,9 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent(): void
+    public function testSubscribesToTestFinishedEvent(): void
     {
-        $this->doTestExecuteCompleteEventDrivenTest(
+        $this->doTestFinishedEventDrivenTest(
             new InvokableCollection([
                 TestSetupInvokableFactory::setupCollection([
                     (new TestSetup())
@@ -274,7 +283,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 ])
             ]),
             0,
-            function (TestExecuteCompleteEvent $event) {
+            function (TestFinishedEvent $event) {
                 $this->eventDispatcher->dispatch($event);
             },
             1,
@@ -282,7 +291,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         );
     }
 
-    private function doTestExecuteCompleteEventDrivenTest(
+    private function doTestFinishedEventDrivenTest(
         InvokableInterface $setup,
         int $eventTestIndex,
         callable $execute,
@@ -293,7 +302,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueIsEmpty();
 
         $test = $tests[$eventTestIndex];
-        $event = new TestExecuteCompleteEvent($test);
+        $event = new TestFinishedEvent($test, \Mockery::mock(Document::class));
 
         $execute($event);
 

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Message\SendCallbackMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -21,10 +22,11 @@ use App\Tests\Services\InvokableFactory\TestGetterFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
+use webignition\YamlDocument\Document;
 
 class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 {
@@ -39,6 +41,17 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                TestFinishedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
     }
 
     public function testDispatchJobCompleteEventNoMessageIsDispatched(): void
@@ -90,7 +103,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestExecuteCompleteEvent(): void
+    public function testSubscribesToTestFinishedEvent(): void
     {
         $jobSetup = (new JobSetup())
             ->withLabel('label')
@@ -112,7 +125,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                         ->withState(CallbackInterface::STATE_COMPLETE)
                 ),
             ]),
-            function (TestExecuteCompleteEvent $event) {
+            function (TestFinishedEvent $event) {
                 $this->eventDispatcher->dispatch($event);
             }
         );
@@ -125,7 +138,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $tests = $this->invokableHandler->invoke(TestGetterFactory::getAll());
         $test = array_pop($tests);
-        $testCompleteEvent = new TestExecuteCompleteEvent($test);
+        $testCompleteEvent = new TestFinishedEvent($test, \Mockery::mock(Document::class));
 
         $execute($testCompleteEvent);
 
