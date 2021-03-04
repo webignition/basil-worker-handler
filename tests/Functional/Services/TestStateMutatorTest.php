@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
 use App\Event\TestStepFailedEvent;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -34,17 +33,17 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     }
 
     /**
-     * @dataProvider setCompleteDataProvider
+     * @dataProvider setCompleteIfRunningDataProvider
      *
      * @param Test::STATE_* $initialState
      * @param Test::STATE_* $expectedState
      */
-    public function testSetComplete(string $initialState, string $expectedState): void
+    public function testSetCompleteIfRunning(string $initialState, string $expectedState): void
     {
         $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, $initialState));
         self::assertSame($initialState, $this->test->getState());
 
-        $this->mutator->setComplete($this->test);
+        $this->mutator->setCompleteIfRunning($this->test);
 
         self::assertSame($expectedState, $this->test->getState());
     }
@@ -52,7 +51,7 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
     /**
      * @return array[]
      */
-    public function setCompleteDataProvider(): array
+    public function setCompleteIfRunningDataProvider(): array
     {
         return [
             Test::STATE_AWAITING => [
@@ -76,31 +75,6 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
                 'expectedState' => Test::STATE_CANCELLED,
             ],
         ];
-    }
-
-    public function testSetCompleteFromTestExecuteCompleteEvent(): void
-    {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
-            $this->mutator->setCompleteFromTestExecuteCompleteEvent($event);
-        });
-    }
-
-    public function testSubscribesToTestExecuteCompleteEvent(): void
-    {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
-            $this->eventDispatcher->dispatch($event);
-        });
-    }
-
-    private function doTestExecuteCompleteEventDrivenTest(callable $callable): void
-    {
-        $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, Test::STATE_RUNNING));
-
-        $event = new TestExecuteCompleteEvent($this->test);
-
-        $callable($event);
-
-        self::assertSame(Test::STATE_COMPLETE, $this->test->getState());
     }
 
     /**
