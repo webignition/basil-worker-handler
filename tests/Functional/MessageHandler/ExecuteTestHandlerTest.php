@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFinishedEvent;
 use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
@@ -74,7 +74,7 @@ class ExecuteTestHandlerTest extends AbstractBaseFunctionalTest
                     },
                 ),
                 new ExpectedDispatchedEvent(
-                    function (TestExecuteCompleteEvent $actualEvent) use ($test) {
+                    function (TestFinishedEvent $actualEvent) use ($test) {
                         self::assertSame($test, $actualEvent->getTest());
 
                         return true;

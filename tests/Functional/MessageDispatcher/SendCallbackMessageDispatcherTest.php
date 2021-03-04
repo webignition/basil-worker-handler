@@ -12,6 +12,7 @@ use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\SourceCompilation\SourceCompilationStartedEvent;
+use App\Event\TestFinishedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -223,6 +224,18 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     new Document('document-key: value')
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_STEP_FAILED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
+                ],
+            ],
+            TestFinishedEvent::class => [
+                'event' => new TestFinishedEvent(
+                    (new MockTest())
+                        ->withGetStateCall(Test::STATE_COMPLETE)
+                        ->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_TEST_FINISHED,
                 'expectedCallbackPayload' => [
                     'document-key' => 'value',
                 ],

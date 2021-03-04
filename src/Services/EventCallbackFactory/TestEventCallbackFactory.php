@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services\EventCallbackFactory;
 
+use App\Event\TestEventInterface;
+use App\Event\TestFinishedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -19,23 +21,17 @@ class TestEventCallbackFactory extends AbstractEventCallbackFactory
         TestStartedEvent::class => CallbackInterface::TYPE_TEST_STARTED,
         TestStepPassedEvent::class => CallbackInterface::TYPE_STEP_PASSED,
         TestStepFailedEvent::class => CallbackInterface::TYPE_STEP_FAILED,
+        TestFinishedEvent::class => CallbackInterface::TYPE_TEST_FINISHED,
     ];
 
     public function handles(Event $event): bool
     {
-        return
-            $event instanceof TestStartedEvent ||
-            $event instanceof TestStepPassedEvent ||
-            $event instanceof TestStepFailedEvent;
+        return $event instanceof TestEventInterface;
     }
 
     public function createForEvent(Event $event): ?CallbackInterface
     {
-        if (
-            $event instanceof TestStartedEvent ||
-            $event instanceof TestStepPassedEvent ||
-            $event instanceof TestStepFailedEvent
-        ) {
+        if ($event instanceof TestEventInterface) {
             $document = $event->getDocument();
 
             $documentData = $document->parse();
