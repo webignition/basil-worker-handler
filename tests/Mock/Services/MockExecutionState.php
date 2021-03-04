@@ -36,4 +36,21 @@ class MockExecutionState
 
         return $this;
     }
+
+    /**
+     * @param array<ExecutionState::STATE_*> $states
+     */
+    public function withIsCall(bool $is, ...$states): self
+    {
+        if (false === $this->mock instanceof MockInterface) {
+            return $this;
+        }
+
+        $this->mock
+            ->shouldReceive('is')
+            ->with(...$states)
+            ->andReturn($is);
+
+        return $this;
+    }
 }
