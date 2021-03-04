@@ -22,6 +22,7 @@ use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 use webignition\BasilWorker\StateBundle\Services\CompilationState;
 use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 use webignition\HttpHistoryContainer\Collection\HttpTransactionCollection;
+use webignition\HttpHistoryContainer\Collection\HttpTransactionCollectionInterface;
 use webignition\HttpHistoryContainer\Transaction\HttpTransaction;
 use webignition\HttpHistoryContainer\Transaction\HttpTransactionInterface;
 
@@ -77,7 +78,10 @@ class CompileExecuteTest extends AbstractEndToEndTest
                 'expectedExecutionEndState' => ExecutionState::STATE_COMPLETE,
                 'expectedApplicationEndState' => ApplicationState::STATE_COMPLETE,
                 'postAssertions' => new Invokable(
-                    function (HttpTransactionCollection $expectedHttpTransactions, HttpLogReader $httpLogReader) {
+                    function (
+                        HttpTransactionCollectionInterface $expectedHttpTransactions,
+                        HttpLogReader $httpLogReader
+                    ) {
                         $transactions = $httpLogReader->getTransactions();
                         $httpLogReader->reset();
 
@@ -258,7 +262,10 @@ class CompileExecuteTest extends AbstractEndToEndTest
                 'expectedApplicationEndState' => ApplicationState::STATE_COMPLETE,
                 'postAssertions' => new InvokableCollection([
                     'verify http transactions' => new Invokable(
-                        function (HttpTransactionCollection $expectedHttpTransactions, HttpLogReader $httpLogReader) {
+                        function (
+                            HttpTransactionCollectionInterface $expectedHttpTransactions,
+                            HttpLogReader $httpLogReader
+                        ) {
                             $transactions = $httpLogReader->getTransactions();
                             $httpLogReader->reset();
 
@@ -373,8 +380,8 @@ class CompileExecuteTest extends AbstractEndToEndTest
     }
 
     private function assertTransactionCollectionsAreEquivalent(
-        HttpTransactionCollection $expectedHttpTransactions,
-        HttpTransactionCollection $transactions
+        HttpTransactionCollectionInterface $expectedHttpTransactions,
+        HttpTransactionCollectionInterface $transactions
     ): void {
         foreach ($expectedHttpTransactions as $transactionIndex => $expectedTransaction) {
             $transaction = $transactions->get($transactionIndex);
@@ -451,10 +458,8 @@ class CompileExecuteTest extends AbstractEndToEndTest
 
     /**
      * @param HttpTransactionInterface[] $transactions
-     *
-     * @return HttpTransactionCollection
      */
-    private function createHttpTransactionCollection(array $transactions): HttpTransactionCollection
+    private function createHttpTransactionCollection(array $transactions): HttpTransactionCollectionInterface
     {
         $collection = new HttpTransactionCollection();
         foreach ($transactions as $transaction) {

@@ -50,7 +50,7 @@
         "symfony/browser-kit": "5.2.*",
         "symfony/maker-bundle": "^1.29",
         "symplify/easy-coding-standard": "^9.2",
-        "webignition/http-history-container": "^1.16",
+        "webignition/http-history-container": "^2.2",
         "webignition/object-reflector": "^1.0",
         "webignition/symfony-test-service-injector-trait": "^0.2.0"
     },
