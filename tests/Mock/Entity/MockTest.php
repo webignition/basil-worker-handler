@@ -21,15 +21,19 @@ class MockTest
         return $this->mock;
     }
 
-    public function withGetStateCall(string $state): self
+    /**
+     * @param Test::STATE_* $state
+     */
+    public function withHasStateCall(string $state, bool $has): self
     {
         if (false === $this->mock instanceof MockInterface) {
             return $this;
         }
 
         $this->mock
-            ->shouldReceive('getState')
-            ->andReturn($state);
+            ->shouldReceive('hasState')
+            ->with($state)
+            ->andReturn($has);
 
         return $this;
     }

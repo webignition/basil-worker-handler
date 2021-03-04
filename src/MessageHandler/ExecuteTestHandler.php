@@ -44,7 +44,7 @@ class ExecuteTestHandler implements MessageHandlerInterface
             return;
         }
 
-        if (Test::STATE_AWAITING !== $test->getState()) {
+        if (false === $test->hasState(Test::STATE_AWAITING)) {
             return;
         }
 

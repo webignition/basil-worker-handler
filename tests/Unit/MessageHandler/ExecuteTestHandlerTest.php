@@ -58,7 +58,7 @@ class ExecuteTestHandlerTest extends TestCase
     public function invokeNoExecutionDataProvider(): array
     {
         $testInWrongState = (new MockTest())
-            ->withGetStateCall(Test::STATE_FAILED)
+            ->withHasStateCall(Test::STATE_AWAITING, false)
             ->getMock();
 
         return [

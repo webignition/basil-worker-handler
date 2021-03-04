@@ -28,6 +28,11 @@ abstract class AbstractCallbackWrapper implements CallbackInterface
         return $this->callback->getState();
     }
 
+    public function hasState(string $state): bool
+    {
+        return $this->callback->hasState($state);
+    }
+
     public function setState(string $state): void
     {
         $this->callback->setState($state);
