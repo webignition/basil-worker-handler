@@ -8,6 +8,7 @@ use App\Event\CallbackHttpErrorEvent;
 use App\Event\CompilationCompletedEvent;
 use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
+use App\Event\JobReadyEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
@@ -19,6 +20,7 @@ use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
 use App\Services\TestFactory;
 use App\Services\TestStateMutator;
@@ -85,6 +87,17 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 ]
             );
         }
+
+        $timeoutCheckMessageDispatcher = self::$container->get(TimeoutCheckMessageDispatcher::class);
+        if ($timeoutCheckMessageDispatcher instanceof TimeoutCheckMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                JobReadyEvent::class,
+                [
+                    $timeoutCheckMessageDispatcher,
+                    'dispatch'
+                ]
+            );
+        }
     }
 
     /**
@@ -145,6 +158,11 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     'http-exception-event-key' => 'value',
                 ],
             ],
+            JobReadyEvent::class => [
+                'event' => new JobReadyEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_STARTED,
+                'expectedCallbackPayload' => [],
+            ],
             SourceCompilationStartedEvent::class => [
                 'event' => new SourceCompilationStartedEvent('/app/source/Test/test.yml'),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_STARTED,
@@ -184,18 +202,6 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'event' => new ExecutionStartedEvent(),
                 'expectedCallbackType' => CallbackInterface::TYPE_EXECUTION_STARTED,
                 'expectedCallbackPayload' => [],
-            ],
-            JobCompletedEvent::class => [
-                'event' => new JobCompletedEvent(),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
-                'expectedCallbackPayload' => [],
-            ],
-            JobTimeoutEvent::class => [
-                'event' => new JobTimeoutEvent(10),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIME_OUT,
-                'expectedCallbackPayload' => [
-                    'maximum_duration_in_seconds' => 10,
-                ],
             ],
             TestStartedEvent::class => [
                 'event' => new TestStartedEvent(
@@ -252,6 +258,18 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'expectedCallbackPayload' => [
                     'document-key' => 'value',
                 ],
+            ],
+            JobTimeoutEvent::class => [
+                'event' => new JobTimeoutEvent(10),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIME_OUT,
+                'expectedCallbackPayload' => [
+                    'maximum_duration_in_seconds' => 10,
+                ],
+            ],
+            JobCompletedEvent::class => [
+                'event' => new JobCompletedEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
+                'expectedCallbackPayload' => [],
             ],
         ];
     }
