@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
 use App\Event\TestStepFailedEvent;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
@@ -76,31 +75,6 @@ class TestStateMutatorTest extends AbstractBaseFunctionalTest
                 'expectedState' => Test::STATE_CANCELLED,
             ],
         ];
-    }
-
-    public function testSetCompleteFromTestExecuteCompleteEvent(): void
-    {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
-            $this->mutator->setCompleteFromTestExecuteCompleteEvent($event);
-        });
-    }
-
-    public function testSubscribesToTestExecuteCompleteEvent(): void
-    {
-        $this->doTestExecuteCompleteEventDrivenTest(function (TestExecuteCompleteEvent $event) {
-            $this->eventDispatcher->dispatch($event);
-        });
-    }
-
-    private function doTestExecuteCompleteEventDrivenTest(callable $callable): void
-    {
-        $this->invokableHandler->invoke(TestMutatorFactory::createSetState($this->test, Test::STATE_RUNNING));
-
-        $event = new TestExecuteCompleteEvent($this->test);
-
-        $callable($event);
-
-        self::assertSame(Test::STATE_COMPLETE, $this->test->getState());
     }
 
     /**
