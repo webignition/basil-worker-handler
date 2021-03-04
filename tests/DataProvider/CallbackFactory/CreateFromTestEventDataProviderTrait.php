@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\DataProvider\CallbackFactory;
 
-use App\Event\TestFinishedEvent;
+use App\Event\TestFailedEvent;
+use App\Event\TestPassedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -48,10 +49,17 @@ trait CreateFromTestEventDataProviderTrait
                     ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],
-            TestFinishedEvent::class => [
-                'event' => new TestFinishedEvent((new MockTest())->getMock(), $document),
+            TestPassedEvent::class => [
+                'event' => new TestPassedEvent((new MockTest())->getMock(), $document),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_TEST_FINISHED)
+                    ->withGetTypeCall(CallbackInterface::TYPE_TEST_PASSED)
+                    ->withGetPayloadCall($documentData)
+                    ->getMock(),
+            ],
+            TestFailedEvent::class => [
+                'event' => new TestFailedEvent((new MockTest())->getMock(), $document),
+                'expectedCallback' => (new MockCallback())
+                    ->withGetTypeCall(CallbackInterface::TYPE_TEST_FAILED)
                     ->withGetPayloadCall($documentData)
                     ->getMock(),
             ],

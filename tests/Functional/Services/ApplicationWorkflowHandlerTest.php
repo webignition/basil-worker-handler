@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestFinishedEvent;
+use App\Event\TestPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
@@ -45,7 +45,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
         if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
             $this->eventDispatcher->removeListener(
-                TestFinishedEvent::class,
+                TestPassedEvent::class,
                 [
                     $sendCallbackMessageDispatcher,
                     'dispatchForEvent'
@@ -103,7 +103,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestFinishedEvent(): void
+    public function testSubscribesToTestPassedEvent(): void
     {
         $jobSetup = (new JobSetup())
             ->withLabel('label')
@@ -125,7 +125,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                         ->withState(CallbackInterface::STATE_COMPLETE)
                 ),
             ]),
-            function (TestFinishedEvent $event) {
+            function (TestPassedEvent $event) {
                 $this->eventDispatcher->dispatch($event);
             }
         );
@@ -138,14 +138,13 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $tests = $this->invokableHandler->invoke(TestGetterFactory::getAll());
         $test = array_pop($tests);
-        $testCompleteEvent = new TestFinishedEvent($test, \Mockery::mock(Document::class));
+        $event = new TestPassedEvent($test, \Mockery::mock(Document::class));
 
-        $execute($testCompleteEvent);
+        $execute($event);
 
         $this->messengerAsserter->assertQueueCount(1);
 
         $callbacks = $this->invokableHandler->invoke(CallbackGetterFactory::getAll());
-
 
         $latestCallback = array_pop($callbacks);
 

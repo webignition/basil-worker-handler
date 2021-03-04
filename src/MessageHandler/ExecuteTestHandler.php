@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\MessageHandler;
 
 use App\Event\TestFailedEvent;
-use App\Event\TestFinishedEvent;
 use App\Event\TestPassedEvent;
 use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
@@ -72,7 +71,5 @@ class ExecuteTestHandler implements MessageHandlerInterface
         } else {
             $this->eventDispatcher->dispatch(new TestFailedEvent($test, $testDocument));
         }
-
-        $this->eventDispatcher->dispatch(new TestFinishedEvent($test, $testDocument));
     }
 }
