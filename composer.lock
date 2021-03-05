@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26f5b84431833cc899b13ff44e1ac7a4",
+    "content-hash": "005baf5e20c4f146e65b763d9cce3e1d",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5184,16 +5184,16 @@
         },
         {
             "name": "webignition/basil-worker-persistence-bundle",
-            "version": "0.23",
+            "version": "0.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-worker-persistence-bundle.git",
-                "reference": "3d57d45b0beda24443365af26280c30280ed67af"
+                "reference": "41af7b67508940ac06f690282eb460f5860bc5d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-worker-persistence-bundle/zipball/3d57d45b0beda24443365af26280c30280ed67af",
-                "reference": "3d57d45b0beda24443365af26280c30280ed67af",
+                "url": "https://api.github.com/repos/webignition/basil-worker-persistence-bundle/zipball/41af7b67508940ac06f690282eb460f5860bc5d5",
+                "reference": "41af7b67508940ac06f690282eb460f5860bc5d5",
                 "shasum": ""
             },
             "require": {
@@ -5239,28 +5239,28 @@
             "homepage": "https://github.com/webignition/basil-worker-persistence-bundle",
             "support": {
                 "issues": "https://github.com/webignition/basil-worker-persistence-bundle/issues",
-                "source": "https://github.com/webignition/basil-worker-persistence-bundle/tree/0.23"
+                "source": "https://github.com/webignition/basil-worker-persistence-bundle/tree/0.24"
             },
-            "time": "2021-03-05T16:35:23+00:00"
+            "time": "2021-03-05T17:51:54+00:00"
         },
         {
             "name": "webignition/basil-worker-state-bundle",
-            "version": "0.7",
+            "version": "0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/basil-worker-state-bundle.git",
-                "reference": "41e4a6e750b931991215eae1514d39ffce227702"
+                "reference": "0929ca87b6936408ec30ef0675dc45f455039933"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/41e4a6e750b931991215eae1514d39ffce227702",
-                "reference": "41e4a6e750b931991215eae1514d39ffce227702",
+                "url": "https://api.github.com/repos/webignition/basil-worker-state-bundle/zipball/0929ca87b6936408ec30ef0675dc45f455039933",
+                "reference": "0929ca87b6936408ec30ef0675dc45f455039933",
                 "shasum": ""
             },
             "require": {
                 "doctrine/doctrine-bundle": "^2.2",
                 "php": "8.*",
-                "webignition/basil-worker-persistence-bundle": ">=0.14,<1",
+                "webignition/basil-worker-persistence-bundle": ">=0.24,<1",
                 "webignition/string-prefix-remover": ">=0.2,<1"
             },
             "require-dev": {
@@ -5295,9 +5295,9 @@
             "homepage": "https://github.com/webignition/basil-worker-state-bundle",
             "support": {
                 "issues": "https://github.com/webignition/basil-worker-state-bundle/issues",
-                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.7"
+                "source": "https://github.com/webignition/basil-worker-state-bundle/tree/0.8"
             },
-            "time": "2021-03-04T14:32:46+00:00"
+            "time": "2021-03-05T18:03:15+00:00"
         },
         {
             "name": "webignition/error-handler",
