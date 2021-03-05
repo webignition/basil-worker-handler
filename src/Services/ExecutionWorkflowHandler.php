@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Event\CompilationCompletedEvent;
 use App\Event\ExecutionStartedEvent;
-use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestPassedEvent;
 use App\Message\ExecuteTestMessage;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
-use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\CallbackRepository;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\TestRepository;
@@ -33,12 +32,12 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            SourceCompilationPassedEvent::class => [
-                ['dispatchNextExecuteTestMessage', 0],
-                ['dispatchExecutionStartedEvent', 50],
-            ],
             TestPassedEvent::class => [
                 ['dispatchNextExecuteTestMessageFromTestPassedEvent', 0],
+            ],
+            CompilationCompletedEvent::class => [
+                ['dispatchNextExecuteTestMessage', 0],
+                ['dispatchExecutionStartedEvent', 50],
             ],
         ];
     }
@@ -54,29 +53,15 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
 
     public function dispatchNextExecuteTestMessage(): void
     {
-        if (false === $this->compilationState->is(...CompilationState::FINISHED_STATES)) {
-            return;
-        }
-
-        if ($this->executionState->is(...ExecutionState::FINISHED_STATES)) {
-            return;
-        }
-
         $testId = $this->testRepository->findNextAwaitingId();
 
         if (is_int($testId)) {
-            $message = new ExecuteTestMessage($testId);
-            $this->messageBus->dispatch($message);
+            $this->messageBus->dispatch(new ExecuteTestMessage($testId));
         }
     }
 
     public function dispatchExecutionStartedEvent(): void
     {
-        if (
-            ExecutionState::STATE_AWAITING === (string) $this->executionState &&
-            false == $this->callbackRepository->hasForType(CallbackInterface::TYPE_EXECUTION_STARTED)
-        ) {
-            $this->eventDispatcher->dispatch(new ExecutionStartedEvent());
-        }
+        $this->eventDispatcher->dispatch(new ExecutionStartedEvent());
     }
 }

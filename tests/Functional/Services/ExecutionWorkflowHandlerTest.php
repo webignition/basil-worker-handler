@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\Functional\Services;
 
 use App\Event\CompilationCompletedEvent;
+use App\Event\ExecutionStartedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestPassedEvent;
 use App\Message\ExecuteTestMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
-use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Services\Asserter\MessengerAsserter;
@@ -65,6 +65,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                     'dispatchForEvent'
                 ]
             );
+
+            $this->eventDispatcher->removeListener(
+                ExecutionStartedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
         }
     }
 
@@ -81,7 +89,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         InvokableInterface $setup,
         int $expectedNextTestIndex
     ): void {
-        $this->doSourceCompileSuccessEventDrivenTest(
+        $this->doCompilationCompleteEventDrivenTest(
             $setup,
             function () {
                 $this->handler->dispatchNextExecuteTestMessage();
@@ -139,9 +147,9 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToSourceCompileSuccessEvent(): void
+    public function testSubscribesToCompilationCompletedEvent(): void
     {
-        $this->doSourceCompileSuccessEventDrivenTest(
+        $this->doCompilationCompleteEventDrivenTest(
             new InvokableCollection([
                 TestSetupInvokableFactory::setupCollection([
                     (new TestSetup())
@@ -152,20 +160,13 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 ]),
             ]),
             function () {
-                $this->eventDispatcher->dispatch(
-                    new SourceCompilationPassedEvent(
-                        '/app/source/Test/test1.yml',
-                        (new MockSuiteManifest())
-                            ->withGetTestManifestsCall([])
-                            ->getMock()
-                    ),
-                );
+                $this->eventDispatcher->dispatch(new CompilationCompletedEvent());
             },
             1,
         );
     }
 
-    private function doSourceCompileSuccessEventDrivenTest(
+    private function doCompilationCompleteEventDrivenTest(
         InvokableInterface $setup,
         callable $execute,
         int $expectedNextTestIndex
