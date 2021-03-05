@@ -56,10 +56,10 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForEvent', 0],
             ],
             CompilationCompletedEvent::class => [
-                ['dispatchForEvent', 0],
+                ['dispatchForEvent', 100],
             ],
             ExecutionStartedEvent::class => [
-                ['dispatchForEvent', 500],
+                ['dispatchForEvent', 0],
             ],
             JobTimeoutEvent::class => [
                 ['dispatchForEvent', 0],

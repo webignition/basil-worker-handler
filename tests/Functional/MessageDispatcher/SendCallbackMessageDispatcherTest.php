@@ -80,7 +80,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
         $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
         if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
             $this->eventDispatcher->removeListener(
-                SourceCompilationPassedEvent::class,
+                CompilationCompletedEvent::class,
                 [
                     $executionWorkflowHandler,
                     'dispatchExecutionStartedEvent'
