@@ -55,15 +55,11 @@ class ExecutionWorkflowHandler implements EventSubscriberInterface
             return;
         }
 
-        $nextAwaitingTest = $this->testRepository->findNextAwaiting();
+        $testId = $this->testRepository->findNextAwaitingId();
 
-        if ($nextAwaitingTest instanceof Test) {
-            $testId = $nextAwaitingTest->getId();
-
-            if (is_int($testId)) {
-                $message = new ExecuteTestMessage($testId);
-                $this->messageBus->dispatch($message);
-            }
+        if (is_int($testId)) {
+            $message = new ExecuteTestMessage($testId);
+            $this->messageBus->dispatch($message);
         }
     }
 }
