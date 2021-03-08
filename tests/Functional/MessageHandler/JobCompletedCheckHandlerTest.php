@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageHandler;
 
 use App\Event\JobCompletedEvent;
-use App\Message\JobCompleteCheckMessage;
+use App\Message\JobCompletedCheckMessage;
 use App\MessageHandler\JobCompletedCheckHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockEventDispatcher;
@@ -57,7 +57,7 @@ class JobCompletedCheckHandlerTest extends AbstractBaseFunctionalTest
             $eventDispatcher
         );
 
-        ($this->handler)(new JobCompleteCheckMessage());
+        ($this->handler)(new JobCompletedCheckMessage());
     }
 
     public function testInvokeApplicationStateIsComplete(): void
@@ -90,6 +90,6 @@ class JobCompletedCheckHandlerTest extends AbstractBaseFunctionalTest
             $eventDispatcher
         );
 
-        ($this->handler)(new JobCompleteCheckMessage());
+        ($this->handler)(new JobCompletedCheckMessage());
     }
 }

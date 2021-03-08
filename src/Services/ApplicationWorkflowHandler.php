@@ -8,7 +8,7 @@ use App\Event\JobCompletedEvent;
 use App\Event\JobFailedEvent;
 use App\Event\TestFailedEvent;
 use App\Event\TestPassedEvent;
-use App\Message\JobCompleteCheckMessage;
+use App\Message\JobCompletedCheckMessage;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -43,7 +43,7 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
         if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
             $this->eventDispatcher->dispatch(new JobCompletedEvent());
         } else {
-            $this->messageBus->dispatch(new JobCompleteCheckMessage());
+            $this->messageBus->dispatch(new JobCompletedCheckMessage());
         }
     }
 

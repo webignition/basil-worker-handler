@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageDispatcher;
 
-use App\Message\JobCompleteCheckMessage;
+use App\Message\JobCompletedCheckMessage;
 use App\MessageDispatcher\JobCompletedCheckMessageDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\Asserter\MessengerAsserter;
@@ -36,7 +36,7 @@ class JobCompletedCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         $this->messageDispatcher->dispatch();
 
         $this->messengerAsserter->assertQueueCount(1);
-        $this->messengerAsserter->assertMessageAtPositionEquals(0, new JobCompleteCheckMessage());
+        $this->messengerAsserter->assertMessageAtPositionEquals(0, new JobCompletedCheckMessage());
 
         $jobCompletedCheckPeriod = self::$container->getParameter('job_completed_check_period');
         if (is_string($jobCompletedCheckPeriod)) {
