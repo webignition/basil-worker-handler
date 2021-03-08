@@ -28,6 +28,7 @@ use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
 use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Services\Asserter\MessengerAsserter;
+use App\Tests\Services\EventListenerRemover;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -48,66 +49,30 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     private EventDispatcherInterface $eventDispatcher;
     private MessengerAsserter $messengerAsserter;
     private CallbackRepository $callbackRepository;
+    private EventListenerRemover $eventListenerRemover;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
 
-        $testStateMutator = self::$container->get(TestStateMutator::class);
-        if ($testStateMutator instanceof TestStateMutator) {
-            $this->eventDispatcher->removeListener(
-                TestStepFailedEvent::class,
-                [
-                    $testStateMutator,
-                    'setFailedFromTestStepFailedEvent'
-                ]
-            );
-        }
-
-        $testFactory = self::$container->get(TestFactory::class);
-        if ($testFactory instanceof TestFactory) {
-            $this->eventDispatcher->removeListener(
-                SourceCompilationPassedEvent::class,
-                [
-                    $testFactory,
-                    'createFromSourceCompileSuccessEvent'
-                ]
-            );
-        }
-
-        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
-        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
-            $this->eventDispatcher->removeListener(
-                CompilationCompletedEvent::class,
-                [
-                    $executionWorkflowHandler,
-                    'dispatchExecutionStartedEvent'
-                ]
-            );
-        }
-
-        $timeoutCheckMessageDispatcher = self::$container->get(TimeoutCheckMessageDispatcher::class);
-        if ($timeoutCheckMessageDispatcher instanceof TimeoutCheckMessageDispatcher) {
-            $this->eventDispatcher->removeListener(
-                JobReadyEvent::class,
-                [
-                    $timeoutCheckMessageDispatcher,
-                    'dispatch'
-                ]
-            );
-        }
-
-        $applicationWorkflowHandler = self::$container->get(ApplicationWorkflowHandler::class);
-        if ($applicationWorkflowHandler instanceof ApplicationWorkflowHandler) {
-            $this->eventDispatcher->removeListener(
-                TestFailedEvent::class,
-                [
-                    $applicationWorkflowHandler,
-                    'dispatchJobFailedEvent'
-                ]
-            );
-        }
+        $this->eventListenerRemover->remove([
+            TestStateMutator::class => [
+                TestStepFailedEvent::class => ['setFailedFromTestStepFailedEvent'],
+            ],
+            TestFactory::class => [
+                SourceCompilationPassedEvent::class => ['createFromSourceCompileSuccessEvent'],
+            ],
+            ExecutionWorkflowHandler::class => [
+                CompilationCompletedEvent::class => ['dispatchExecutionStartedEvent'],
+            ],
+            TimeoutCheckMessageDispatcher::class => [
+                JobReadyEvent::class => ['dispatch'],
+            ],
+            ApplicationWorkflowHandler::class => [
+                TestFailedEvent::class => ['dispatchJobFailedEvent'],
+            ],
+        ]);
     }
 
     /**

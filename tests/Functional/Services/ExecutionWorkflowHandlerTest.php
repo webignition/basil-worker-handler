@@ -16,6 +16,7 @@ use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Services\Asserter\MessengerAsserter;
+use App\Tests\Services\EventListenerRemover;
 use App\Tests\Services\InvokableFactory\CallbackGetterFactory;
 use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
@@ -35,6 +36,7 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
     private EventDispatcherInterface $eventDispatcher;
     private MessengerAsserter $messengerAsserter;
     private InvokableHandler $invokableHandler;
+    private EventListenerRemover $eventListenerRemover;
 
     protected function setUp(): void
     {
@@ -43,40 +45,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
 
-        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
-        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
-            $this->eventDispatcher->removeListener(
-                SourceCompilationPassedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-
-            $this->eventDispatcher->removeListener(
-                CompilationCompletedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-
-            $this->eventDispatcher->removeListener(
-                TestPassedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-
-            $this->eventDispatcher->removeListener(
-                ExecutionStartedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-        }
+        $this->eventListenerRemover->remove([
+            SendCallbackMessageDispatcher::class => [
+                SourceCompilationPassedEvent::class => ['dispatchForEvent'],
+                CompilationCompletedEvent::class => ['dispatchForEvent'],
+                TestPassedEvent::class => ['dispatchForEvent'],
+                ExecutionStartedEvent::class => ['dispatchForEvent'],
+            ]
+        ]);
     }
 
     public function testDispatchNextExecuteTestMessageNoMessageDispatched(): void

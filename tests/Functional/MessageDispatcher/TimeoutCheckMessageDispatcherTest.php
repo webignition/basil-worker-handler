@@ -10,6 +10,7 @@ use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Services\Asserter\MessengerAsserter;
+use App\Tests\Services\EventListenerRemover;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
@@ -24,22 +25,18 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
     private TimeoutCheckMessageDispatcher $messageDispatcher;
     private EventDispatcherInterface $eventDispatcher;
     private MessengerAsserter $messengerAsserter;
+    private EventListenerRemover $eventListenerRemover;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
 
-        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
-        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
-            $this->eventDispatcher->removeListener(
-                JobReadyEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-        }
+        $this->eventListenerRemover->remove([
+            SendCallbackMessageDispatcher::class => [
+                JobReadyEvent::class => ['dispatchForEvent'],
+            ],
+        ]);
     }
 
 
