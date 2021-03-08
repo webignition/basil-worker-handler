@@ -11,13 +11,16 @@ use App\Event\TestPassedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
-use webignition\BasilWorker\StateBundle\Services\ExecutionState;
 
 class ApplicationWorkflowHandler implements EventSubscriberInterface
 {
+    private const TEST_EVENT_TO_JOB_EVENT_MAP = [
+        TestPassedEvent::class => JobCompletedEvent::class,
+        TestFailedEvent::class => JobFailedEvent::class,
+    ];
+
     public function __construct(
         private ApplicationState $applicationState,
-        private ExecutionState $executionState,
         private EventDispatcherInterface $eventDispatcher,
     ) {
     }
@@ -29,31 +32,20 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     {
         return [
             TestPassedEvent::class => [
-                ['dispatchJobCompleteEvent', 0],
+                ['dispatchJobEndedEvent', 0],
             ],
             TestFailedEvent::class => [
-                ['dispatchJobFailedEvent', 0],
+                ['dispatchJobEndedEvent', 0],
             ],
         ];
     }
 
-    public function dispatchJobCompleteEvent(): void
+    public function dispatchJobEndedEvent(TestPassedEvent | TestFailedEvent $event): void
     {
-        if (
-            $this->applicationState->is(ApplicationState::STATE_COMPLETE) &&
-            $this->executionState->is(ExecutionState::STATE_COMPLETE)
-        ) {
-            $this->eventDispatcher->dispatch(new JobCompletedEvent());
-        }
-    }
-
-    public function dispatchJobFailedEvent(): void
-    {
-        if (
-            $this->applicationState->is(ApplicationState::STATE_COMPLETE) &&
-            $this->executionState->is(ExecutionState::STATE_CANCELLED)
-        ) {
-            $this->eventDispatcher->dispatch(new JobFailedEvent());
+        if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
+            $this->eventDispatcher->dispatch(
+                new (self::TEST_EVENT_TO_JOB_EVENT_MAP[$event::class])()
+            );
         }
     }
 }
