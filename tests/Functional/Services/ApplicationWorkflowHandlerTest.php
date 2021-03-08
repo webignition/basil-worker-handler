@@ -40,23 +40,18 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
 
-        $this->eventListenerRemover->removeServiceMethodsForEvents(
-            SendCallbackMessageDispatcher::class,
-            [
+        $this->eventListenerRemover->remove([
+            SendCallbackMessageDispatcher::class => [
                 TestPassedEvent::class => ['dispatchForEvent'],
                 TestFailedEvent::class => ['dispatchForEvent'],
-            ]
-        );
-
-        $this->eventListenerRemover->removeServiceMethodsForEvents(
-            ExecutionWorkflowHandler::class,
-            [
+            ],
+            ExecutionWorkflowHandler::class => [
                 TestPassedEvent::class => [
                     'dispatchExecutionCompletedEvent',
                     'dispatchNextExecuteTestMessageFromTestPassedEvent',
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     public function testSubscribesToTestPassedEventApplicationNotComplete(): void

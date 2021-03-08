@@ -45,15 +45,14 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
         $this->invokableHandler->invoke(JobSetupInvokableFactory::setup());
 
-        $this->eventListenerRemover->removeServiceMethodsForEvents(
-            SendCallbackMessageDispatcher::class,
-            [
+        $this->eventListenerRemover->remove([
+            SendCallbackMessageDispatcher::class => [
                 SourceCompilationPassedEvent::class => ['dispatchForEvent'],
                 CompilationCompletedEvent::class => ['dispatchForEvent'],
                 TestPassedEvent::class => ['dispatchForEvent'],
                 ExecutionStartedEvent::class => ['dispatchForEvent'],
-            ],
-        );
+            ]
+        ]);
     }
 
     public function testDispatchNextExecuteTestMessageNoMessageDispatched(): void
