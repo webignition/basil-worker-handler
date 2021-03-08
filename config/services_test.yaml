@@ -71,6 +71,11 @@ services:
         arguments:
             $recheckPeriodInSeconds: '%job_timeout_check_period%'
 
+    App\MessageDispatcher\JobCompletedCheckMessageDispatcher:
+        public: true
+        arguments:
+            $recheckPeriodInSeconds: '%job_completed_check_period%'
+
     App\MessageHandler\JobReadyHandler:
         public: true
 
