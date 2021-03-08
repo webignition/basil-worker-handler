@@ -103,3 +103,8 @@ services:
         public: true
         arguments:
             $transport: '@messenger.transport.async'
+
+    App\Tests\Services\EventListenerRemover:
+        public: true
+        arguments:
+            $container: '@test.service_container'
