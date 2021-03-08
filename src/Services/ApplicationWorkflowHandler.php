@@ -27,22 +27,23 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     {
         return [
             TestPassedEvent::class => [
-                ['dispatchJobEndedEvent', 0],
+                ['dispatchJobCompletedEvent', 0],
             ],
             TestFailedEvent::class => [
-                ['dispatchJobEndedEvent', 0],
+                ['dispatchJobFailedEvent', 0],
             ],
         ];
     }
 
-    public function dispatchJobEndedEvent(TestPassedEvent | TestFailedEvent $testEvent): void
+    public function dispatchJobCompletedEvent(TestPassedEvent $testEvent): void
     {
         if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
-            $jobEvent = $testEvent instanceof TestPassedEvent
-                ? new JobCompletedEvent()
-                : new JobFailedEvent();
-
-            $this->eventDispatcher->dispatch($jobEvent);
+            $this->eventDispatcher->dispatch(new JobCompletedEvent());
         }
+    }
+
+    public function dispatchJobFailedEvent(TestFailedEvent $testEvent): void
+    {
+        $this->eventDispatcher->dispatch(new JobFailedEvent());
     }
 }

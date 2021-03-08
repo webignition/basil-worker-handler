@@ -19,8 +19,8 @@ use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
-use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
+use App\Services\ApplicationWorkflowHandler;
 use App\Services\ExecutionWorkflowHandler;
 use App\Services\TestFactory;
 use App\Services\TestStateMutator;
@@ -28,7 +28,6 @@ use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
 use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Services\Asserter\MessengerAsserter;
-use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Response;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -46,25 +45,25 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
     use MockeryPHPUnitIntegration;
     use TestClassServicePropertyInjectorTrait;
 
-    private SendCallbackMessageDispatcher $messageDispatcher;
     private EventDispatcherInterface $eventDispatcher;
     private MessengerAsserter $messengerAsserter;
-    private EntityManagerInterface $entityManager;
     private CallbackRepository $callbackRepository;
-    private TestStateMutator $testStateMutator;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
 
-        $this->eventDispatcher->removeListener(
-            TestStepFailedEvent::class,
-            [
-                $this->testStateMutator,
-                'setFailedFromTestStepFailedEvent'
-            ]
-        );
+        $testStateMutator = self::$container->get(TestStateMutator::class);
+        if ($testStateMutator instanceof TestStateMutator) {
+            $this->eventDispatcher->removeListener(
+                TestStepFailedEvent::class,
+                [
+                    $testStateMutator,
+                    'setFailedFromTestStepFailedEvent'
+                ]
+            );
+        }
 
         $testFactory = self::$container->get(TestFactory::class);
         if ($testFactory instanceof TestFactory) {
@@ -95,6 +94,17 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 [
                     $timeoutCheckMessageDispatcher,
                     'dispatch'
+                ]
+            );
+        }
+
+        $applicationWorkflowHandler = self::$container->get(ApplicationWorkflowHandler::class);
+        if ($applicationWorkflowHandler instanceof ApplicationWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                TestFailedEvent::class,
+                [
+                    $applicationWorkflowHandler,
+                    'dispatchJobFailedEvent'
                 ]
             );
         }
