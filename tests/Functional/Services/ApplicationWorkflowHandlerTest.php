@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
+use App\Event\JobCompletedEvent;
+use App\Event\JobFailedEvent;
 use App\Event\TestFailedEvent;
 use App\Event\TestPassedEvent;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
@@ -13,8 +15,11 @@ use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
 use App\Tests\Mock\MockEventDispatcher;
 use App\Tests\Mock\Services\MockApplicationState;
+use App\Tests\Model\ExpectedDispatchedEvent;
+use App\Tests\Model\ExpectedDispatchedEventCollection;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 use webignition\ObjectReflector\ObjectReflector;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
@@ -94,7 +99,13 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     public function testSubscribesToTestPassedEventApplicationComplete(): void
     {
         $eventDispatcher = (new MockEventDispatcher())
-            ->withoutDispatchCall()
+            ->withDispatchCalls(new ExpectedDispatchedEventCollection([
+                new ExpectedDispatchedEvent(function (Event $event) {
+                    self::assertInstanceOf(JobCompletedEvent::class, $event);
+
+                    return true;
+                }),
+            ]))
             ->getMock();
 
         ObjectReflector::setProperty(
@@ -105,7 +116,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         );
 
         $applicationState = (new MockApplicationState())
-            ->withIsCall(false, ApplicationState::STATE_COMPLETE)
+            ->withIsCall(true, ApplicationState::STATE_COMPLETE)
             ->getMock();
 
         ObjectReflector::setProperty(
@@ -121,10 +132,16 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ));
     }
 
-    public function testSubscribesToTestFailedEventApplicationComplete(): void
+    public function testSubscribesToTestFailedEvent(): void
     {
         $eventDispatcher = (new MockEventDispatcher())
-            ->withoutDispatchCall()
+            ->withDispatchCalls(new ExpectedDispatchedEventCollection([
+                new ExpectedDispatchedEvent(function (Event $event) {
+                    self::assertInstanceOf(JobFailedEvent::class, $event);
+
+                    return true;
+                }),
+            ]))
             ->getMock();
 
         ObjectReflector::setProperty(
@@ -132,17 +149,6 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
             ApplicationWorkflowHandler::class,
             'eventDispatcher',
             $eventDispatcher
-        );
-
-        $applicationState = (new MockApplicationState())
-            ->withIsCall(false, ApplicationState::STATE_COMPLETE)
-            ->getMock();
-
-        ObjectReflector::setProperty(
-            $this->handler,
-            ApplicationWorkflowHandler::class,
-            'applicationState',
-            $applicationState
         );
 
         $this->eventDispatcher->dispatch(new TestFailedEvent(
