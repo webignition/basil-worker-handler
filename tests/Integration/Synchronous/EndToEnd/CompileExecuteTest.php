@@ -391,6 +391,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                 ),
                                 new Response()
                             ),
+                            'execution/completed' => $this->createHttpTransaction(
+                                $this->createExpectedRequest(
+                                    $label,
+                                    $callbackUrl,
+                                    CallbackInterface::TYPE_EXECUTION_COMPLETED,
+                                    []
+                                ),
+                                new Response()
+                            ),
                             'job/completed' => $this->createHttpTransaction(
                                 $this->createExpectedRequest(
                                     $label,

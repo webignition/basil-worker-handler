@@ -8,6 +8,7 @@ use App\Event\TestPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
+use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
@@ -49,6 +50,17 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 [
                     $sendCallbackMessageDispatcher,
                     'dispatchForEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                TestPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionCompletedEvent'
                 ]
             );
         }
