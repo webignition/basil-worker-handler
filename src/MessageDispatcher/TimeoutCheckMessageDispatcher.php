@@ -13,7 +13,7 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 class TimeoutCheckMessageDispatcher implements EventSubscriberInterface
 {
-    private const MILLISECONDS_PER_SECOND = 1000;
+    public const MILLISECONDS_PER_SECOND = 1000;
 
     public function __construct(
         private MessageBusInterface $messageBus,
