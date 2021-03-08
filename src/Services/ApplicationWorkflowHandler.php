@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Event\JobCompletedEvent;
+use App\Event\JobFailedEvent;
+use App\Event\TestFailedEvent;
 use App\Event\TestPassedEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -29,6 +31,9 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
             TestPassedEvent::class => [
                 ['dispatchJobCompleteEvent', 0],
             ],
+            TestFailedEvent::class => [
+                ['dispatchJobFailedEvent', 0],
+            ],
         ];
     }
 
@@ -39,6 +44,16 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
             $this->executionState->is(ExecutionState::STATE_COMPLETE)
         ) {
             $this->eventDispatcher->dispatch(new JobCompletedEvent());
+        }
+    }
+
+    public function dispatchJobFailedEvent(): void
+    {
+        if (
+            $this->applicationState->is(ApplicationState::STATE_COMPLETE) &&
+            $this->executionState->is(ExecutionState::STATE_CANCELLED)
+        ) {
+            $this->eventDispatcher->dispatch(new JobFailedEvent());
         }
     }
 }

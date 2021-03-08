@@ -10,6 +10,7 @@ use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationCompletedEventDa
 use App\Tests\DataProvider\CallbackFactory\CreateFromExecutionCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromExecutionStartedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobCompletedEventDataProviderTrait;
+use App\Tests\DataProvider\CallbackFactory\CreateFromJobFailedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobReadyEventDataProviderTrait;
 
 class NoPayloadEventCallbackFactoryTest extends AbstractEventCallbackFactoryTest
@@ -19,6 +20,7 @@ class NoPayloadEventCallbackFactoryTest extends AbstractEventCallbackFactoryTest
     use CreateFromExecutionStartedEventDataProviderTrait;
     use CreateFromExecutionCompletedEventDataProviderTrait;
     use CreateFromJobCompletedEventDataProviderTrait;
+    use CreateFromJobFailedEventDataProviderTrait;
 
     protected function getCallbackFactory(): ?EventCallbackFactoryInterface
     {
@@ -37,6 +39,7 @@ class NoPayloadEventCallbackFactoryTest extends AbstractEventCallbackFactoryTest
             $this->createFromJobReadyEventDataProvider(),
             $this->createFromJobCompletedEventDataProvider(),
             $this->createFromExecutionCompletedEventDataProvider(),
+            $this->createFromJobFailedEventDataProvider(),
         );
     }
 }
