@@ -14,11 +14,6 @@ use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 
 class ApplicationWorkflowHandler implements EventSubscriberInterface
 {
-    private const TEST_EVENT_TO_JOB_EVENT_MAP = [
-        TestPassedEvent::class => JobCompletedEvent::class,
-        TestFailedEvent::class => JobFailedEvent::class,
-    ];
-
     public function __construct(
         private ApplicationState $applicationState,
         private EventDispatcherInterface $eventDispatcher,
@@ -40,12 +35,14 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
         ];
     }
 
-    public function dispatchJobEndedEvent(TestPassedEvent | TestFailedEvent $event): void
+    public function dispatchJobEndedEvent(TestPassedEvent | TestFailedEvent $testEvent): void
     {
         if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
-            $this->eventDispatcher->dispatch(
-                new (self::TEST_EVENT_TO_JOB_EVENT_MAP[$event::class])()
-            );
+            $jobEvent = $testEvent instanceof TestPassedEvent
+                ? new JobCompletedEvent()
+                : new JobFailedEvent();
+
+            $this->eventDispatcher->dispatch($jobEvent);
         }
     }
 }
