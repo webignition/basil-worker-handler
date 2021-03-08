@@ -4,144 +4,150 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\Services;
 
-use App\Event\TestExecuteCompleteEvent;
-use App\Message\SendCallbackMessage;
+use App\Event\TestFailedEvent;
+use App\Event\TestPassedEvent;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
+use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
-use App\Tests\Model\EndToEndJob\InvokableCollection;
-use App\Tests\Model\EndToEndJob\InvokableInterface;
-use App\Tests\Services\Asserter\MessengerAsserter;
-use App\Tests\Services\InvokableFactory\CallbackGetterFactory;
-use App\Tests\Services\InvokableFactory\CallbackSetup;
-use App\Tests\Services\InvokableFactory\CallbackSetupInvokableFactory;
-use App\Tests\Services\InvokableFactory\JobSetup;
-use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
-use App\Tests\Services\InvokableFactory\SourceCreationFactory;
-use App\Tests\Services\InvokableFactory\TestGetterFactory;
-use App\Tests\Services\InvokableFactory\TestSetup;
-use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
-use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
-use webignition\BasilWorker\PersistenceBundle\Entity\Test;
+use App\Tests\Mock\Entity\MockTest;
+use App\Tests\Mock\MockEventDispatcher;
+use App\Tests\Mock\Services\MockApplicationState;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use webignition\BasilWorker\StateBundle\Services\ApplicationState;
+use webignition\ObjectReflector\ObjectReflector;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
+use webignition\YamlDocument\Document;
 
 class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 {
     use TestClassServicePropertyInjectorTrait;
+    use MockeryPHPUnitIntegration;
 
     private ApplicationWorkflowHandler $handler;
     private EventDispatcherInterface $eventDispatcher;
-    private MessengerAsserter $messengerAsserter;
-    private InvokableHandler $invokableHandler;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                TestPassedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+
+            $this->eventDispatcher->removeListener(
+                TestFailedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                TestPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionCompletedEvent'
+                ]
+            );
+
+            $this->eventDispatcher->removeListener(
+                TestPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchNextExecuteTestMessageFromTestPassedEvent'
+                ]
+            );
+        }
     }
 
-    public function testDispatchJobCompleteEventNoMessageIsDispatched(): void
+    public function testSubscribesToTestPassedEventApplicationNotComplete(): void
     {
-        $this->handler->dispatchJobCompleteEvent();
-        $this->messengerAsserter->assertQueueIsEmpty();
-    }
+        $eventDispatcher = (new MockEventDispatcher())
+            ->withoutDispatchCall()
+            ->getMock();
 
-    /**
-     * @dataProvider dispatchJobCompleteEventMessageDispatchedDataProvider
-     */
-    public function testDispatchJobCompleteEventMessageDispatched(InvokableInterface $setup): void
-    {
-        $this->doJobCompleteEventDrivenTest(
-            $setup,
-            function () {
-                $this->handler->dispatchJobCompleteEvent();
-            }
+        ObjectReflector::setProperty(
+            $this->handler,
+            ApplicationWorkflowHandler::class,
+            'eventDispatcher',
+            $eventDispatcher
         );
+
+        $this->eventDispatcher->dispatch(new TestPassedEvent(
+            (new MockTest())->getMock(),
+            new Document(''),
+        ));
     }
 
-    /**
-     * @return array[]
-     */
-    public function dispatchJobCompleteEventMessageDispatchedDataProvider(): array
+    public function testSubscribesToTestPassedEventApplicationComplete(): void
     {
-        $jobSetup = (new JobSetup())
-            ->withLabel('label')
-            ->withCallbackUrl('http://example.com/callback')
-            ->withManifestPath(getcwd() . '/tests/Fixtures/Manifest/manifest-chrome-open-index.txt');
+        $eventDispatcher = (new MockEventDispatcher())
+            ->withoutDispatchCall()
+            ->getMock();
 
-        return [
-            'job with single complete test' => [
-                'setup' => new InvokableCollection([
-                    JobSetupInvokableFactory::setup($jobSetup),
-                    SourceCreationFactory::createFromManifestPath($jobSetup->getManifestPath()),
-                    TestSetupInvokableFactory::setupCollection([
-                        (new TestSetup())
-                            ->withSource('/app/source/Test/chrome-open-index.yml')
-                            ->withState(Test::STATE_COMPLETE),
-                    ]),
-                    CallbackSetupInvokableFactory::setup(
-                        (new CallbackSetup())
-                            ->withType(CallbackInterface::TYPE_STEP_PASSED)
-                            ->withState(CallbackInterface::STATE_COMPLETE)
-                    ),
-                ]),
-            ],
-        ];
-    }
-
-    public function testSubscribesToTestExecuteCompleteEvent(): void
-    {
-        $jobSetup = (new JobSetup())
-            ->withLabel('label')
-            ->withCallbackUrl('http://example.com/callback')
-            ->withManifestPath(getcwd() . '/tests/Fixtures/Manifest/manifest-chrome-open-index.txt');
-
-        $this->doJobCompleteEventDrivenTest(
-            new InvokableCollection([
-                JobSetupInvokableFactory::setup($jobSetup),
-                SourceCreationFactory::createFromManifestPath($jobSetup->getManifestPath()),
-                TestSetupInvokableFactory::setupCollection([
-                    (new TestSetup())
-                        ->withSource('/app/source/Test/chrome-open-index.yml')
-                        ->withState(Test::STATE_COMPLETE),
-                ]),
-                CallbackSetupInvokableFactory::setup(
-                    (new CallbackSetup())
-                        ->withType(CallbackInterface::TYPE_STEP_PASSED)
-                        ->withState(CallbackInterface::STATE_COMPLETE)
-                ),
-            ]),
-            function (TestExecuteCompleteEvent $event) {
-                $this->eventDispatcher->dispatch($event);
-            }
+        ObjectReflector::setProperty(
+            $this->handler,
+            ApplicationWorkflowHandler::class,
+            'eventDispatcher',
+            $eventDispatcher
         );
+
+        $applicationState = (new MockApplicationState())
+            ->withIsCall(false, ApplicationState::STATE_COMPLETE)
+            ->getMock();
+
+        ObjectReflector::setProperty(
+            $this->handler,
+            ApplicationWorkflowHandler::class,
+            'applicationState',
+            $applicationState
+        );
+
+        $this->eventDispatcher->dispatch(new TestPassedEvent(
+            (new MockTest())->getMock(),
+            new Document(''),
+        ));
     }
 
-    private function doJobCompleteEventDrivenTest(InvokableInterface $setup, callable $execute): void
+    public function testSubscribesToTestFailedEventApplicationComplete(): void
     {
-        $this->messengerAsserter->assertQueueIsEmpty();
-        $this->invokableHandler->invoke($setup);
+        $eventDispatcher = (new MockEventDispatcher())
+            ->withoutDispatchCall()
+            ->getMock();
 
-        $tests = $this->invokableHandler->invoke(TestGetterFactory::getAll());
-        $test = array_pop($tests);
-        $testCompleteEvent = new TestExecuteCompleteEvent($test);
-
-        $execute($testCompleteEvent);
-
-        $this->messengerAsserter->assertQueueCount(1);
-
-        $callbacks = $this->invokableHandler->invoke(CallbackGetterFactory::getAll());
-
-
-        $latestCallback = array_pop($callbacks);
-
-        self::assertInstanceOf(CallbackInterface::class, $latestCallback);
-        self::assertSame(CallbackInterface::TYPE_JOB_COMPLETED, $latestCallback->getType());
-
-        $this->messengerAsserter->assertMessageAtPositionEquals(
-            0,
-            new SendCallbackMessage((int) $latestCallback->getId())
+        ObjectReflector::setProperty(
+            $this->handler,
+            ApplicationWorkflowHandler::class,
+            'eventDispatcher',
+            $eventDispatcher
         );
+
+        $applicationState = (new MockApplicationState())
+            ->withIsCall(false, ApplicationState::STATE_COMPLETE)
+            ->getMock();
+
+        ObjectReflector::setProperty(
+            $this->handler,
+            ApplicationWorkflowHandler::class,
+            'applicationState',
+            $applicationState
+        );
+
+        $this->eventDispatcher->dispatch(new TestFailedEvent(
+            (new MockTest())->getMock(),
+            new Document(''),
+        ));
     }
 }

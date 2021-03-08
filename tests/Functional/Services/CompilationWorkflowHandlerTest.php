@@ -8,7 +8,9 @@ use App\Event\JobReadyEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Message\CompileSourceMessage;
 use App\Message\TimeoutCheckMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\CompilationWorkflowHandler;
+use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Model\EndToEndJob\Invokable;
@@ -21,7 +23,7 @@ use App\Tests\Services\InvokableFactory\SourceSetupInvokableFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
-use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
@@ -38,6 +40,36 @@ class CompilationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
+
+        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                JobReadyEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $sendCallbackMessageDispatcher,
+                    'dispatchForEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionStartedEvent'
+                ]
+            );
+        }
     }
 
     /**

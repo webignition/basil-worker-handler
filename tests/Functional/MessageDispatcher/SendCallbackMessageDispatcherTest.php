@@ -5,17 +5,28 @@ declare(strict_types=1);
 namespace App\Tests\Functional\MessageDispatcher;
 
 use App\Event\CallbackHttpErrorEvent;
+use App\Event\CompilationCompletedEvent;
+use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
+use App\Event\JobReadyEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
+use App\Event\SourceCompilation\SourceCompilationStartedEvent;
+use App\Event\TestFailedEvent;
+use App\Event\TestPassedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
+use App\Services\ExecutionWorkflowHandler;
+use App\Services\TestFactory;
 use App\Services\TestStateMutator;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Mock\Entity\MockTest;
+use App\Tests\Mock\MockSuiteManifest;
 use App\Tests\Services\Asserter\MessengerAsserter;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Psr7\Response;
@@ -54,6 +65,39 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'setFailedFromTestStepFailedEvent'
             ]
         );
+
+        $testFactory = self::$container->get(TestFactory::class);
+        if ($testFactory instanceof TestFactory) {
+            $this->eventDispatcher->removeListener(
+                SourceCompilationPassedEvent::class,
+                [
+                    $testFactory,
+                    'createFromSourceCompileSuccessEvent'
+                ]
+            );
+        }
+
+        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
+        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
+            $this->eventDispatcher->removeListener(
+                CompilationCompletedEvent::class,
+                [
+                    $executionWorkflowHandler,
+                    'dispatchExecutionStartedEvent'
+                ]
+            );
+        }
+
+        $timeoutCheckMessageDispatcher = self::$container->get(TimeoutCheckMessageDispatcher::class);
+        if ($timeoutCheckMessageDispatcher instanceof TimeoutCheckMessageDispatcher) {
+            $this->eventDispatcher->removeListener(
+                JobReadyEvent::class,
+                [
+                    $timeoutCheckMessageDispatcher,
+                    'dispatch'
+                ]
+            );
+        }
     }
 
     /**
@@ -114,6 +158,28 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                     'http-exception-event-key' => 'value',
                 ],
             ],
+            JobReadyEvent::class => [
+                'event' => new JobReadyEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_STARTED,
+                'expectedCallbackPayload' => [],
+            ],
+            SourceCompilationStartedEvent::class => [
+                'event' => new SourceCompilationStartedEvent('/app/source/Test/test.yml'),
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_STARTED,
+                'expectedCallbackPayload' => [
+                    'source' => '/app/source/Test/test.yml',
+                ],
+            ],
+            SourceCompilationPassedEvent::class => [
+                'event' => new SourceCompilationPassedEvent(
+                    '/app/source/Test/test.yml',
+                    (new MockSuiteManifest())->getMock()
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_PASSED,
+                'expectedCallbackPayload' => [
+                    'source' => '/app/source/Test/test.yml',
+                ],
+            ],
             SourceCompilationFailedEvent::class => [
                 'event' => new SourceCompilationFailedEvent(
                     '/app/source/Test/test.yml',
@@ -121,20 +187,21 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 ),
                 'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_FAILED,
                 'expectedCallbackPayload' => [
-                    'compile-failure-key' => 'value',
+                    'source' => '/app/source/Test/test.yml',
+                    'output' => [
+                        'compile-failure-key' => 'value',
+                    ],
                 ],
             ],
-            JobCompletedEvent::class => [
-                'event' => new JobCompletedEvent(),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
+            CompilationCompletedEvent::class => [
+                'event' => new CompilationCompletedEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_COMPILATION_SUCCEEDED,
                 'expectedCallbackPayload' => [],
             ],
-            JobTimeoutEvent::class => [
-                'event' => new JobTimeoutEvent(10),
-                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIME_OUT,
-                'expectedCallbackPayload' => [
-                    'maximum_duration_in_seconds' => 10,
-                ],
+            ExecutionStartedEvent::class => [
+                'event' => new ExecutionStartedEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_EXECUTION_STARTED,
+                'expectedCallbackPayload' => [],
             ],
             TestStartedEvent::class => [
                 'event' => new TestStartedEvent(
@@ -167,6 +234,42 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'expectedCallbackPayload' => [
                     'document-key' => 'value',
                 ],
+            ],
+            TestPassedEvent::class => [
+                'event' => new TestPassedEvent(
+                    (new MockTest())
+                        ->withHasStateCall(Test::STATE_COMPLETE, false)
+                        ->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_TEST_PASSED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
+                ],
+            ],
+            TestFailedEvent::class => [
+                'event' => new TestFailedEvent(
+                    (new MockTest())
+                        ->withHasStateCall(Test::STATE_COMPLETE, false)
+                        ->getMock(),
+                    new Document('document-key: value')
+                ),
+                'expectedCallbackType' => CallbackInterface::TYPE_TEST_FAILED,
+                'expectedCallbackPayload' => [
+                    'document-key' => 'value',
+                ],
+            ],
+            JobTimeoutEvent::class => [
+                'event' => new JobTimeoutEvent(10),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_TIME_OUT,
+                'expectedCallbackPayload' => [
+                    'maximum_duration_in_seconds' => 10,
+                ],
+            ],
+            JobCompletedEvent::class => [
+                'event' => new JobCompletedEvent(),
+                'expectedCallbackType' => CallbackInterface::TYPE_JOB_COMPLETED,
+                'expectedCallbackPayload' => [],
             ],
         ];
     }

@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
-use App\Event\TestExecuteCompleteEvent;
+use App\Event\TestFailedEvent;
+use App\Event\TestPassedEvent;
+use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
+use App\Services\TestDocumentFactory;
 use App\Services\TestExecutor;
 use App\Services\TestStateMutator;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -25,7 +28,8 @@ class ExecuteTestHandler implements MessageHandlerInterface
         private EventDispatcherInterface $eventDispatcher,
         private TestStateMutator $testStateMutator,
         private TestRepository $testRepository,
-        private ExecutionState $executionState
+        private ExecutionState $executionState,
+        private TestDocumentFactory $testDocumentFactory
     ) {
     }
 
@@ -54,10 +58,18 @@ class ExecuteTestHandler implements MessageHandlerInterface
             $this->entityPersister->persist($job);
         }
 
+        $testDocument = $this->testDocumentFactory->create($test);
+
+        $this->eventDispatcher->dispatch(new TestStartedEvent($test, $testDocument));
+
         $this->testStateMutator->setRunning($test);
         $this->testExecutor->execute($test);
         $this->testStateMutator->setCompleteIfRunning($test);
 
-        $this->eventDispatcher->dispatch(new TestExecuteCompleteEvent($test));
+        if ($test->hasState(Test::STATE_COMPLETE)) {
+            $this->eventDispatcher->dispatch(new TestPassedEvent($test, $testDocument));
+        } else {
+            $this->eventDispatcher->dispatch(new TestFailedEvent($test, $testDocument));
+        }
     }
 }

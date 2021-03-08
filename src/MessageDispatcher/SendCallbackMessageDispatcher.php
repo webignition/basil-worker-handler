@@ -5,9 +5,18 @@ declare(strict_types=1);
 namespace App\MessageDispatcher;
 
 use App\Event\CallbackHttpErrorEvent;
+use App\Event\CompilationCompletedEvent;
+use App\Event\ExecutionCompletedEvent;
+use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
+use App\Event\JobFailedEvent;
+use App\Event\JobReadyEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
+use App\Event\SourceCompilation\SourceCompilationStartedEvent;
+use App\Event\TestFailedEvent;
+use App\Event\TestPassedEvent;
 use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
@@ -33,11 +42,29 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
+            JobReadyEvent::class => [
+                ['dispatchForEvent', 500],
+            ],
             CallbackHttpErrorEvent::class => [
                 ['dispatchForCallbackHttpErrorEvent', 0],
             ],
+            SourceCompilationStartedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            SourceCompilationPassedEvent::class => [
+                ['dispatchForEvent', 500],
+            ],
             SourceCompilationFailedEvent::class => [
                 ['dispatchForEvent', 0],
+            ],
+            CompilationCompletedEvent::class => [
+                ['dispatchForEvent', 100],
+            ],
+            ExecutionStartedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            ExecutionCompletedEvent::class => [
+                ['dispatchForEvent', 50],
             ],
             JobTimeoutEvent::class => [
                 ['dispatchForEvent', 0],
@@ -52,6 +79,15 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForEvent', 0],
             ],
             TestStepFailedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            TestPassedEvent::class => [
+                ['dispatchForEvent', 100],
+            ],
+            TestFailedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            JobFailedEvent::class => [
                 ['dispatchForEvent', 0],
             ],
         ];

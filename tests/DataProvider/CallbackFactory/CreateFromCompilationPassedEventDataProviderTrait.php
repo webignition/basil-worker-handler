@@ -5,37 +5,28 @@ declare(strict_types=1);
 namespace App\Tests\DataProvider\CallbackFactory;
 
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
+use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Tests\Mock\Entity\MockCallback;
-use webignition\BasilCompilerModels\ErrorOutputInterface;
+use App\Tests\Mock\MockSuiteManifest;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 
-trait CreateFromCompilationFailedEventDataProviderTrait
+trait CreateFromCompilationPassedEventDataProviderTrait
 {
     /**
      * @return array[]
      */
-    public function createFromCompilationFailedEventDataProvider(): array
+    public function createFromCompilationPassedEventDataProvider(): array
     {
-        $errorOutputData = [
-            'error-output-key' => 'error-output-value',
-        ];
-
-        $errorOutput = \Mockery::mock(ErrorOutputInterface::class);
-        $errorOutput
-            ->shouldReceive('getData')
-            ->andReturn($errorOutputData);
-
         return [
             SourceCompilationFailedEvent::class => [
-                'event' => new SourceCompilationFailedEvent(
+                'event' => new SourceCompilationPassedEvent(
                     '/app/source/test.yml',
-                    $errorOutput
+                    (new MockSuiteManifest())->getMock()
                 ),
                 'expectedCallback' => (new MockCallback())
-                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_FAILED)
+                    ->withGetTypeCall(CallbackInterface::TYPE_COMPILATION_PASSED)
                     ->withGetPayloadCall([
                         'source' => '/app/source/test.yml',
-                        'output' => $errorOutputData,
                     ])
                     ->getMock(),
             ],

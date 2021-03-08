@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional\MessageHandler;
 
+use App\Event\TestPassedEvent;
+use App\Event\TestStartedEvent;
 use App\Message\ExecuteTestMessage;
 use App\MessageHandler\ExecuteTestHandler;
 use App\Tests\AbstractBaseFunctionalTest;
+use App\Tests\Mock\MockEventDispatcher;
 use App\Tests\Mock\Services\MockTestExecutor;
+use App\Tests\Model\ExpectedDispatchedEvent;
+use App\Tests\Model\ExpectedDispatchedEventCollection;
 use App\Tests\Services\InvokableFactory\ExecutionStateGetterFactory;
 use App\Tests\Services\InvokableFactory\JobGetterFactory;
 use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
@@ -57,11 +62,32 @@ class ExecuteTestHandlerTest extends AbstractBaseFunctionalTest
             ->withExecuteCall($test)
             ->getMock();
 
-        $executeTestMessage = new ExecuteTestMessage((int) $test->getId());
-
         ObjectReflector::setProperty($this->handler, ExecuteTestHandler::class, 'testExecutor', $testExecutor);
 
+        $eventDispatcher = (new MockEventDispatcher())
+            ->withDispatchCalls(new ExpectedDispatchedEventCollection([
+                new ExpectedDispatchedEvent(
+                    function (TestStartedEvent $actualEvent) use ($test) {
+                        self::assertSame($test, $actualEvent->getTest());
+
+                        return true;
+                    },
+                ),
+                new ExpectedDispatchedEvent(
+                    function (TestPassedEvent $actualEvent) use ($test) {
+                        self::assertSame($test, $actualEvent->getTest());
+
+                        return true;
+                    },
+                ),
+            ]))
+            ->getMock();
+
+        ObjectReflector::setProperty($this->handler, ExecuteTestHandler::class, 'eventDispatcher', $eventDispatcher);
+
         $handler = $this->handler;
+
+        $executeTestMessage = new ExecuteTestMessage((int) $test->getId());
         $handler($executeTestMessage);
 
         self::assertTrue($job->hasStarted());

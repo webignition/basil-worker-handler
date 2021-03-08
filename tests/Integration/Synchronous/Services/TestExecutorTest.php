@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Synchronous\Services;
 
-use App\Event\TestStartedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Services\Compiler;
 use App\Services\TestExecutor;
@@ -13,7 +12,6 @@ use App\Tests\Integration\AbstractBaseIntegrationTest;
 use App\Tests\Mock\MockEventDispatcher;
 use App\Tests\Model\ExpectedDispatchedEvent;
 use App\Tests\Model\ExpectedDispatchedEventCollection;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilCompilerModels\SuiteManifest;
 use webignition\ObjectReflector\ObjectReflector;
@@ -73,29 +71,6 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                 'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestStartedEvent::class, $event);
-
-                            $expectedDocument = new Document(Yaml::dump(
-                                [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'chrome',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ],
-                                0
-                            ));
-
-                            if ($event instanceof TestStartedEvent) {
-                                self::assertEquals($event->getDocument(), $expectedDocument);
-                            }
-
-                            return true;
-                        }
-                    ),
-                    new ExpectedDispatchedEvent(
-                        function (Event $event): bool {
                             self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
@@ -121,29 +96,6 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
             'Test/chrome-open-index.yml: single-browser test (firefox)' => [
                 'source' => 'Test/firefox-open-index.yml',
                 'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
-                    new ExpectedDispatchedEvent(
-                        function (Event $event): bool {
-                            self::assertInstanceOf(TestStartedEvent::class, $event);
-
-                            $expectedDocument = new Document(Yaml::dump(
-                                [
-                                    'type' => 'test',
-                                    'path' => 'Test/firefox-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'firefox',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ],
-                                0
-                            ));
-
-                            if ($event instanceof TestStartedEvent) {
-                                self::assertEquals($event->getDocument(), $expectedDocument);
-                            }
-
-                            return true;
-                        }
-                    ),
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
                             self::assertInstanceOf(TestStepPassedEvent::class, $event);
@@ -173,29 +125,6 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                 'expectedDispatchedEventCollection' => new ExpectedDispatchedEventCollection([
                     new ExpectedDispatchedEvent(
                         function (Event $event): bool {
-                            self::assertInstanceOf(TestStartedEvent::class, $event);
-
-                            $expectedDocument = new Document(Yaml::dump(
-                                [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-firefox-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'chrome',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ],
-                                0
-                            ));
-
-                            if ($event instanceof TestStartedEvent) {
-                                self::assertEquals($event->getDocument(), $expectedDocument);
-                            }
-
-                            return true;
-                        }
-                    ),
-                    new ExpectedDispatchedEvent(
-                        function (Event $event): bool {
                             self::assertInstanceOf(TestStepPassedEvent::class, $event);
 
                             $expectedDocument = new Document(
@@ -210,29 +139,6 @@ class TestExecutorTest extends AbstractBaseIntegrationTest
                             );
 
                             if ($event instanceof TestStepPassedEvent) {
-                                self::assertEquals($event->getDocument(), $expectedDocument);
-                            }
-
-                            return true;
-                        }
-                    ),
-                    new ExpectedDispatchedEvent(
-                        function (Event $event): bool {
-                            self::assertInstanceOf(TestStartedEvent::class, $event);
-
-                            $expectedDocument = new Document(Yaml::dump(
-                                [
-                                    'type' => 'test',
-                                    'path' => 'Test/chrome-firefox-open-index.yml',
-                                    'config' => [
-                                        'browser' => 'firefox',
-                                        'url' => 'http://nginx-html/index.html',
-                                    ],
-                                ],
-                                0
-                            ));
-
-                            if ($event instanceof TestStartedEvent) {
                                 self::assertEquals($event->getDocument(), $expectedDocument);
                             }
 
