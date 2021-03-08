@@ -33,12 +33,14 @@ class EventListenerRemover
 
     /**
      * @param class-string $serviceId
-     * @param array<class-string, string> $eventsAndMethods
+     * @param array<class-string, string[]> $eventsAndMethods
      */
     public function removeServiceMethodsForEvents(string $serviceId, array $eventsAndMethods): void
     {
-        foreach ($eventsAndMethods as $eventClass => $methodName) {
-            $this->removeServiceMethodForEvent($serviceId, $eventClass, $methodName);
+        foreach ($eventsAndMethods as $eventClass => $methodNames) {
+            foreach ($methodNames as $methodName) {
+                $this->removeServiceMethodForEvent($serviceId, $eventClass, $methodName);
+            }
         }
     }
 }

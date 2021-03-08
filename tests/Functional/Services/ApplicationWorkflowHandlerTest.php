@@ -17,6 +17,7 @@ use App\Tests\Mock\MockEventDispatcher;
 use App\Tests\Mock\Services\MockApplicationState;
 use App\Tests\Model\ExpectedDispatchedEvent;
 use App\Tests\Model\ExpectedDispatchedEventCollection;
+use App\Tests\Services\EventListenerRemover;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -32,49 +33,30 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
 
     private ApplicationWorkflowHandler $handler;
     private EventDispatcherInterface $eventDispatcher;
+    private EventListenerRemover $eventListenerRemover;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->injectContainerServicesIntoClassProperties();
 
-        $sendCallbackMessageDispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
-        if ($sendCallbackMessageDispatcher instanceof SendCallbackMessageDispatcher) {
-            $this->eventDispatcher->removeListener(
-                TestPassedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
+        $this->eventListenerRemover->removeServiceMethodsForEvents(
+            SendCallbackMessageDispatcher::class,
+            [
+                TestPassedEvent::class => ['dispatchForEvent'],
+                TestFailedEvent::class => ['dispatchForEvent'],
+            ]
+        );
 
-            $this->eventDispatcher->removeListener(
-                TestFailedEvent::class,
-                [
-                    $sendCallbackMessageDispatcher,
-                    'dispatchForEvent'
-                ]
-            );
-        }
-
-        $executionWorkflowHandler = self::$container->get(ExecutionWorkflowHandler::class);
-        if ($executionWorkflowHandler instanceof ExecutionWorkflowHandler) {
-            $this->eventDispatcher->removeListener(
-                TestPassedEvent::class,
-                [
-                    $executionWorkflowHandler,
-                    'dispatchExecutionCompletedEvent'
-                ]
-            );
-
-            $this->eventDispatcher->removeListener(
-                TestPassedEvent::class,
-                [
-                    $executionWorkflowHandler,
-                    'dispatchNextExecuteTestMessageFromTestPassedEvent'
-                ]
-            );
-        }
+        $this->eventListenerRemover->removeServiceMethodsForEvents(
+            ExecutionWorkflowHandler::class,
+            [
+                TestPassedEvent::class => [
+                    'dispatchExecutionCompletedEvent',
+                    'dispatchNextExecuteTestMessageFromTestPassedEvent',
+                ],
+            ]
+        );
     }
 
     public function testSubscribesToTestPassedEventApplicationNotComplete(): void

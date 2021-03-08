@@ -48,10 +48,10 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         $this->eventListenerRemover->removeServiceMethodsForEvents(
             SendCallbackMessageDispatcher::class,
             [
-                SourceCompilationPassedEvent::class => 'dispatchForEvent',
-                CompilationCompletedEvent::class => 'dispatchForEvent',
-                TestPassedEvent::class => 'dispatchForEvent',
-                ExecutionStartedEvent::class => 'dispatchForEvent',
+                SourceCompilationPassedEvent::class => ['dispatchForEvent'],
+                CompilationCompletedEvent::class => ['dispatchForEvent'],
+                TestPassedEvent::class => ['dispatchForEvent'],
+                ExecutionStartedEvent::class => ['dispatchForEvent'],
             ],
         );
     }
