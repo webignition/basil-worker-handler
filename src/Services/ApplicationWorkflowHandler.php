@@ -8,8 +8,10 @@ use App\Event\JobCompletedEvent;
 use App\Event\JobFailedEvent;
 use App\Event\TestFailedEvent;
 use App\Event\TestPassedEvent;
+use App\Message\JobCompleteCheckMessage;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use webignition\BasilWorker\StateBundle\Services\ApplicationState;
 
 class ApplicationWorkflowHandler implements EventSubscriberInterface
@@ -17,6 +19,7 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     public function __construct(
         private ApplicationState $applicationState,
         private EventDispatcherInterface $eventDispatcher,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
@@ -39,6 +42,8 @@ class ApplicationWorkflowHandler implements EventSubscriberInterface
     {
         if ($this->applicationState->is(ApplicationState::STATE_COMPLETE)) {
             $this->eventDispatcher->dispatch(new JobCompletedEvent());
+        } else {
+            $this->messageBus->dispatch(new JobCompleteCheckMessage());
         }
     }
 
