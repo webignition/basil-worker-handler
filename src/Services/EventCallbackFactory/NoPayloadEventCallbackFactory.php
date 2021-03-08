@@ -8,6 +8,7 @@ use App\Event\CompilationCompletedEvent;
 use App\Event\ExecutionCompletedEvent;
 use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
+use App\Event\JobFailedEvent;
 use App\Event\JobReadyEvent;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
@@ -23,6 +24,7 @@ class NoPayloadEventCallbackFactory extends AbstractEventCallbackFactory
         ExecutionStartedEvent::class => CallbackInterface::TYPE_EXECUTION_STARTED,
         ExecutionCompletedEvent::class => CallbackInterface::TYPE_EXECUTION_COMPLETED,
         JobCompletedEvent::class => CallbackInterface::TYPE_JOB_COMPLETED,
+        JobFailedEvent::class => CallbackInterface::TYPE_JOB_FAILED,
     ];
 
     public function handles(Event $event): bool
@@ -32,7 +34,8 @@ class NoPayloadEventCallbackFactory extends AbstractEventCallbackFactory
             $event instanceof CompilationCompletedEvent ||
             $event instanceof ExecutionStartedEvent ||
             $event instanceof ExecutionCompletedEvent ||
-            $event instanceof JobCompletedEvent
+            $event instanceof JobCompletedEvent ||
+            $event instanceof JobFailedEvent
             ;
     }
 

@@ -498,6 +498,15 @@ class CompileExecuteTest extends AbstractEndToEndTest
                                     ),
                                     new Response()
                                 ),
+                                'job/failed' => $this->createHttpTransaction(
+                                    $this->createExpectedRequest(
+                                        $label,
+                                        $callbackUrl,
+                                        CallbackInterface::TYPE_JOB_FAILED,
+                                        []
+                                    ),
+                                    new Response()
+                                ),
                             ]),
                             new ServiceReference(HttpLogReader::class),
                         ]

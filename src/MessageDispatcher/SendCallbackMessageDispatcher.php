@@ -9,6 +9,7 @@ use App\Event\CompilationCompletedEvent;
 use App\Event\ExecutionCompletedEvent;
 use App\Event\ExecutionStartedEvent;
 use App\Event\JobCompletedEvent;
+use App\Event\JobFailedEvent;
 use App\Event\JobReadyEvent;
 use App\Event\JobTimeoutEvent;
 use App\Event\SourceCompilation\SourceCompilationFailedEvent;
@@ -84,6 +85,9 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
                 ['dispatchForEvent', 100],
             ],
             TestFailedEvent::class => [
+                ['dispatchForEvent', 0],
+            ],
+            JobFailedEvent::class => [
                 ['dispatchForEvent', 0],
             ],
         ];
