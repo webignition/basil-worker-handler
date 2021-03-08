@@ -9,17 +9,20 @@ use App\Event\ExecutionStartedEvent;
 use App\Event\SourceCompilation\SourceCompilationPassedEvent;
 use App\Event\TestPassedEvent;
 use App\Message\ExecuteTestMessage;
+use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
 use App\Tests\Model\EndToEndJob\InvokableInterface;
 use App\Tests\Services\Asserter\MessengerAsserter;
+use App\Tests\Services\InvokableFactory\CallbackGetterFactory;
 use App\Tests\Services\InvokableFactory\JobSetupInvokableFactory;
 use App\Tests\Services\InvokableFactory\TestSetup;
 use App\Tests\Services\InvokableFactory\TestSetupInvokableFactory;
 use App\Tests\Services\InvokableHandler;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
@@ -196,15 +199,25 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         int $expectedQueuedMessageCount,
         ?int $expectedNextTestIndex
     ): void {
-        $this->doTestPassedEventDrivenTest(
-            $setup,
-            $eventTestIndex,
-            function (TestPassedEvent $event) {
-                $this->handler->dispatchNextExecuteTestMessageFromTestPassedEvent($event);
-            },
-            $expectedQueuedMessageCount,
-            $expectedNextTestIndex
-        );
+        $tests = $this->invokableHandler->invoke($setup);
+        $this->messengerAsserter->assertQueueIsEmpty();
+
+        $test = $tests[$eventTestIndex];
+        $event = new TestPassedEvent($test, \Mockery::mock(Document::class));
+
+        $this->handler->dispatchNextExecuteTestMessageFromTestPassedEvent($event);
+
+        $this->messengerAsserter->assertQueueCount($expectedQueuedMessageCount);
+
+        if (is_int($expectedNextTestIndex)) {
+            $expectedNextTest = $tests[$expectedNextTestIndex] ?? null;
+            self::assertInstanceOf(Test::class, $expectedNextTest);
+
+            $this->messengerAsserter->assertMessageAtPositionEquals(
+                0,
+                new ExecuteTestMessage((int) $expectedNextTest->getId())
+            );
+        }
     }
 
     /**
@@ -270,53 +283,53 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
         ];
     }
 
-    public function testSubscribesToTestPassedEvent(): void
+    public function testSubscribesToTestPassedEventExecutionNotComplete(): void
     {
-        $this->doTestPassedEventDrivenTest(
-            new InvokableCollection([
-                TestSetupInvokableFactory::setupCollection([
-                    (new TestSetup())
-                        ->withSource('/app/source/Test/test1.yml')
-                        ->withState(Test::STATE_COMPLETE),
-                    (new TestSetup())
-                        ->withSource('/app/source/Test/test2.yml')
-                        ->withState(Test::STATE_AWAITING),
-                ])
-            ]),
+        $tests = $this->invokableHandler->invoke(TestSetupInvokableFactory::setupCollection([
+            (new TestSetup())
+                ->withSource('/app/source/Test/test1.yml')
+                ->withState(Test::STATE_COMPLETE),
+            (new TestSetup())
+                ->withSource('/app/source/Test/test2.yml')
+                ->withState(Test::STATE_AWAITING),
+        ]));
+
+        $this->eventDispatcher->dispatch(new TestPassedEvent($tests[0], new Document('')));
+
+        $this->messengerAsserter->assertQueueCount(1);
+
+        $expectedNextTest = $tests[1] ?? null;
+        self::assertInstanceOf(Test::class, $expectedNextTest);
+
+        $this->messengerAsserter->assertMessageAtPositionEquals(
             0,
-            function (TestPassedEvent $event) {
-                $this->eventDispatcher->dispatch($event);
-            },
-            1,
-            1
+            new ExecuteTestMessage((int) $expectedNextTest->getId())
         );
     }
 
-    private function doTestPassedEventDrivenTest(
-        InvokableInterface $setup,
-        int $eventTestIndex,
-        callable $execute,
-        int $expectedQueuedMessageCount,
-        ?int $expectedNextTestIndex
-    ): void {
-        $tests = $this->invokableHandler->invoke($setup);
-        $this->messengerAsserter->assertQueueIsEmpty();
+    public function testSubscribesToTestPassedEventExecutionComplete(): void
+    {
+        $tests = $this->invokableHandler->invoke(TestSetupInvokableFactory::setupCollection([
+            (new TestSetup())
+                ->withSource('/app/source/Test/test1.yml')
+                ->withState(Test::STATE_COMPLETE),
+            (new TestSetup())
+                ->withSource('/app/source/Test/test2.yml')
+                ->withState(Test::STATE_COMPLETE),
+        ]));
 
-        $test = $tests[$eventTestIndex];
-        $event = new TestPassedEvent($test, \Mockery::mock(Document::class));
+        $this->eventDispatcher->dispatch(new TestPassedEvent($tests[0], new Document('')));
 
-        $execute($event);
+        $this->messengerAsserter->assertQueueCount(1);
 
-        $this->messengerAsserter->assertQueueCount($expectedQueuedMessageCount);
+        $callbacks = $this->invokableHandler->invoke(CallbackGetterFactory::getAll());
+        $expectedCallback = array_pop($callbacks);
 
-        if (is_int($expectedNextTestIndex)) {
-            $expectedNextTest = $tests[$expectedNextTestIndex] ?? null;
-            self::assertInstanceOf(Test::class, $expectedNextTest);
+        self::assertInstanceOf(CallbackInterface::class, $expectedCallback);
 
-            $this->messengerAsserter->assertMessageAtPositionEquals(
-                0,
-                new ExecuteTestMessage((int) $expectedNextTest->getId())
-            );
-        }
+        $this->messengerAsserter->assertMessageAtPositionEquals(
+            0,
+            new SendCallbackMessage((int) $expectedCallback->getId())
+        );
     }
 }

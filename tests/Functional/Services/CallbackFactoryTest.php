@@ -10,6 +10,7 @@ use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationCompletedEventDa
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationFailedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationPassedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromCompilationStartedEventDataProviderTrait;
+use App\Tests\DataProvider\CallbackFactory\CreateFromExecutionCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromExecutionStartedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobCompletedEventDataProviderTrait;
 use App\Tests\DataProvider\CallbackFactory\CreateFromJobReadyEventDataProviderTrait;
@@ -33,6 +34,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
     use CreateFromJobReadyEventDataProviderTrait;
     use CreateFromCompilationCompletedEventDataProviderTrait;
     use CreateFromExecutionStartedEventDataProviderTrait;
+    use CreateFromExecutionCompletedEventDataProviderTrait;
 
     private CallbackFactory $callbackFactory;
 
@@ -57,6 +59,7 @@ class CallbackFactoryTest extends AbstractBaseFunctionalTest
      * @dataProvider createFromJobTimeoutEventDataProvider
      * @dataProvider createFromJobCompletedEventDataProvider
      * @dataProvider createFromJobReadyEventDataProvider
+     * @dataProvider createFromExecutionCompletedEventDataProvider
      */
     public function testCreateForEvent(Event $event, CallbackInterface $expectedCallback): void
     {
