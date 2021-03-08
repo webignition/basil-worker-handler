@@ -71,6 +71,7 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
             ],
             ApplicationWorkflowHandler::class => [
                 TestFailedEvent::class => ['dispatchJobFailedEvent'],
+                TestPassedEvent::class => ['dispatchJobCompletedEvent'],
             ],
         ]);
     }

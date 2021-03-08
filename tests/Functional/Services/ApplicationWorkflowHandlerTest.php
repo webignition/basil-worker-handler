@@ -8,6 +8,7 @@ use App\Event\JobCompletedEvent;
 use App\Event\JobFailedEvent;
 use App\Event\TestFailedEvent;
 use App\Event\TestPassedEvent;
+use App\Message\JobCompletedCheckMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
 use App\Services\ExecutionWorkflowHandler;
@@ -17,6 +18,7 @@ use App\Tests\Mock\MockEventDispatcher;
 use App\Tests\Mock\Services\MockApplicationState;
 use App\Tests\Model\ExpectedDispatchedEvent;
 use App\Tests\Model\ExpectedDispatchedEventCollection;
+use App\Tests\Services\Asserter\MessengerAsserter;
 use App\Tests\Services\EventListenerRemover;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -34,6 +36,7 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
     private ApplicationWorkflowHandler $handler;
     private EventDispatcherInterface $eventDispatcher;
     private EventListenerRemover $eventListenerRemover;
+    private MessengerAsserter $messengerAsserter;
 
     protected function setUp(): void
     {
@@ -67,10 +70,18 @@ class ApplicationWorkflowHandlerTest extends AbstractBaseFunctionalTest
             $eventDispatcher
         );
 
+        $this->messengerAsserter->assertQueueIsEmpty();
+
         $this->eventDispatcher->dispatch(new TestPassedEvent(
             (new MockTest())->getMock(),
             new Document(''),
         ));
+
+        $this->messengerAsserter->assertQueueCount(1);
+        $this->messengerAsserter->assertMessageAtPositionEquals(
+            0,
+            new JobCompletedCheckMessage()
+        );
     }
 
     public function testSubscribesToTestPassedEventApplicationComplete(): void

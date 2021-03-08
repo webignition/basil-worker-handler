@@ -8,6 +8,7 @@ parameters:
     compiler_target_directory: '%env(COMPILER_TARGET_DIRECTORY)%'
     callback_retry_limit: '%env(CALLBACK_RETRY_LIMIT)%'
     job_timeout_check_period: '%env(JOB_TIMEOUT_CHECK_PERIOD)%'
+    job_completed_check_period: '%env(JOB_COMPLETED_CHECK_PERIOD)%'
 
 services:
     # default configuration for services in *this* file
@@ -73,6 +74,10 @@ services:
         arguments:
             $recheckPeriodInSeconds: '%job_timeout_check_period%'
 
+    App\MessageDispatcher\JobCompletedCheckMessageDispatcher:
+        arguments:
+            $recheckPeriodInSeconds: '%job_completed_check_period%'
+
     webignition\JsonMessageSerializerBundle\Services\MessageFactory:
         arguments:
             $typeToMessageClassMap:
@@ -81,6 +86,7 @@ services:
                 'execute-test': 'App\Message\ExecuteTestMessage'
                 'send-callback': 'App\Message\SendCallbackMessage'
                 'timeout-check': 'App\Message\TimeoutCheckMessage'
+                'job-complete-check': 'App\Message\JobCompletedCheckMessage'
 
     app.services.path-prefix-remover.compiler-source:
         class: webignition\StringPrefixRemover\DefinedStringPrefixRemover

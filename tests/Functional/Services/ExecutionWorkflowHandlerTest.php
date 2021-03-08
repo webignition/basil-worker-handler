@@ -11,6 +11,7 @@ use App\Event\TestPassedEvent;
 use App\Message\ExecuteTestMessage;
 use App\Message\SendCallbackMessage;
 use App\MessageDispatcher\SendCallbackMessageDispatcher;
+use App\Services\ApplicationWorkflowHandler;
 use App\Services\ExecutionWorkflowHandler;
 use App\Tests\AbstractBaseFunctionalTest;
 use App\Tests\Model\EndToEndJob\InvokableCollection;
@@ -51,7 +52,10 @@ class ExecutionWorkflowHandlerTest extends AbstractBaseFunctionalTest
                 CompilationCompletedEvent::class => ['dispatchForEvent'],
                 TestPassedEvent::class => ['dispatchForEvent'],
                 ExecutionStartedEvent::class => ['dispatchForEvent'],
-            ]
+            ],
+            ApplicationWorkflowHandler::class => [
+                TestPassedEvent::class => ['dispatchJobCompletedEvent'],
+            ],
         ]);
     }
 
