@@ -107,21 +107,29 @@ services:
                 - '@App\Services\EventCallbackFactory\JobTimeoutEventCallbackFactory'
                 - '@App\Services\EventCallbackFactory\NoPayloadEventCallbackFactory'
 
-    App\MessageDispatcher\TimeoutCheckMessageDispatcher:
-        arguments:
-            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
-
     app.message_dispatcher.backoff_strategy.fixed:
         class: webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\FixedBackoffStrategy
         arguments:
             $delayInMilliseconds: '%job_timeout_check_period_ms%'
 
+    app.message_dispatcher.backoff_strategy.exponential:
+        class: webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\ExponentialBackoffStrategy
+
     webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\DelayedMessageMiddleware:
         arguments:
             $backoffStrategies:
                 App\Message\TimeoutCheckMessage: '@app.message_dispatcher.backoff_strategy.fixed'
+                App\Message\SendCallbackMessage: '@app.message_dispatcher.backoff_strategy.exponential'
 
     webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher:
         arguments:
             $middleware:
                 - '@webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\DelayedMessageMiddleware'
+
+    App\MessageDispatcher\SendCallbackMessageDispatcher:
+        arguments:
+            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
+
+    App\MessageDispatcher\TimeoutCheckMessageDispatcher:
+        arguments:
+            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
