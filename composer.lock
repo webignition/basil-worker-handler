@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "005baf5e20c4f146e65b763d9cce3e1d",
+    "content-hash": "feb4137db8c6409d6f71c5170d445501",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5459,6 +5459,56 @@
             "time": "2021-02-23T16:30:52+00:00"
         },
         {
+            "name": "webignition/symfony-messenger-message-dispatcher",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webignition/symfony-messenger-message-dispatcher.git",
+                "reference": "68b8cbbde8d28f005d39adc4c026d55ba58b3f4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webignition/symfony-messenger-message-dispatcher/zipball/68b8cbbde8d28f005d39adc4c026d55ba58b3f4e",
+                "reference": "68b8cbbde8d28f005d39adc4c026d55ba58b3f4e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "8.*",
+                "symfony/messenger": "^5.2"
+            },
+            "require-dev": {
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan": "^0.12.83",
+                "phpstan/phpstan-phpunit": "^0.12.18",
+                "phpunit/phpunit": "^9.5",
+                "squizlabs/php_codesniffer": "dev-master",
+                "symplify/easy-coding-standard": "^9.2"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "webignition\\SymfonyMessengerMessageDispatcher\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jon Cram",
+                    "email": "webignition@gmail.com"
+                }
+            ],
+            "homepage": "https://github.com/webignition/symfony-messenger-message-dispatcher",
+            "support": {
+                "issues": "https://github.com/webignition/symfony-messenger-message-dispatcher/issues",
+                "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/main"
+            },
+            "time": "2021-04-08T13:14:19+00:00"
+        },
+        {
             "name": "webignition/tcp-cli-proxy-client",
             "version": "0.12",
             "source": {
@@ -10546,6 +10596,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "webignition/symfony-messenger-message-dispatcher": 20,
         "squizlabs/php_codesniffer": 20
     },
     "prefer-stable": false,
