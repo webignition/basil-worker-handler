@@ -584,9 +584,6 @@
     "webignition/symfony-messenger-json-message-serializer-bundle": {
         "version": "dev-main"
     },
-    "webignition/symfony-messenger-message-dispatcher": {
-        "version": "dev-main"
-    },
     "webignition/symfony-test-service-injector-trait": {
         "version": "0.1"
     },
