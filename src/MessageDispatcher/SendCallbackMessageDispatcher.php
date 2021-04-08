@@ -21,8 +21,10 @@ use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
+use App\Model\Callback\StampedCallbackInterface;
 use App\Services\CallbackFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
@@ -107,7 +109,26 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     private function dispatch(CallbackInterface $callback): void
     {
         $this->callbackStateMutator->setQueued($callback);
+        $this->messageBus->dispatch($this->createCallbackEnvelope($callback));
+    }
 
-        $this->messageBus->dispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
+    /**
+     * @param CallbackInterface $callback
+     *
+     * @return Envelope
+     */
+    private function createCallbackEnvelope(CallbackInterface $callback): Envelope
+    {
+        $sendCallbackMessage = new SendCallbackMessage((int) $callback->getId());
+        $stamps = [];
+
+        if ($callback instanceof StampedCallbackInterface) {
+            $stampCollection = $callback->getStamps();
+            if ($stampCollection->hasStamps()) {
+                $stamps = $stampCollection->getStamps();
+            }
+        }
+
+        return new Envelope($sendCallbackMessage, $stamps);
     }
 }

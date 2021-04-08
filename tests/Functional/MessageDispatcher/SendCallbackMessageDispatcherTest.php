@@ -19,7 +19,6 @@ use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
-use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
 use App\Services\ExecutionWorkflowHandler;
@@ -39,8 +38,6 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\CallbackRepository;
-use webignition\ObjectReflector\ObjectReflector;
-use webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
 
@@ -77,15 +74,6 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 TestPassedEvent::class => ['dispatchJobCompletedEvent'],
             ],
         ]);
-    }
-
-    public function testUsedCustomMessageDispatcher(): void
-    {
-        $dispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
-        self::assertInstanceOf(SendCallbackMessageDispatcher::class, $dispatcher);
-
-        $messageDispatcher = ObjectReflector::getProperty($dispatcher, 'messageBus');
-        self::assertInstanceOf(MessageDispatcher::class, $messageDispatcher);
     }
 
     /**

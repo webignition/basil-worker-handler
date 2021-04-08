@@ -15,8 +15,6 @@ use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Stamp\DelayStamp;
 use Symfony\Contracts\EventDispatcher\Event;
-use webignition\ObjectReflector\ObjectReflector;
-use webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 
 class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
@@ -41,14 +39,6 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         ]);
     }
 
-    public function testUsedCustomMessageDispatcher(): void
-    {
-        $dispatcher = self::$container->get(TimeoutCheckMessageDispatcher::class);
-        self::assertInstanceOf(TimeoutCheckMessageDispatcher::class, $dispatcher);
-
-        $messageDispatcher = ObjectReflector::getProperty($dispatcher, 'messageBus');
-        self::assertInstanceOf(MessageDispatcher::class, $messageDispatcher);
-    }
 
     public function testDispatch(): void
     {
@@ -59,7 +49,7 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
         $this->messengerAsserter->assertQueueCount(1);
         $this->messengerAsserter->assertMessageAtPositionEquals(0, new TimeoutCheckMessage());
 
-        $jobTimeoutCheckPeriod = self::$container->getParameter('job_timeout_check_period_ms');
+        $jobTimeoutCheckPeriod = self::$container->getParameter('job_timeout_check_period');
         if (is_string($jobTimeoutCheckPeriod)) {
             $jobTimeoutCheckPeriod = (int) $jobTimeoutCheckPeriod;
         }
@@ -68,7 +58,10 @@ class TimeoutCheckMessageDispatcherTest extends AbstractBaseFunctionalTest
             $jobTimeoutCheckPeriod = 0;
         }
 
-        $expectedDelayStamp = new DelayStamp($jobTimeoutCheckPeriod);
+        $expectedDelayStamp = new DelayStamp(
+            $jobTimeoutCheckPeriod *
+            TimeoutCheckMessageDispatcher::MILLISECONDS_PER_SECOND
+        );
 
         $this->messengerAsserter->assertEnvelopeContainsStamp(
             $this->messengerAsserter->getEnvelopeAtPosition(0),
