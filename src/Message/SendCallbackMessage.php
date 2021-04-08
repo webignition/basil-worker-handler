@@ -5,14 +5,17 @@ declare(strict_types=1);
 namespace App\Message;
 
 use webignition\JsonMessageSerializerBundle\Message\AbstractSerializableMessage;
+use webignition\SymfonyMessengerMessageDispatcher\Message\RetryableMessageInterface;
 
-class SendCallbackMessage extends AbstractSerializableMessage
+class SendCallbackMessage extends AbstractSerializableMessage implements RetryableMessageInterface
 {
     public const TYPE = 'send-callback';
     public const PAYLOAD_KEY_CALLBACK_ID = 'callback_id';
 
-    public function __construct(private int $callbackId)
-    {
+    public function __construct(
+        private int $callbackId,
+        private int $retryCount = 0,
+    ) {
     }
 
     /**
@@ -40,5 +43,10 @@ class SendCallbackMessage extends AbstractSerializableMessage
         return [
             self::PAYLOAD_KEY_CALLBACK_ID => $this->callbackId,
         ];
+    }
+
+    public function getRetryCount(): int
+    {
+        return $this->retryCount;
     }
 }

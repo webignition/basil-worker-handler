@@ -48,6 +48,8 @@ services:
 
     App\MessageDispatcher\SendCallbackMessageDispatcher:
         public: true
+        arguments:
+            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
 
     App\Services\TestCanceller:
         public: true
@@ -65,11 +67,6 @@ services:
 
     App\MessageHandler\TimeoutCheckHandler:
         public: true
-
-    App\MessageDispatcher\TimeoutCheckMessageDispatcher:
-        public: true
-        arguments:
-            $recheckPeriodInSeconds: '%job_timeout_check_period%'
 
     App\MessageHandler\JobReadyHandler:
         public: true
