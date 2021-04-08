@@ -13,9 +13,3 @@ services:
         arguments:
             $recheckPeriodInSeconds: '%job_timeout_check_period%'
             $enabled: false
-
-
-    App\MessageDispatcher\JobCompletedCheckMessageDispatcher:
-        arguments:
-            $recheckPeriodInSeconds: '%job_completed_check_period%'
-            $enabled: false
