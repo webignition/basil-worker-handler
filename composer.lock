@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "feb4137db8c6409d6f71c5170d445501",
+    "content-hash": "b93b503ce70ad490df3765d64cdd4098",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5460,7 +5460,7 @@
         },
         {
             "name": "webignition/symfony-messenger-message-dispatcher",
-            "version": "dev-main",
+            "version": "0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/symfony-messenger-message-dispatcher.git",
@@ -5484,7 +5484,6 @@
                 "squizlabs/php_codesniffer": "dev-master",
                 "symplify/easy-coding-standard": "^9.2"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -5504,7 +5503,7 @@
             "homepage": "https://github.com/webignition/symfony-messenger-message-dispatcher",
             "support": {
                 "issues": "https://github.com/webignition/symfony-messenger-message-dispatcher/issues",
-                "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/main"
+                "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/0.1"
             },
             "time": "2021-04-08T15:32:55+00:00"
         },
@@ -10596,7 +10595,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "webignition/symfony-messenger-message-dispatcher": 20,
         "squizlabs/php_codesniffer": 20
     },
     "prefer-stable": false,

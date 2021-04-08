@@ -27,7 +27,7 @@
         "webignition/basil-worker-state-bundle": ">=0.8,<1",
         "webignition/string-prefix-remover": "^0.2.0",
         "webignition/symfony-messenger-json-message-serializer-bundle": "^0.2.0",
-        "webignition/symfony-messenger-message-dispatcher": "dev-main",
+        "webignition/symfony-messenger-message-dispatcher": ">=0.1,<1",
         "webignition/tcp-cli-proxy-client": "^0.12.0",
         "webignition/yaml-document": "^0.2.0",
         "webignition/yaml-document-generator": "^0.3.0"
