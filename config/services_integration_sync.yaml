@@ -9,7 +9,24 @@ services:
     App\Tests\Services\TestTestRepository:
         public: true
 
-    App\MessageDispatcher\TimeoutCheckMessageDispatcher:
+    app.message_dispatcher.backoff_strategy.fixed:
+        class: webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\FixedBackoffStrategy
         arguments:
-            $recheckPeriodInSeconds: '%job_timeout_check_period%'
-            $enabled: false
+            $delayInMilliseconds: '%job_timeout_check_period_ms%'
+
+    webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\DelayedMessageMiddleware:
+        arguments:
+            $backoffStrategies:
+                App\Message\TimeoutCheckMessage: '@app.message_dispatcher.backoff_strategy.fixed'
+
+    webignition\SymfonyMessengerMessageDispatcher\Middleware\IgnoredMessageMiddleware:
+        arguments:
+            $messageClassNames:
+                - App\Message\TimeoutCheckMessage
+
+    webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher:
+        arguments:
+            $middleware:
+                - '@webignition\SymfonyMessengerMessageDispatcher\Middleware\IgnoredMessageMiddleware'
+                - '@webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\DelayedMessageMiddleware'
+
