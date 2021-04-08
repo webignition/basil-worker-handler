@@ -48,6 +48,8 @@ services:
 
     App\MessageDispatcher\SendCallbackMessageDispatcher:
         public: true
+        arguments:
+            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
 
     App\Services\TestCanceller:
         public: true
