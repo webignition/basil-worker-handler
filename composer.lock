@@ -5464,12 +5464,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/symfony-messenger-message-dispatcher.git",
-                "reference": "68b8cbbde8d28f005d39adc4c026d55ba58b3f4e"
+                "reference": "5ac5b2e2df19c671552c4c4afd0f170d52b8267e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/symfony-messenger-message-dispatcher/zipball/68b8cbbde8d28f005d39adc4c026d55ba58b3f4e",
-                "reference": "68b8cbbde8d28f005d39adc4c026d55ba58b3f4e",
+                "url": "https://api.github.com/repos/webignition/symfony-messenger-message-dispatcher/zipball/5ac5b2e2df19c671552c4c4afd0f170d52b8267e",
+                "reference": "5ac5b2e2df19c671552c4c4afd0f170d52b8267e",
                 "shasum": ""
             },
             "require": {
@@ -5506,7 +5506,7 @@
                 "issues": "https://github.com/webignition/symfony-messenger-message-dispatcher/issues",
                 "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/main"
             },
-            "time": "2021-04-08T13:14:19+00:00"
+            "time": "2021-04-08T14:23:50+00:00"
         },
         {
             "name": "webignition/tcp-cli-proxy-client",
