@@ -19,6 +19,7 @@ use App\Event\TestStartedEvent;
 use App\Event\TestStepFailedEvent;
 use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
+use App\MessageDispatcher\SendCallbackMessageDispatcher;
 use App\MessageDispatcher\TimeoutCheckMessageDispatcher;
 use App\Services\ApplicationWorkflowHandler;
 use App\Services\ExecutionWorkflowHandler;
@@ -38,6 +39,7 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackEntity;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Entity\Test;
 use webignition\BasilWorker\PersistenceBundle\Services\Repository\CallbackRepository;
+use webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher;
 use webignition\SymfonyTestServiceInjectorTrait\TestClassServicePropertyInjectorTrait;
 use webignition\YamlDocument\Document;
 
@@ -248,5 +250,28 @@ class SendCallbackMessageDispatcherTest extends AbstractBaseFunctionalTest
                 'expectedCallbackPayload' => [],
             ],
         ];
+    }
+
+    public function testCallbackSetToFailedWhenRetryLimitReached(): void
+    {
+        $callbackEntity = CallbackEntity::create(CallbackInterface::TYPE_COMPILATION_FAILED, []);
+        $callbackEntity->incrementRetryCount();
+        $callbackEntity->incrementRetryCount();
+        $callbackEntity->incrementRetryCount();
+        $callbackEntity->incrementRetryCount();
+
+        $event = new CallbackHttpErrorEvent($callbackEntity, new Response(503));
+
+        $dispatcher = self::$container->get(SendCallbackMessageDispatcher::class);
+        \assert($dispatcher instanceof SendCallbackMessageDispatcher);
+
+        $this->messengerAsserter->assertQueueIsEmpty();
+
+        $envelope = $dispatcher->dispatchForCallbackHttpErrorEvent($event);
+
+        self::assertFalse(MessageDispatcher::isDispatchable($envelope));
+        $this->messengerAsserter->assertQueueIsEmpty();
+
+        self::assertSame(CallbackInterface::STATE_FAILED, $callbackEntity->getState());
     }
 }

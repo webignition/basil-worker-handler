@@ -7,6 +7,7 @@ namespace App\MessageDispatcher;
 use App\Event\JobReadyEvent;
 use App\Message\TimeoutCheckMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Envelope;
 
 class TimeoutCheckMessageDispatcher extends AbstractMessageDispatcher implements EventSubscriberInterface
 {
@@ -19,8 +20,8 @@ class TimeoutCheckMessageDispatcher extends AbstractMessageDispatcher implements
         ];
     }
 
-    public function dispatch(): void
+    public function dispatch(): Envelope
     {
-        $this->doDispatch(new TimeoutCheckMessage());
+        return $this->doDispatch(new TimeoutCheckMessage());
     }
 }
