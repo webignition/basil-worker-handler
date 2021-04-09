@@ -125,11 +125,3 @@ services:
         arguments:
             $middleware:
                 - '@webignition\SymfonyMessengerMessageDispatcher\Middleware\DelayedMessage\DelayedMessageMiddleware'
-
-    App\MessageDispatcher\SendCallbackMessageDispatcher:
-        arguments:
-            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
-
-    App\MessageDispatcher\TimeoutCheckMessageDispatcher:
-        arguments:
-            $messageBus: '@webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher'
