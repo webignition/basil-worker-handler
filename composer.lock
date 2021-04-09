@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b93b503ce70ad490df3765d64cdd4098",
+    "content-hash": "9688df77218018c4f5d06c035aa9dce4",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -5460,16 +5460,16 @@
         },
         {
             "name": "webignition/symfony-messenger-message-dispatcher",
-            "version": "0.1",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/symfony-messenger-message-dispatcher.git",
-                "reference": "7700b5923b817023af32483e373b5b9da0a24df6"
+                "reference": "0cbc1a480a19c39bb3f2dc3af8c8827082b3c547"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/symfony-messenger-message-dispatcher/zipball/7700b5923b817023af32483e373b5b9da0a24df6",
-                "reference": "7700b5923b817023af32483e373b5b9da0a24df6",
+                "url": "https://api.github.com/repos/webignition/symfony-messenger-message-dispatcher/zipball/0cbc1a480a19c39bb3f2dc3af8c8827082b3c547",
+                "reference": "0cbc1a480a19c39bb3f2dc3af8c8827082b3c547",
                 "shasum": ""
             },
             "require": {
@@ -5503,9 +5503,9 @@
             "homepage": "https://github.com/webignition/symfony-messenger-message-dispatcher",
             "support": {
                 "issues": "https://github.com/webignition/symfony-messenger-message-dispatcher/issues",
-                "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/0.1"
+                "source": "https://github.com/webignition/symfony-messenger-message-dispatcher/tree/0.4"
             },
-            "time": "2021-04-08T15:32:55+00:00"
+            "time": "2021-04-09T10:54:00+00:00"
         },
         {
             "name": "webignition/tcp-cli-proxy-client",
