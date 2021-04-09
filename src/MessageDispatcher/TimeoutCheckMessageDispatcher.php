@@ -7,17 +7,9 @@ namespace App\MessageDispatcher;
 use App\Event\JobReadyEvent;
 use App\Message\TimeoutCheckMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 
-class TimeoutCheckMessageDispatcher implements EventSubscriberInterface
+class TimeoutCheckMessageDispatcher extends AbstractMessageDispatcher implements EventSubscriberInterface
 {
-    public const MILLISECONDS_PER_SECOND = 1000;
-
-    public function __construct(
-        private MessageBusInterface $messageBus,
-    ) {
-    }
-
     public static function getSubscribedEvents()
     {
         return [
@@ -29,6 +21,6 @@ class TimeoutCheckMessageDispatcher implements EventSubscriberInterface
 
     public function dispatch(): void
     {
-        $this->messageBus->dispatch(new TimeoutCheckMessage());
+        $this->doDispatch(new TimeoutCheckMessage());
     }
 }

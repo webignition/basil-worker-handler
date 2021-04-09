@@ -23,18 +23,19 @@ use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\Services\CallbackFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
+use webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher;
 
-class SendCallbackMessageDispatcher implements EventSubscriberInterface
+class SendCallbackMessageDispatcher extends AbstractMessageDispatcher implements EventSubscriberInterface
 {
     public function __construct(
-        private MessageBusInterface $messageBus,
+        MessageDispatcher $messageDispatcher,
         private CallbackStateMutator $callbackStateMutator,
         private CallbackFactory $callbackFactory
     ) {
+        parent::__construct($messageDispatcher);
     }
 
     public static function getSubscribedEvents()
@@ -108,6 +109,6 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         $this->callbackStateMutator->setQueued($callback);
 
-        $this->messageBus->dispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
+        $this->doDispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
     }
 }
