@@ -129,10 +129,10 @@ class SendCallbackHandlerTest extends AbstractBaseIntegrationTest
                     'verify http transactions' => new Invokable(
                         function (HttpLogReader $httpLogReader) {
                             $httpTransactions = $httpLogReader->getTransactions();
-                            self::assertCount(3, $httpTransactions);
+                            self::assertCount(4, $httpTransactions);
 
                             $transactionPeriods = $httpTransactions->getPeriods()->getPeriodsInMicroseconds();
-                            self::assertCount(3, $transactionPeriods);
+                            self::assertCount(4, $transactionPeriods);
 
                             $retriedTransactionPeriods = $transactionPeriods;
                             array_shift($retriedTransactionPeriods);
