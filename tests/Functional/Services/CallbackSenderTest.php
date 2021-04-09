@@ -126,32 +126,6 @@ class CallbackSenderTest extends AbstractBaseFunctionalTest
         $this->callbackSender->send(new TestCallback());
     }
 
-    public function testSendCallbackRetryLimitReached(): void
-    {
-        $this->createJob();
-
-        $retryLimit = self::$container->getParameter('callback_retry_limit');
-        if (!is_numeric($retryLimit)) {
-            $retryLimit = 0;
-        }
-
-        $retryLimit = (int) $retryLimit;
-
-        $responseHandler = (new MockCallbackResponseHandler())
-            ->withoutHandleCall()
-            ->getMock();
-
-        $this->setCallbackResponseHandlerOnCallbackSender($responseHandler);
-
-        $callback = new TestCallback();
-        $callback = $callback->withRetryCount($retryLimit);
-        $callback = $callback->withState(CallbackInterface::STATE_SENDING);
-
-        $this->callbackSender->send($callback);
-
-        self::assertSame(CallbackInterface::STATE_FAILED, $callback->getState());
-    }
-
     private function createJob(): void
     {
         $jobFactory = self::$container->get(JobFactory::class);

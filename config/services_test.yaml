@@ -15,8 +15,6 @@ services:
 
     App\Services\CallbackSender:
         public: true
-        arguments:
-            $retryLimit: '%callback_retry_limit%'
 
     App\MessageHandler\CompileSourceHandler:
         public: true

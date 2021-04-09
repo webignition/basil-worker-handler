@@ -66,10 +66,6 @@ services:
 
     Symfony\Component\Yaml\Dumper: ~
 
-    App\Services\CallbackSender:
-        arguments:
-            $retryLimit: '%callback_retry_limit%'
-
     webignition\JsonMessageSerializerBundle\Services\MessageFactory:
         arguments:
             $typeToMessageClassMap:
