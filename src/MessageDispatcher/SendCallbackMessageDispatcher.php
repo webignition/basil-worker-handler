@@ -28,13 +28,14 @@ use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
 use webignition\SymfonyMessengerMessageDispatcher\MessageDispatcher;
 
-class SendCallbackMessageDispatcher implements EventSubscriberInterface
+class SendCallbackMessageDispatcher extends AbstractMessageDispatcher implements EventSubscriberInterface
 {
     public function __construct(
-        private MessageDispatcher $messageDispatcher,
+        MessageDispatcher $messageDispatcher,
         private CallbackStateMutator $callbackStateMutator,
         private CallbackFactory $callbackFactory
     ) {
+        parent::__construct($messageDispatcher);
     }
 
     public static function getSubscribedEvents()
@@ -108,6 +109,6 @@ class SendCallbackMessageDispatcher implements EventSubscriberInterface
     {
         $this->callbackStateMutator->setQueued($callback);
 
-        $this->messageDispatcher->dispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
+        $this->doDispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
     }
 }
