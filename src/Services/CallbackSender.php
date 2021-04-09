@@ -18,19 +18,12 @@ class CallbackSender
         private JobStore $jobStore,
         private CallbackResponseHandler $callbackResponseHandler,
         private CallbackStateMutator $callbackStateMutator,
-        private int $retryLimit
     ) {
     }
 
     public function send(CallbackInterface $callback): void
     {
         if (false === $this->jobStore->has()) {
-            return;
-        }
-
-        if ($callback->hasReachedRetryLimit($this->retryLimit)) {
-            $this->callbackStateMutator->setFailed($callback);
-
             return;
         }
 

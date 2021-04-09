@@ -57,9 +57,4 @@ abstract class AbstractCallbackWrapper implements CallbackInterface
     {
         $this->callback->incrementRetryCount();
     }
-
-    public function hasReachedRetryLimit(int $limit): bool
-    {
-        return $this->callback->hasReachedRetryLimit($limit);
-    }
 }

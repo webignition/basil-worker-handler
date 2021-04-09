@@ -23,6 +23,7 @@ use App\Event\TestStepPassedEvent;
 use App\Message\SendCallbackMessage;
 use App\Services\CallbackFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Contracts\EventDispatcher\Event;
 use webignition\BasilWorker\PersistenceBundle\Entity\Callback\CallbackInterface;
 use webignition\BasilWorker\PersistenceBundle\Services\CallbackStateMutator;
@@ -92,23 +93,30 @@ class SendCallbackMessageDispatcher extends AbstractMessageDispatcher implements
         ];
     }
 
-    public function dispatchForEvent(Event $event): void
+    public function dispatchForEvent(Event $event): ?Envelope
     {
         $callback = $this->callbackFactory->createForEvent($event);
         if ($callback instanceof CallbackInterface) {
-            $this->dispatch($callback);
+            return $this->dispatch($callback);
         }
+
+        return null;
     }
 
-    public function dispatchForCallbackHttpErrorEvent(CallbackHttpErrorEvent $event): void
+    public function dispatchForCallbackHttpErrorEvent(CallbackHttpErrorEvent $event): Envelope
     {
-        $this->dispatch($event->getCallback());
+        return $this->dispatch($event->getCallback());
     }
 
-    private function dispatch(CallbackInterface $callback): void
+    private function dispatch(CallbackInterface $callback): Envelope
     {
         $this->callbackStateMutator->setQueued($callback);
+        $envelope = $this->doDispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
 
-        $this->doDispatch(new SendCallbackMessage((int) $callback->getId(), $callback->getRetryCount()));
+        if (false === MessageDispatcher::isDispatchable($envelope)) {
+            $this->callbackStateMutator->setFailed($callback);
+        }
+
+        return $envelope;
     }
 }
